@@ -1,6 +1,6 @@
-import { defineComponent, VirtualElement } from '../modules/core/main/index'
+import { defineComponent, Component, VirtualElement } from '../modules/core/main/index'
+import { forceUpdate } from '../modules/util/main/index'
 import { mount } from '../modules/dom/main/index'
-import { useForceUpdate, useRef } from '../modules/hooks/main/index'
 import { div, h4, label, option, select } from '../modules/html/main/index'
 
 import availableDemos from './available-demos'
@@ -14,37 +14,38 @@ type DemoSelectorProps = {
 const DemoSelector = defineComponent<DemoSelectorProps>({
   displayName: 'DemoSelector',
 
-  render(props) {
-    const
-      forceUpdate = useForceUpdate(),
-      demoIdx = useRef(getCurrentDemoIndex())
+  init(c) {
+    let
+      demoIdx = getCurrentDemoIndex()
 
-    function startDemo(idx: number) {
-      demoIdx.current = idx
+    function startDemo(c: Component, idx: number) {
+      demoIdx = idx
       document.location.href = document.location.href.replace(/#.*$/, '') + '#idx=' + idx
-      forceUpdate()
+      forceUpdate(c)
     }
 
-    const options = []
+    const options: [string, VirtualElement][] = []
 
-    for (let i = 0; i < props.demos.length; ++i) {
-      const demo = props.demos[i]
-          
-      options.push(option({ key: i, value: i }, demo[0]))
-    }
+    return props => {
+      for (let i = 0; i < props.demos.length; ++i) {
+        const demo = props.demos[i]
+            
+        options.push(option({ key: i, value: i }, demo[0]))
+      }
 
-    return (
-      div(null,
+      return (
         div(null,
-          label(null, 'Select demo: '),
-            select({
-              onChange: (ev: any) => startDemo(ev.target.value),
-              value: demoIdx.current,
-              autoFocus: true
-            }, options)),
-            div(null,
-              h4('Example: ', props.demos[demoIdx.current][0]),
-              props.demos[demoIdx.current][1])))
+          div(null,
+            label(null, 'Select demo: '),
+              select({
+                onChange: (ev: any) => startDemo(c, ev.target.value),
+                value: demoIdx,
+                autoFocus: true
+              }, options)),
+              div(null,
+                h4('Example: ', props.demos[demoIdx][0]),
+                props.demos[demoIdx][1])))
+    }
   }
 })
 

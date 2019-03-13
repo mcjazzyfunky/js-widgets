@@ -1,6 +1,6 @@
 # jsWidgets
 
-**Remark: This README document is just an early draft - totally incomplete yet**
+**Remark: This README document is completely out of date - no need to read it ;-)**
 
 ### Installation
 
