@@ -1,9 +1,17 @@
-import * as Html from '../../html/main/index'
-import * as Svg from '../../svg/main/index'
+import * as core  from '../../core/main/index'
+import * as dom  from '../../dom/main/index'
+import * as hooks from '../../hooks/main/index'
+import * as html from '../../html/main/index'
+import * as svg from '../../svg/main/index'
+import * as use from '../../use/main/index'
+import * as util from '../../util/main/index'
 
-export * from '../../core/main/index'
-export * from '../../dom/main/index'
-export * from '../../hooks/main/index'
-export * from '../../util/main/index'
-
-export { Html, Svg }
+export {
+  core,
+  dom,
+  hooks,
+  html,
+  svg,
+  use,
+  util
+}

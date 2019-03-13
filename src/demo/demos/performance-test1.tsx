@@ -1,18 +1,16 @@
 import { createElement, defineComponent } from '../../modules/core/main/index'
-import { useCallback, useEffect, useState } from '../../modules/hooks/main/index'
+import { useState, useEffect } from '../../modules/hooks/main/index'
 import { div } from '../../modules/html/main/index'
-import React from 'react'
+//import React from '../../../node_modules/react/umd/react.production.min'
 
-const
-  c = createElement,
-  h = React.createElement
+const h = (window as any).React.createElement
 
 function runTests() {
   const
-    iterationCount = 300000,
+    iterationCount = 400000,
     tests = []
 
-  let result = ''
+  let report = ''
 
   tests.push({
     name: 'Using createElement from React',
@@ -20,26 +18,20 @@ function runTests() {
     run() {
       for (let i = 0; i < iterationCount; ++i) {
         h('div',
-          { className: 'my-class', id: 'my-id', key: 1 },
-          h('div',
-            { className: 'my-class2', id: 'my-id2', key: 2},
-            h('div', null, h('div', null, h('div', null, h('div')))),
-            'some text', [1, 2, 3, 4, 5]))  
+          { className: 'my-class', id: 'my-id' },
+          h('div', { className: 'my-class2', id: 'my-id2'}, 'some text', [1, 2, 3, 4, 5]))  
       }
     }
   }),
-  
+
   tests.push({
     name: 'Using createElement from js-widgets',
 
     run() {
       for (let i = 0; i < iterationCount; ++i) {
-        c('div',
-          { className: 'my-class', id: 'my-id', key: 1 },
-          c('div',
-            { className: 'my-class2', id: 'my-id2', key: 2 },
-            c('div', null, c('div', null, c('div', null, c('div')))),
-            'some text', [1, 2, 3, 4, 5]))  
+        createElement('div',
+          { className: 'my-class', id: 'my-id' },
+          createElement('div', { className: 'my-class2', id: 'my-id2'}, 'some text', [1, 2, 3, 4, 5]))  
       }
     }
   }),
@@ -50,10 +42,8 @@ function runTests() {
     run() {
       for (let i = 0; i < iterationCount; ++i) {
         div(
-          { className: 'my-class', id: 'my-id', key: 1 },
-          div({ className: 'my-class2', id: 'my-id2', key: 2},
-            div(div(div(div()))),
-            'some text', [1, 2, 3, 4, 5]))  
+          { className: 'my-class', id: 'my-id' },
+          div({ className: 'my-class2', id: 'my-id2'}, 'some text', [1, 2, 3, 4, 5]))  
       }
     }
   })
@@ -72,74 +62,37 @@ function runTests() {
     const message = `Run time for test '${test.name}': ${duration}`
 
     if (i == 0) {
-      result = message
+      report = message
     } else {
-      result += '\n' + message
+      report += '\n' + message
     }
   }
 
-  result += '\nAll tests finished.'
+  report += '\nAll tests finished.'
 
-  return result
+  return report
 }
 
 const PerformanceTest = defineComponent({
   displayName: 'PerformanceTest',
 
   render() {
-    const
-      [result, setResult] = useState(() => null as string),
-      [isRunning, setRunning] = useState(() => false),
-      onStart = useCallback(() => startTest())
-
-    function startTest() {
-      setRunning(true)
-    }
+    const [report, setReport] = useState(() => null as string)
 
     useEffect(() => {
-      if (isRunning) {
-        const result = runTests()
-        
-        setRunning(false)
-        setResult(result)
-      }
-    })
+      setReport(runTests())
+    }, [])
 
     return (
-      <div> 
+      <div>
         <h4>Measuring time to build virtual dom trees</h4>
-        { 
-          !isRunning
-            ? <div>
-                <Report result={result}/> 
-                <button onClick={onStart}>
-                  { result === null ? 'Start tests' : 'Restart tests' }
-                </button>
-              </div>
-            : <div>Running performance test - please wait...</div>
+        {
+          report === null
+            ? <div>Running performance test - please wait...</div>
+            : <pre>{report}</pre>
         }
       </div>
     )
-  }
-})
-
-type ReportProps = {
-  result: string
-}
-
-function X() { return <div>xxx</div> }
-
-const Report = defineComponent<ReportProps>({
-  displayName: 'Report',
-
-  render({ result }) {
-    let ret = null
-    
-    if (result && result.trim().length > 0) {
-      ret = <pre>{result}</pre>
-    }
-
-    return ret
   }
 })
 

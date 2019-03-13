@@ -9,12 +9,12 @@
     "preserveConstEnums": true,
     "downlevelIteration": true,
     "sourceMap": true,
-    "lib": ["es5", "es6", "dom"],
+    "lib": ["es7", "dom"],
     "esModuleInterop": true,
     "baseUrl": ".",
     
     "paths": {
-      "js-widgets/core": ["src/modules/core/main/index.ts"],
+      "js-widgets": ["src/modules/core/main/index.ts"],
     },
     
     "typeRoots": [
@@ -26,14 +26,13 @@
     ]
   },
   "files": [
-    "src/modules/all/main/index.ts",
     "src/modules/core/main/index.ts",
     "src/modules/dom/main/index.ts",
     "src/modules/html/main/index.ts",
     "src/modules/hooks/main/index.ts",
     "src/modules/svg/main/index.ts",
-    "src/modules/util/main/index.ts",
-    "src/modules/experimental/main/index.ts"
+    "src/modules/use/main/index.ts",
+    "src/modules/util/main/index.ts"
   ],
 
   "include": [

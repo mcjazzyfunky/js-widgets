@@ -28,7 +28,7 @@ const Counter = defineComponent<CounterProps, CounterMethods>({
       reset(n: number) {
         setCount(n)
       }
-    }), [])
+    }))
 
 
     return (

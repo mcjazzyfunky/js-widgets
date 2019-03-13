@@ -8,7 +8,6 @@
 /.settings
 /.grunt
 /.vscode
-/coverage
 /nbproject
 /node_modules
 /build/*

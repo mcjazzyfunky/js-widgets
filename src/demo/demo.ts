@@ -2,6 +2,7 @@ import { defineComponent, VirtualElement } from '../modules/core/main/index'
 import { mount } from '../modules/dom/main/index'
 import { useForceUpdate, useRef } from '../modules/hooks/main/index'
 import { div, h4, label, option, select } from '../modules/html/main/index'
+
 import availableDemos from './available-demos'
 
 // --- Component DemoSelector ---------------------------------------
@@ -21,9 +22,6 @@ const DemoSelector = defineComponent<DemoSelectorProps>({
     function startDemo(idx: number) {
       demoIdx.current = idx
       document.location.href = document.location.href.replace(/#.*$/, '') + '#idx=' + idx
-      console.clear()
-      
-      console.log('start demo', idx)
       forceUpdate()
     }
 
@@ -52,12 +50,12 @@ const DemoSelector = defineComponent<DemoSelectorProps>({
 
 // --- Component Demo -----------------------------------------------
 
-type DemoAppProps = {
+type DemoProps = {
   demos: [string, VirtualElement][]
 }
 
-const DemoApp = defineComponent<DemoAppProps>({
-  displayName: 'DemoApp',
+const Demo = defineComponent<DemoProps>({
+  displayName: 'Demo',
 
   render(props) {
     return (
@@ -73,7 +71,7 @@ function getCurrentDemoIndex() {
 
 // --- main ---------------------------------------------------------
 
-mount(DemoApp({ demos: availableDemos }), 'main-content')
+mount(Demo({ demos: availableDemos }), 'main-content')
 
 declare module 'react'
 declare module 'react-dom'

@@ -19,11 +19,7 @@ const LocaleCtx = defineContext({
   defaultValue: 'en'
 })
 
-type AppProps = {
-  defaultLocale: string
-}
-
-const App = defineComponent<AppProps>({
+const App = defineComponent({
   displayName: 'App',
 
   properties: {

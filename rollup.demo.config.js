@@ -19,7 +19,7 @@ export default {
     }
   },
 
-  external: ['react', 'react-dom', 'dyo', 'js-spec'],
+  external: ['react', 'react-dom', 'js-spec'],
   
   plugins: [
     resolve(),

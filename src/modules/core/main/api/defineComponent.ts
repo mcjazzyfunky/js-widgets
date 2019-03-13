@@ -3,11 +3,16 @@ import Methods from './types/Methods'
 import PropertiesConfig from './types/PropertiesConfig'
 import ComponentConfig from './types/ComponentConfig'
 import ComponentFactory from './types/ComponentFactory'
+import AltComponentConfig from './types/AltComponentConfig'
+import AltComponentFactory from './types/AltComponentFactory'
 import createElement from './createElement'
-import { Spec, SpecValidator } from 'js-spec'
+import { Spec } from 'js-spec'
 
 function defineComponent<P extends Props = {}, M extends Methods = {}>(
   config: ComponentConfig<P>): ComponentFactory<P, M>
+
+function defineComponent< P extends Props = {}, M extends Methods = {} >(
+  config: AltComponentConfig<P, M>): AltComponentFactory<P, M>
 
 function defineComponent(config: any): any {
   if (process.env.NODE_ENV === 'development' as any) {
@@ -30,10 +35,6 @@ function defineComponent(config: any): any {
   Object.defineProperty(ret, 'js-widgets:kind', {
     value: 'componentFactory'
   })
-  
-  Object.defineProperty(ret, 'js-widgets:id', {
-    value: nextId++
-  })
 
   Object.defineProperty(ret, 'meta', {
     value: convertConfigToMeta(config)
@@ -46,19 +47,10 @@ export default defineComponent
 
 // --- locals ---------------------------------------------------
 
-let nextId = 1
-
 const
   REGEX_DISPLAY_NAME = /^([a-z]+:)*[A-Z][a-zA-Z0-9.]*$/,
-  REGEX_PROP_NAME = /^[a-z][a-zA-Z0-9]*$/
+  REGEX_PROP_NAME = /^[a-z][a-zA-Z0-9]*$/,
 
-let
-  specOfPropertiesConfig: SpecValidator,
-  specOfDefaultProps: SpecValidator,
-  specOfComponentConfig: SpecValidator,
-  validateComponentConfig: (config: any) => Error  | null
-
-if (process.env.NODE_ENV === 'development' as any) {
   specOfPropertiesConfig =
     Spec.and(
       Spec.object,
@@ -90,13 +82,13 @@ if (process.env.NODE_ENV === 'development' as any) {
             }
 
             return errorMsg ? new Error(errorMsg) : null
-          })))
+          }))),
 
   specOfDefaultProps =
     Spec.and(
       Spec.object,
       Spec.hasSomeKeys,
-      Spec.keysOf(Spec.match(REGEX_PROP_NAME)))
+      Spec.keysOf(Spec.match(REGEX_PROP_NAME))),
 
   specOfComponentConfig = 
     Spec.strictShape({
@@ -106,28 +98,61 @@ if (process.env.NODE_ENV === 'development' as any) {
       variableProps: Spec.optional(Spec.boolean),
       validate: Spec.optional(Spec.function),
       render: Spec.function
-    })
+    }),
 
-  validateComponentConfig = (config: any): null | Error => {
-    let ret = null
-    const error = specOfComponentConfig.validate(config)
+  specOfAltComponentConfig = 
+    Spec.strictShape({
+      displayName: Spec.match(REGEX_DISPLAY_NAME),
+      properties: Spec.optional(specOfPropertiesConfig),
+      defaultProps: Spec.optional(specOfDefaultProps),
+      variableProps: Spec.optional(Spec.boolean),
+      validate: Spec.optional(Spec.function),
 
-    if (error) {
-      let errorMsg = 'Invalid configuration for component'
+      methods:
+        Spec.optional(
+          Spec.and(
+            Spec.arrayOf(Spec.string),
+            Spec.unique())),
 
-      if (config && typeof config.displayName === 'string'
-        && config.displayName.match(REGEX_DISPLAY_NAME)) {
+      init: Spec.function
+    }),
 
-        errorMsg += ` "${config.displayName}"`
-      }
+  specOfCombinedComponentConfig =
+    Spec.and(
+      Spec.object,
+      Spec.or(
+        {
+          when: Spec.prop('render', Spec.function),
+          then: specOfComponentConfig 
+        },
+        {
+          when: Spec.prop('init', Spec.function),
+          then: specOfAltComponentConfig
+        }
+      ),
+    (it => it.properties && it.defaultProps
+      ? new Error('Not allowed to configure both parameters "properties" and "defaultProps" at once')
+      : null))
 
-      errorMsg += ` => ${error.message}`
+function validateComponentConfig(config: any): null | Error {
+  let ret = null
+  const error = specOfCombinedComponentConfig.validate(config)
 
-      ret = new Error(errorMsg)
+  if (error) {
+    let errorMsg = 'Invalid configuration for component'
+
+    if (config && typeof config.displayName === 'string'
+      && config.displayName.match(REGEX_DISPLAY_NAME)) {
+
+      errorMsg += ` "${config.displayName}"`
     }
 
-    return ret
+    errorMsg += ` => ${error.message}`
+
+    ret = new Error(errorMsg)
   }
+
+  return ret
 }
 
 function convertConfigToMeta(config: any): any {

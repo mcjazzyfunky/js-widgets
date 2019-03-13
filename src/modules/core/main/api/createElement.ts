@@ -1,12 +1,13 @@
 import ComponentFactory from './types/ComponentFactory'
-import Props from './types/Props'
+import AltComponentFactory from './types/ComponentFactory'
 import VirtualElement from './types/VirtualElement'
+import Props from './types/Props'
 import PropertiesConfig from './types/PropertiesConfig'
 import PropertyConfig from './types/PropertyConfig'
 import Key from './types/Key'
 import Ref from './types/Ref'
 
-function createElement(type: string | ComponentFactory, props?: Props, ...children: any[]): VirtualElement
+function createElement(type: string | ComponentFactory | AltComponentFactory, props?: Props, ...children: any[]): VirtualElement
 function createElement(/* arguments */): VirtualElement {
   const
     argCount = arguments.length,
@@ -15,33 +16,21 @@ function createElement(/* arguments */): VirtualElement {
 
     skippedProps = argCount > 1 && secondArg !== undefined && secondArg !== null
         && (typeof secondArg !== 'object' || secondArg instanceof VirtualElementClass
-          || typeof secondArg[Symbol.iterator] === 'function' || Array.isArray(secondArg)),
+          || typeof secondArg[Symbol.iterator] === 'function'),
 
     originalProps = skippedProps ? null : (secondArg || null),
-    hasKeyOrRef = originalProps && (originalProps.hasOwnProperty('key') || originalProps.hasOwnProperty('ref')),
     hasChildren = argCount > 2 || argCount === 2 && skippedProps,
-    needsToCopyProps = hasChildren || hasKeyOrRef
+    needsToCopyProps = hasChildren || (originalProps && (originalProps.key !== undefined || originalProps.ref !== undefined))
+
 
   let
-    props: any = null,
+    props: Props = null,
     children: any[] = null
 
   if (needsToCopyProps) {
-    props = {}
-
-    for (const key in originalProps) {
-      if (originalProps.hasOwnProperty(key) && key !== 'key' && key !== 'ref') {
-        if (key === 'children') {
-          throw new Error('[createElement] Props must not have key "children" - pass children as arguments instead')
-        }
-
-        props[key] = originalProps[key]
-      }
+    if (!props) {
+      props = {}
     }
-  } else if (!originalProps && hasChildren) {
-    props = {}
-  } else {
-    props = originalProps
   }
 
   if (hasChildren) {
@@ -56,64 +45,72 @@ function createElement(/* arguments */): VirtualElement {
         children.push(child)
       }
     }
-
-    props.children = children
   }
 
-  if (type && type.meta) {
-    const id = type['js-widgets:id']
-      
-    let defaultProps = defaultPropsById[id]
+  if (argCount > 1 && !skippedProps) {
+    if (!hasChildren) {
+      props = secondArg
+    } else if (!secondArg) {
+      props = { children }
+    } else {
+      props = {}
 
-    if (defaultProps === undefined) {
-      if (type.meta.defaultProps) {
-        defaultProps = []
+      const keys = Object.keys(secondArg)
 
-        for (const key in type.meta.defaultProps) {
-          if (type.meta.defaultProps.hasOwnProperty(key)) {
-            defaultProps.push([key, () => type.meta.defaultProps[key]]) // TODO
-          }
-        }
-      } else if (type.meta.properties) {
-        for (const key in type.meta.properties) {
-          if (type.meta.properties.hasOwnProperty(key) && type.meta.properties[key].hasOwnProperty('defaultValue')) {
-            if (!defaultProps) {
-              defaultProps = []
-            }
-
-            defaultProps.push([key, () => type.meta.properties[key].defaultValue]) // TODO
-          }
-
-          defaultProps = defaultProps || null
-        }
-      } else {
-        defaultProps = null
+      for (let i = 0; i < keys.length; ++i) {
+        const key = keys[i]
+        
+        props[key] = secondArg[key] 
       }
-    
-      defaultPropsById[id] = defaultProps
+
+      props.children = children
     }
-    
-    if (defaultProps) {
-       for (let i = 0; i < defaultProps.length; ++i) {
-         const [key, getter] = defaultProps[i]
+  } else if (hasChildren) {
+    props = { children }
+  }
 
-         if (!props || !props.hasOwnProperty(key)) {
-           if (!props) {
-             props = {}
-           }
+  // TODO - optimize!
+  if (type && type.meta) {
+    if (type.meta.defaultProps) {
+      if (!props) {
+        props = Object.assign({}, type.meta.defaultProps)
+      } else if (props === originalProps) {
+        props = Object.assign({}, type.meta.defaultProps, props)
+      } else {
+        props = Object.assign({}, type.meta.defaultProps, props)
+      }
+    } else if (type.meta.properties) {
+      const keys = Object.keys(type.meta.properties)
 
-           props[key] = getter()
-         }
-       }
-    }
+      for (let i = 0; i < keys.length; ++i) {
+        const
+          key = keys[i]
 
-    if (process.env.NODE_ENV === 'development' as any && props && type.meta.properties) {
-      const error = validateProperties(
-        props, type.meta.properties, type.meta.validate, type.meta.variableProps, type.meta.displayName,
-        type['js-widgets:kind'] === 'contextProvider')
+        if (!props || !props.hasOwnProperty(key)) {
+          const propConfig = type.meta.properties[key]
 
-      if (error) {
-        throw error
+          if (propConfig && propConfig.hasOwnProperty('defaultValue')) {
+            const defaultValue = propConfig.defaultValue
+
+            if (!props) {
+              props = { [key]: defaultValue }
+            } else if (props === originalProps) {
+              props = Object.assign({ [key]: defaultValue }, props)
+            } else {
+              props[key] = defaultValue
+            }
+          }
+        }
+      }
+
+      if (process.env.NODE_ENV === 'development' as any) {
+        const error = validateProperties(
+          props, type.meta.properties, type.meta.validate, type.meta.variableProps, type.meta.displayName,
+          type['js-widgets:kind'] === 'constexProvider')
+
+        if (error) {
+          throw error
+        }
       }
     }
   }
@@ -122,11 +119,16 @@ function createElement(/* arguments */): VirtualElement {
     key = null,
     ref = null
 
-  if (hasKeyOrRef) {
-    key = originalProps.key
-    ref = originalProps.ref
-  }
+  // TODO - fix!!!!
+  if (originalProps && (originalProps.key !== undefined || originalProps.ref !== undefined)) {
+    props = Object.assign({}, props)
 
+    delete props.key
+    delete props.ref
+
+    key = originalProps.key === undefined ? null : originalProps.key
+    ref = originalProps.ref === undefined ? null : originalProps.ref
+  }
 
   return new VirtualElementClass(type, props, key, ref)
 }
@@ -135,23 +137,20 @@ export default createElement
 
 // --- locals -------------------------------------------------------
 
-
 const
-  defaultPropsById: any = {},
-
   SYMBOL_ITERATOR =
     typeof Symbol === 'function' && Symbol.iterator
       ? Symbol.iterator
       : '@@iterator'
 
 const VirtualElementClass = class VirtualElement {
-  type: string | ComponentFactory
+  type: string | ComponentFactory | AltComponentFactory
   props: Props | null
   key: Key
   ref: Ref 
 
   constructor(
-    type: string | ComponentFactory,
+    type: string | ComponentFactory | AltComponentFactory,
     props: Props | null,
     key: Key,
     ref: Ref

@@ -1,12 +1,5 @@
 # jsWidgets
 
-Research project to evaluate and implement alternative UI library APIs
-
-[![Licence](https://img.shields.io/badge/licence-LGPLv3-blue.svg?style=flat)](https://github.com/js-works/js-spec/blob/master/LICENSE)
-[![npm version](https://img.shields.io/npm/v/js-widgets.svg?style=flat)](https://www.npmjs.com/package/js-widgets)
-[![Build status](https://travis-ci.com/js-works/js-widgets.svg)](https://travis-ci.org/js-works/js-widgets)
-[![Coverage status](https://coveralls.io/repos/github/js-works/js-widgets/badge.svg?branch=master)](https://coveralls.io/github/js-works/js-widgets?branch=master)
-
 **Remark: This README document is just an early draft - totally incomplete yet**
 
 ### Installation
@@ -17,19 +10,13 @@ git clone https://github.com/js-works/js-widgets.git
 cd js-widgets
 npm install
 
-# To run tests
-npm run test
-
-# To run tests with watching
-npm run test-watch
-
 # To start the demos
 npm run demo
 
 # To build the project
 npm run build
 
-# To build and prepare the project for publishing
+# To prepare for publishing
 npm run dist
 ```
 
@@ -54,16 +41,17 @@ things and to evaluate different approaches and alternative APIs.
 First, here's a small demo application to get a glimpse of how components
 are currently implemented with jsWidgets:
 
+
 #### Hello world component (pure ECMAScript)
 
 ```jsx
-import { defineComponent } from 'js-widgets/core'
+import { defineComponent } from 'js-widgets'
 import { mount } from 'js-widgets/dom'
 
 // just if you do not want to use JSX, of course JSX is also fully supported
 import { div } from 'js-widgets/html'
 
-const HelloWorld = defineComponent({
+export default defineComponent({
   displayName: 'HelloWorld',
 
   defaultProps: {
@@ -74,21 +62,19 @@ const HelloWorld = defineComponent({
     return div(`Hello, ${props.name}!`)
   }
 })
-
-mount(HelloWorld(), 'main-content')
 ```
 
 #### Simple counter (using a hook API and JSX)
 
 ```jsx
-import { createElement, defineComponent } from 'js-widgets/core'
+import { createElement, defineComponent } from 'js-widgets'
 import { useState } from 'js-widgets/hooks'
 import { mount } from 'js-widgets/dom'
 
 // A 3rd-party general purpose validation library.
 import { Spec } from 'js-spec'; 
 
-const Counter = defineComponent({
+export default defineComponent({
   displayName: 'Counter',
 
   // if you do not want property validation, the following "properties" 
@@ -115,14 +101,51 @@ const Counter = defineComponent({
       return (
         <div>
           <label>{props.label}</label>
-          <button onClick={onIncrement}>{count}</button>
+          <button onClock={onIncrement}>{count}</button>
         </div>
       )
     }
   }
 });
 
-mount(<Counter/>, 'main-content')
+mount(Demo(), 'main-content');
+```
+#### Alternative API for stateful/effectful components
+
+React's hook API was really a ground-breaking improvement in UI development.
+Nevertheless it also was a bit controversial as it seems a kind of unusual and
+magical. As jsWidgets is a R&D project it also shows how an alternative to
+such a hook API could look like. This alternative is based on a factory pattern
+and seperates the process into a initialization phase and a render phase.
+It is100% typesafe and 0% magical. However this alternative is a more verbose
+then the hook API and has the the main issue that values often have to be
+wrapped into getter functions or unwrapped from those.<br>
+FYI: The author of jsWidgets prefers the hook API.<br>
+Anyway, here's what the alternative component API looks like:
+
+```jsx
+const Counter = defineComponent({
+  displayName: 'Counter',
+  
+  defaultProps: {
+    label: 'Counter'
+  },
+  
+  init(c) {
+    const
+      [getCount, setCount] = useState(c, 0),
+      onIncrement = () => setCount(getCount() + 1)
+    
+    return props => {
+      return (
+        <div>
+          <label>{props.label + ': '}</label>
+          <button onClick={onIncrement}>{getCount()}</button>
+        </div>
+      )
+    }
+  }
+})
 ```
 
 ### Motivation
@@ -247,11 +270,20 @@ What parts of React's API may allow some different still reasonable view?
   libraries - while it recommended to use the jsWidgets independent validation
   library ["js-spec"](https://github.com/js-works/js-spec).
 
-* In jsWidgets component types are represented by a corresponding factory
-  function (that does create a virtual element by using the `createElement` function).
-  That's simplifies the implemention of user interfaces in pure ECMAScript
-  if desired - nevertheless it is recommended to use JSX as this is the
-  de-facto standard in React-like UI development.
+* The React API lacks a bit of information hiding:
+  As for complex components you always have the underlying component class
+  or in case of references even the component instance directly,
+  you always have access to a lot of data and methods you do not really
+  need to have access to.
+  
+  In jsWidgets that's different: As component types are only represented by
+  a corresponding factory method (that does only create a virtual element by
+  using the `createElement` function) you do NOT have access to the
+  underlying component implementation. And also you will never have access to
+  the component instance: Refs will not pass the component instance itself as
+  it is done with React, but instead will only pass a proxy for the component
+  instance which only expose those component functionalities that have
+  explicitly defined to be exposed.
 
 ### Current API (not complete yet)
 
@@ -284,8 +316,19 @@ Provides hooks to implement Component side-effects in a React-like fashion
 * `useEffect(action, dependencies?)`
 * `useContext(ctx)`
 * `useRef(initialValue)`
-* `useCallback(callback)`
-* `usePrevious(value)`
+* `usCallback(callback)`
+* `usePrevious(subject)`
+* `useForceUpdate()`
+
+#### Module "_use_" (js-widgets/use)
+
+Provides hooks to implement Component side-effects in an old-school non-magic fashion
+(similar functionality like the same-named hooks in "js-widgets/hooks")
+
+* `useState(initialValueProvider)`
+* `useEffect(action, dependencies?)`
+* `useContext(ctx)`
+* `usePrevious(provider)`
 * `useForceUpdate()`
 
 #### Modules "_util_" (js-widgets/util)
