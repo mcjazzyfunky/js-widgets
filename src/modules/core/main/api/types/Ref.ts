@@ -1,3 +1,3 @@
-type Ref = (ref: any) => void | { current: any }
+type Ref<T> = (ref: T) => void | { current: T }
 
 export default Ref

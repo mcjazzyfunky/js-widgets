@@ -3,18 +3,12 @@ import Methods from './types/Methods'
 import PropertiesConfig from './types/PropertiesConfig'
 import ComponentConfig from './types/ComponentConfig'
 import ComponentFactory from './types/ComponentFactory'
-import AltComponentConfig from './types/AltComponentConfig'
-import AltComponentFactory from './types/AltComponentFactory'
 import createElement from './createElement'
 import { Spec } from 'js-spec'
 
 function defineComponent<P extends Props = {}, M extends Methods = {}>(
-  config: ComponentConfig<P>): ComponentFactory<P, M>
+  config: ComponentConfig<P>): ComponentFactory<P, M> {
 
-function defineComponent< P extends Props = {}, M extends Methods = {} >(
-  config: AltComponentConfig<P, M>): AltComponentFactory<P, M>
-
-function defineComponent(config: any): any {
   if (process.env.NODE_ENV === 'development' as any) {
     const error = validateComponentConfig(config)
 
@@ -26,9 +20,14 @@ function defineComponent(config: any): any {
 
   let createComponentElement: Function = null
 
-  const ret = function (/* arguments */) {
-    return createComponentElement.apply(null, arguments)
-  }
+  const ret: ComponentFactory<P, M> =
+    Object.assign(
+      function (/* arguments */) {
+        return createComponentElement.apply(null, arguments)
+      },
+      {
+        meta: null // TODO!!!!
+      })
   
   createComponentElement = createElement.bind(null, ret)
 

@@ -1,24 +1,38 @@
 import Props from './Props'
+import Methods from './Methods'
 import VirtualNode from './VirtualNode'
 import PropertiesConfig from './PropertiesConfig'
+import Component from './Component'
 
-type WithProperties<P extends Props = {}> = {
+type Stateless<P extends Props = {}> = {
   displayName: string,
   properties?: PropertiesConfig<P>,
-  defaultProps?: never,
-  validate?: (props: P) => null | Error | true | false,
-  render: (props: P, ref?: any) => VirtualNode
+  defaultProps?: never, 
+  render(props: P, ref?: any): VirtualNode
+}
+
+type Stateful<P extends Props = {}, M extends Methods = {}> = {
+  displayName: string,
+  properties?: PropertiesConfig<P>,
+  defaultProps?: never, 
+  methods?: (keyof M)[],
+  init: ((c: Component, ref?: any) => (props: P) => VirtualNode) | (() => any) // TODO
+}
+
+type WithProperties<P extends Props = {}> = {
+  properties?: PropertiesConfig<P>,
+  defaultProps?: never, 
 }
 
 type WithDefaultProps<P extends Props = {}> = {
-  displayName: string,
-  properties?: never,
   defaultProps?: Partial<P>,
-  validate?: (props: P) => null | Error | true | false,
-  render: (props: P, ref?: any) => VirtualNode
+  properties?: never,
 }
 
-type ComponentConfig<P extends Props = {}>
-  = WithProperties<P> | WithDefaultProps<P> 
+type ComponentConfig<P extends Props = {}, M extends Methods = {}> =
+  (Stateless<P> & WithProperties<P>)
+    | (Stateless<P> & WithDefaultProps<P>)
+    | (Stateful<P, M> & WithProperties<P>)
+    | (Stateful<P, M> & WithDefaultProps<P>)
 
 export default ComponentConfig

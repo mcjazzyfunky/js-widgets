@@ -5,14 +5,9 @@ import Methods from './Methods'
 type Listener = () => void
 type Unsubscribe = () => void
 
-export default interface Component<P extends Props = {}, M extends Methods = {}> {
-  props: P,
-  // Would it make sense to add a "prevProps" property
-  // as sugar for convenience reasons???
+export default interface Component {
   handleState<T>(initialValue: T): [() => T, (newValue: T) => void],
-  consumeContext<T = any>(ctx: Context<T>): () => T,
-  forceUpdate(): void,
-  setMethods(methods: M): void
+  consumeContext<T>(ctx: Context<T>): () => T,
   onDidMount(listener: Listener): Unsubscribe,
   onDidUpdate(listener: Listener): Unsubscribe,
   onWillUnmount(listener: Listener): Unsubscribe,
