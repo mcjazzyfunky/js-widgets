@@ -97,23 +97,6 @@ What are the main difference to React's API?
     { it => <SomeComponent/> }
   </SomeCtx.Consumer>
   ```
-
-* In React a virtual element is represented by an object of shape
-  `{ $$typeof, type, props, key, ref, ... }`.
-  To access `type` or `props` of a virtual elements you have to use
-  `elem.type` and `elem.props`.<br>
-  In jsWidgets on the other hand a virtual element is considered
-  an opaque data structure. To access `type` and `props` of a virtual
-  element you have to use `typeOf(elem)` and `propsOf(elem)`.
-
-* In React the property `children` of `props` is a opaque datastructure.
-  To handle that React provides a singleton Object called `Children`
-  that provides some helper functions to work with `children`
-  (`Children.map`, `Children.forEach`, `Children.count` etc.).<br>
-  In jsWidgets `children` are also represented as a opaque data
-  structure. Similar to React, jsWidgets also has several helper functions
-  to work with `children` (`mapChildren`, `forEachChild`, `childCount` etc.)
-
 * Reacts provides the possibility for a sophisticated validation of the
   components' properties, which is great.
   Normally for that purpose a add-on library called "props-types".
