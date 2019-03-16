@@ -6,15 +6,11 @@ import Component from './Component'
 
 type Stateless<P extends Props = {}> = {
   displayName: string,
-  properties?: PropertiesConfig<P>,
-  defaultProps?: never, 
   render(props: P, ref?: any): VirtualNode
 }
 
 type Stateful<P extends Props = {}, M extends Methods = {}> = {
   displayName: string,
-  properties?: PropertiesConfig<P>,
-  defaultProps?: never, 
   methods?: (keyof M)[],
   init: ((c: Component, ref?: any) => (props: P) => VirtualNode) | (() => any) // TODO
 }

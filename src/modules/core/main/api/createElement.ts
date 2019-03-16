@@ -147,13 +147,13 @@ const VirtualElementClass = class VirtualElement {
   type: string | ComponentFactory | AltComponentFactory
   props: Props | null
   key: Key
-  ref: Ref 
+  ref: Ref<any> 
 
   constructor(
     type: string | ComponentFactory | AltComponentFactory,
     props: Props | null,
     key: Key,
-    ref: Ref
+    ref: Ref<any>
   ) {
     this.type = type
     this.props = props

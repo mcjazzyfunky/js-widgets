@@ -17,14 +17,16 @@ const Counter = defineComponent<CounterProps>({
 
   init(c) {
     const
-      [getCount, setCount] = useState(c, c.props.initialValue),
-      onIncrement = () => setCount(getCount() + 1)
+      [getCount, setCount] = useState<number>(c),
+      onIncrement = () => setCount(it => it + 1)
 
     return props => {
+      const count = getCount(props.initialValue)
+
       return (
         div(null,
           label(null, props.label + ': '),
-          button({ onClick: onIncrement }, getCount()))
+          button({ onClick: onIncrement }, count))
       )
     }
   }

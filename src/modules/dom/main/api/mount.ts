@@ -237,9 +237,9 @@ function convertAltComponent(it: any): Function {
                 return state[index]
               }
 
-              function set(value: any) {
+              function set(updater: any) {
                 setState((state: any[]) => {
-                  state[index] = value
+                  state[index] = typeof updater === 'function' ? updater(state[index]) : updater 
                   return state
                 })
               }
