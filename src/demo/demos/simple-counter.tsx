@@ -1,5 +1,5 @@
 import { defineComponent } from '../../modules/core/main/index'
-import { useState } from '../../modules/use/main/index'
+import { useEffect, useState } from '../../modules/use/main/index'
 import { button, div, label } from '../../modules/html/main/index'
 
 type CounterProps = {
@@ -18,10 +18,16 @@ const Counter = defineComponent<CounterProps>({
   init(c) {
     const
       [getCount, setCount] = useState<number>(c),
-      onIncrement = () => setCount(it => it + 1)
+      onIncrement = () => setCount(it => it + 1),
+
+      logInfo = useEffect(c, (count: number) => {
+        console.log(count)
+      })
 
     return props => {
       const count = getCount(props.initialValue)
+
+      logInfo(count)
 
       return (
         div(null,

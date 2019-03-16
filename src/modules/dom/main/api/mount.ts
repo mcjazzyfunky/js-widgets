@@ -164,9 +164,9 @@ function adjustEntity(it: any): void {
   switch (kind) {
     case 'componentFactory':
       if (it.meta.render) {
-         convertComponent(it)
+         convertStatelessComponent(it)
       } else {
-         convertAltComponent(it)
+         convertStatefulComponent(it)
       }
 
       break
@@ -181,7 +181,7 @@ function adjustEntity(it: any): void {
   }
 }
 
-function convertComponent(it: any): Function {
+function convertStatelessComponent(it: any): Function {
   let ret: any = (props: any, ref: any = null) => convertNode(it.meta.render(props, ref))
 
   ret.displayName = it.meta.displayName
@@ -198,12 +198,11 @@ function convertComponent(it: any): Function {
 }
 
 type LifecycleHandlers = {
-  didMount: () => void,
-  didUpdate: () => void,
-  willUnmount: () => void
+  onUpdate: () => void,
+  onDispose: () => void
 }
 
-function convertAltComponent(it: any): Function {
+function convertStatefulComponent(it: any): Function {
   const ret: any = (props: any) => {
     const
       currentProps = useRef(props),
@@ -246,7 +245,6 @@ function convertAltComponent(it: any): Function {
 
               return [get, set]
             },
-            () => setInternals(internals),
             consumeContext,
             (handlers: LifecycleHandlers) => {
               Object.assign(lifecycleHandlers, handlers)
@@ -261,16 +259,11 @@ function convertAltComponent(it: any): Function {
     currentProps.current = props
 
     useEffect(() => {
-      if (!internals.isInitialized) {
-        internals.lifecycleHandlers.didMount()
-        internals.isInitialized = true
-      } else {
-        internals.lifecycleHandlers.didUpdate()
-      }
+      internals.lifecycleHandlers.onUpdate()
     })
 
     useEffect(() => {
-      return () => internals.lifecycleHandlers.willUnmount()
+      return () => internals.lifecycleHandlers.onDispose()
     }, [])
   
     for (let i = 0; i < contextValues.current.length; ++i) {
@@ -316,20 +309,16 @@ class Component {
   constructor(
     getProps: () => any,
     handleState: (initialValue: any) => [() => any, (newValue: any) => void],
-    forceUpdate: () => void,
-    
     consumeContext: (ctx: Context<any>) => () => any,
 
     setLifecycleHandlers: (handlers: {
-      didMount: () => void,
-      didUpdate: () => void,
-      willUnmount: () => void
+      onUpdate: () => void,
+      onDispose: () => void
     }) => void
   ) {
       const listeners = {
-        didMount: [] as (() => void)[],
-        didUpdate: [] as (() => void)[],
-        willUnmount: [] as (() => void)[],
+        onUpdate: [] as (() => void)[],
+        onDispose: [] as (() => void)[],
       }
 
       Object.defineProperty(this, 'props', {
@@ -338,7 +327,6 @@ class Component {
       })
 
       this.handleState = handleState,
-      this.forceUpdate = () => forceUpdate()
       this.consumeContext = consumeContext
 
       for (const key of Object.keys(listeners)) {
@@ -352,16 +340,12 @@ class Component {
       }
 
       setLifecycleHandlers({
-        didMount() {
-          listeners.didMount.forEach(listener => listener())
+        onUpdate() {
+          listeners.onUpdate.forEach(listener => listener())
         },
 
-        didUpdate() {
-          listeners.didUpdate.forEach(listener => listener())
-        },
-
-        willUnmount() {
-          listeners.didUpdate.forEach(listener => listener())
+        onDispose() {
+          listeners.onUpdate.forEach(listener => listener())
         }
       })
 
@@ -380,18 +364,11 @@ class Component {
     // will be overridden by constructor
   }
 
-  forceUpdate() {
+  onUpdate() {
     // will be overridden by constructor
   }
 
-  onDidMount() {
-    // will be overridden by constructor
-  }
-
-  onDidUpdate() {
-  }
-
-  onWillUnmount() {
+  onDispose() {
     // will be overridden by constructor
   }
 }

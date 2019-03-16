@@ -5,11 +5,11 @@ import Methods from './Methods'
 type Listener = () => void
 type Unsubscribe = () => void
 
-export default interface Component {
+export default interface Component<P extends Props = {}> {
+  getProps(): P,
   handleState<T>(initialValue: T): [() => T, (newValue: T) => void],
   consumeContext<T>(ctx: Context<T>): () => T,
-  onDidMount(listener: Listener): Unsubscribe,
-  onDidUpdate(listener: Listener): Unsubscribe,
-  onWillUnmount(listener: Listener): Unsubscribe,
+  onUpdate(listener: Listener): Unsubscribe,
+  onDispose(listener: Listener): Unsubscribe,
   // plus some more methods (mostly for lifecycle)
 }
