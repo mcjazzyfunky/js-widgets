@@ -27,7 +27,9 @@ What are the main difference to React's API?
 
   Be aware that you should ALWAYS use JSX with TypeScript
   the non-JSX usage is only meant for those who want to
-  UIs in pure ECMAScript.
+  UIs in pure ECMAScript. Also be aware that it's possible that
+  future transpilers wil perform some great optimizations when
+  transforming JSX expressions - so JSX is really a great thing.
 
   In React's API, the main representation of component types are
   render functions (for function components) or component classes.
