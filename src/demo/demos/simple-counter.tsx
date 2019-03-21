@@ -1,3 +1,41 @@
+import { createElement, defineComponent } from '../../modules/core/main/index'
+import { withState } from '../../modules/handlers/main/index'
+
+type CounterProps = {
+  label?: string,
+  initialValue?: number
+}
+
+const Counter = defineComponent<CounterProps>({
+  displayName: 'Counter',
+
+  defaultProps: {
+    label: 'Counter',
+    initialValue: 0
+  },
+
+  init(c) {
+    const
+      [useCount, setCount] = withState(c, (n: number) => n),
+      onIncrement = () => setCount(count => count + 1)
+
+    return props => {
+      const count = useCount(props.initialValue)
+
+      return (
+        <div>
+          <label>{props.label + ': '}</label>
+          <button onClick={onIncrement}>
+            {count}
+          </button>
+        </div>
+      )
+    }
+  }
+})
+
+export default Counter()
+/*
 import { defineComponent } from '../../modules/core/main/index'
 import { useEffect, useState } from '../../modules/use/main/index'
 import { button, div, label } from '../../modules/html/main/index'
@@ -39,3 +77,4 @@ const Counter = defineComponent<CounterProps>({
 })
 
 export default Counter()
+*/
