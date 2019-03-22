@@ -1,5 +1,5 @@
-import { createElement, defineComponent } from '../../modules/core/main/index'
-import { withEffect, withState } from '../../modules/handlers/main/index' 
+import { createElement, defineComponent } from '../../../modules/core/main/index'
+import { withEffect, withState } from '../../../modules/handlers/main/index' 
 
 const StopWatch = defineComponent({
   displayName: 'StopWatch',

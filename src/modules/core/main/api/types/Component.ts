@@ -8,6 +8,7 @@ type Updater<T> = T | ((oldValue: T) => T)
 
 export default interface Component<P extends Props = {}> {
   getProps(): P,
+  isMounted(): boolean,
   handleState<T>(initialValue: T): [() => T, (updater: Updater<T>) => void],
   consumeContext<T>(ctx: Context<T>): () => T,
   forceUpdate(): void,

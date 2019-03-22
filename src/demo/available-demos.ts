@@ -1,9 +1,17 @@
 import { VirtualElement } from '../modules/core/main/index'
-import simpleCounter from './demos/simple-counter'
+
+// hooks
+import simpleCounter from './demos/hooks/simple-counter'
+
+
+// handlers
+import simpleCounter2 from './demos/handlers/simple-counter'
 //import stopWatch from './demos/stop-watch'
 
 const demos: [string, VirtualElement][] = [
-  ['Simple counter', simpleCounter],
+  ['Simple counter (Hooks)', simpleCounter],
+
+  ['Simple counter (handlers)', simpleCounter2],
 //  ['Stop watch', stopWatch],
 ]
 

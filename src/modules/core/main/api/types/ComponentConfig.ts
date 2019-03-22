@@ -12,7 +12,7 @@ type Stateless<P extends Props = {}> = {
 type Stateful<P extends Props = {}, M extends Methods = {}> = {
   displayName: string,
   methods?: (keyof M)[],
-  init: ((c: Component, ref?: any) => (props: P) => VirtualNode) | (() => any) // TODO
+  init: ((c: Component<P>, ref?: any) => (props: P) => VirtualNode) | (() => any) // TODO
 }
 
 type WithProperties<P extends Props = {}> = {

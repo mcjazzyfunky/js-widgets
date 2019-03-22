@@ -1,5 +1,5 @@
-import { createElement, defineComponent } from '../../modules/core/main/index'
-import { withState } from '../../modules/handlers/main/index'
+import { createElement, defineComponent } from '../../../modules/core/main/index'
+import { withState } from '../../../modules/handlers/main/index'
 
 type CounterProps = {
   label?: string,

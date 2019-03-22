@@ -1,22 +1,21 @@
 import { Component } from '../../../core/main/index'
 
-export default function useEffect<A extends any[]>(
+export default function useEffect(
   c: Component,
-  action: (...args: A) => void
-): (...args: A) => void {
-  const
-    argsList: A[] = [],
-    cleanups: (() => void)[] = []
+  action: () => void,
+  getDependencies?: () => any[] | null
+): void {
+  let oldDeps: any[] = null
 
-  c.onUpdate(() => {console.log('onUpdate')
-    argsList.forEach(args => {
-      action(...args)
-    })
+  c.onUpdate(() => {
+    const newDeps = getDependencies ? getDependencies() : null
+
+    if (oldDeps === null ||!isEqual(oldDeps, newDeps)) {
+      action()
+    }
+
+    oldDeps = newDeps
   })
-
-  return (...args: A) => {
-    argsList.push(args)
-  }
 }
 
 // --- locals -------------------------------------------------------

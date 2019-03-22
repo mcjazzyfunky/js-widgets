@@ -73,7 +73,6 @@ function adjustEntity(it: any): void {
   }
 }
 
-
 function convertNode(node: any) {
   if (isIterableObject(node)) {
     return convertNodes(node)
@@ -206,17 +205,27 @@ function convertStatelessComponent(it: any): Function {
 function convertStatefulComponent(it: any): Function {
   let ret = function StatefulComponent(props: any) {
     const
+      currPropsRef = useRef(props),
+      isMountedRef = useRef(false),
       states: any[] = useRef([]).current,
       updateListeners: (() => void)[] = useRef([]).current,
       disposeListeners: (() => void)[] = useRef([]).current,
 
       component = useRef({
+        getProps() {
+          return currPropsRef.current
+        },
+
         handleState: (init: any) => {
           const idx = states.length
 
           states[idx] = [undefined, null, init]
 
           return [() => states[idx][0], (init: any) => states[idx][1](init)]
+        },
+
+        isMounted() {
+          return isMountedRef.current
         },
 
          onUpdate(listener: () => void): () => void {
@@ -243,14 +252,22 @@ function convertStatefulComponent(it: any): Function {
       }).current,
 
       renderRef = useRef(null)
-      
+
+    currPropsRef.current = props
+
     useEffect(() => {
-      updateListeners.forEach(
+      isMountedRef.current = true
+
+      const listeners = [...updateListeners]
+
+      listeners.forEach(
         listener => listener())
     })
 
     useEffect(() => {
-      return () => disposeListeners.forEach(
+      const listeners = [...disposeListeners]
+
+      return () => listeners.forEach(
         listener => listener()) 
     }, [])
 
