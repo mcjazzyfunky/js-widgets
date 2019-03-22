@@ -4,10 +4,11 @@ import Methods from './Methods'
 
 type Listener = () => void
 type Unsubscribe = () => void
+type Updater<T> = T | ((oldValue: T) => T)
 
 export default interface Component<P extends Props = {}> {
   getProps(): P,
-  handleState<T>(initialValue: T): [() => T, (newValue: T) => void],
+  handleState<T>(initialValue: T): [() => T, (updater: Updater<T>) => void],
   consumeContext<T>(ctx: Context<T>): () => T,
   onUpdate(listener: Listener): Unsubscribe,
   onDispose(listener: Listener): Unsubscribe,

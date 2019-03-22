@@ -9,22 +9,19 @@ type CounterProps = {
 const Counter = defineComponent<CounterProps>({
   displayName: 'Counter',
 
-  defaultProps: {
-    label: 'Counter',
-    initialValue: 0
-  },
-
   init(c) {
     const
-      [useCount, setCount] = withState(c, (n: number) => n),
+      //[useCount, setCount] = withState(c, (n: number) => n),
+      [getCount, setCount] = c.handleState(0),
       onIncrement = () => setCount(count => count + 1)
 
-    return props => {
-      const count = useCount(props.initialValue)
+    return ({ label = 'Counter', initialValue = 0 }) => {
+      //const count = useCount(initialValue)
+      const count = getCount()
 
       return (
         <div>
-          <label>{props.label + ': '}</label>
+          <label>{label + ': '}</label> 
           <button onClick={onIncrement}>
             {count}
           </button>

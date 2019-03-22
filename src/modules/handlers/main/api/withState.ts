@@ -5,35 +5,36 @@ export default function withState<T, A extends any[]>(c: Component, init: (...ar
   
   const
     [getState, setState] = c.handleState<T>(undefined),
+
     unsubscribe = c.onUpdate(() => {
       isInitialized = true
-      useTempState = false
-      console.log(111)
+      console.log('did render....')
       unsubscribe()
     })
   
   let isInitialized = false
-  let useTempState = true
-  let tempState: T = undefined
 
-  function updateState(updater: any) {
-    if (useTempState) {
-      tempState = updater === 'function' ? updater(tempState) : updater
-    } else {
-      useTempState = false
-      setState(updater)
-    }
+  function updateState(updater: (T | ((oldState: T) => T))) {
+    console.log(222, updater)
+    const updater2 = (it: any) => { console.log(3, it); return it + 1}
+    setState(((it: any) => it + 1) as any)
   }
 
   function useState(...args: A) {
+    let ret = undefined
+
     if (!isInitialized) {
-      //setState(init(...args))
-      tempState = init(...args)
+      isInitialized = true
+      ret = init(...args)
+      setState(ret)
+      console.log(3, isInitialized)
+    } else {
+      ret = getState()
+      console.log(4, ret)
     }
 
-    return useTempState ? tempState : getState()
+    return ret 
   }
-
 
   return [useState, updateState] as any
 }

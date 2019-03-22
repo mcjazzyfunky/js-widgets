@@ -1,21 +1,3 @@
-/*
-
-This file is a complete mess :( - sorry for that - will be fixed some day
-This file is a complete mess :( - sorry for that - will be fixed some day
-This file is a complete mess :( - sorry for that - will be fixed some day
-This file is a complete mess :( - sorry for that - will be fixed some day
-This file is a complete mess :( - sorry for that - will be fixed some day
-This file is a complete mess :( - sorry for that - will be fixed some day
-This file is a complete mess :( - sorry for that - will be fixed some day
-This file is a complete mess :( - sorry for that - will be fixed some day
-This file is a complete mess :( - sorry for that - will be fixed some day
-This file is a complete mess :( - sorry for that - will be fixed some day
-This file is a complete mess :( - sorry for that - will be fixed some day
-This file is a complete mess :( - sorry for that - will be fixed some day
-This file is a complete mess :( - sorry for that - will be fixed some day
-
-*/
-
 import { createElement, VirtualElement, Context, Fragment } from '../../../core/main/index'
 import React from 'react' 
 import ReactDOM from 'react-dom'
@@ -25,6 +7,24 @@ const { useState, useEffect, useRef, useContext } = React as any
 Object.defineProperty(Fragment, '__internal_type', {
   value: React.Fragment
 })
+
+const
+  VirtualElementClass = createElement('div').constructor,
+
+  SYMBOL_ITERATOR =
+    typeof Symbol === 'function' && Symbol.iterator
+      ? Symbol.iterator
+      : '@@iterator'
+
+function isElement(it: any) {
+  return it instanceof VirtualElementClass
+}
+
+function isIterableObject(it: any): boolean {
+  return typeof it === 'object' && (Array.isArray(it) || typeof it[SYMBOL_ITERATOR] === 'function')
+}
+
+
 
 export default function mount(element: VirtualElement, container: Element | string) { 
   if (!isElement(element)) {
@@ -50,23 +50,29 @@ export default function mount(element: VirtualElement, container: Element | stri
   ReactDOM.render(convertNode(element), target)
 }
 
-// --- locals -------------------------------------------------------
+function adjustEntity(it: any): void {
+  const kind: string = it['js-widgets:kind'] 
 
-const
-  VirtualElementClass = createElement('div').constructor,
+  switch (kind) {
+    case 'componentFactory':
+      if (it.meta.render) {
+         convertStatelessComponent(it)
+      } else {
+         convertStatefulComponent(it)
+      }
 
-  SYMBOL_ITERATOR =
-    typeof Symbol === 'function' && Symbol.iterator
-      ? Symbol.iterator
-      : '@@iterator'
+      break
 
-function isElement(it: any) {
-  return it instanceof VirtualElementClass
+    case 'contextConsumer':
+      convertContext(it.context)
+      break
+    
+    case 'contextProvider':
+      convertContext(it.context)
+      break
+  }
 }
 
-function isIterableObject(it: any): boolean {
-  return typeof it === 'object' && (Array.isArray(it) || typeof it[SYMBOL_ITERATOR] === 'function')
-}
 
 function convertNode(node: any) {
   if (isIterableObject(node)) {
@@ -158,130 +164,6 @@ function convertNodes(elements: any[]) {
   return ret
 }
 
-function adjustEntity(it: any): void {
-  const kind: string = it['js-widgets:kind'] 
-
-  switch (kind) {
-    case 'componentFactory':
-      if (it.meta.render) {
-         convertStatelessComponent(it)
-      } else {
-         convertStatefulComponent(it)
-      }
-
-      break
-
-    case 'contextConsumer':
-      convertContext(it.context)
-      break
-    
-    case 'contextProvider':
-      convertContext(it.context)
-      break
-  }
-}
-
-function convertStatelessComponent(it: any): Function {
-  let ret: any = (props: any, ref: any = null) => convertNode(it.meta.render(props, ref))
-
-  ret.displayName = it.meta.displayName
-
-  if (it.meta.render.length > 1) {
-    ret = React.forwardRef(ret)
-  }
-
-  Object.defineProperty(it, '__internal_type', {
-    value: ret
-  })
-
-  return ret
-}
-
-type LifecycleHandlers = {
-  onUpdate: () => void,
-  onDispose: () => void
-}
-
-function convertStatefulComponent(it: any): Function {
-  const ret: any = (props: any) => {
-    const
-      currentProps = useRef(props),
-      currentValues = useRef(),
-      contextValues = useRef([]),
-      [state, setState] = useState([]),
-      [internals, setInternals] = useState(() => {
-        const
-          lifecycleHandlers = {} as LifecycleHandlers,
-          
-          consumeContext = (ctx: Context<any>) => {
-            if (!(ctx.Provider as any).__internal_type) {
-              convertContext(ctx)
-            }
-
-            const index = contextValues.current.length
-
-            contextValues.current[index] = [ctx, undefined]
-
-            return () => contextValues.current[index][1]
-          },
-          
-          self = new Component(
-            () => currentProps.current,
-            (initialValue: any) => {
-              const index = state.length
-
-              state[index] = initialValue 
-
-              function get() {
-                return state[index]
-              }
-
-              function set(updater: any) {
-                setState((state: any[]) => {
-                  state[index] = typeof updater === 'function' ? updater(state[index]) : updater 
-                  return state
-                })
-              }
-
-              return [get, set]
-            },
-            consumeContext,
-            (handlers: LifecycleHandlers) => {
-              Object.assign(lifecycleHandlers, handlers)
-            }),
-          
-          render = it.meta.init(self)
-          
-       
-        return { self, render, lifecycleHandlers, isInitialized: false }
-      })
-
-    currentProps.current = props
-
-    useEffect(() => {
-      internals.lifecycleHandlers.onUpdate()
-    })
-
-    useEffect(() => {
-      return () => internals.lifecycleHandlers.onDispose()
-    }, [])
-  
-    for (let i = 0; i < contextValues.current.length; ++i) {
-      contextValues.current[i][1] = useContext(contextValues.current[i][0].Provider.__internal_type._context)
-    }
-    
-    return convertNode(internals.render(props))
-  } 
-
-  ret.displayName = it.meta.displayName
-  
-  Object.defineProperty(it, '__internal_type', {
-    value: ret
-  })
-
-  return ret
-}
-
 export function convertContext(it: any): any {
   const ret =
     it.Provider.__internal_type && it.Provider.__internal_type._context
@@ -305,70 +187,90 @@ export function convertContext(it: any): any {
   return ret
 }
 
-class Component {
-  constructor(
-    getProps: () => any,
-    handleState: (initialValue: any) => [() => any, (newValue: any) => void],
-    consumeContext: (ctx: Context<any>) => () => any,
+function convertStatelessComponent(it: any): Function {
+  let ret: any = (props: any, ref: any = null) => convertNode(it.meta.render(props, ref))
 
-    setLifecycleHandlers: (handlers: {
-      onUpdate: () => void,
-      onDispose: () => void
-    }) => void
-  ) {
-      const listeners = {
-        onUpdate: [] as (() => void)[],
-        onDispose: [] as (() => void)[],
-      }
+  ret.displayName = it.meta.displayName
 
-      Object.defineProperty(this, 'props', {
-        enumerable: true,
-        get: getProps
-      })
+  if (it.meta.render.length > 1) {
+    ret = React.forwardRef(ret)
+  }
 
-      this.handleState = handleState,
-      this.consumeContext = consumeContext
+  Object.defineProperty(it, '__internal_type', {
+    value: ret
+  })
 
-      for (const key of Object.keys(listeners)) {
-        (this as any)['on' + key[0].toUpperCase() + key.substr(1)] = (listener: () => void) => {
-          (listeners as any)[key].push(listener)
+  return ret
+}
 
-          return () => {
-            (listeners as any)[key] = (listeners as any)[key].filter((it: any) => it !== listener)
-          }
-        }
-      }
+function convertStatefulComponent(it: any): Function {
+  let ret = function StatefulComponent(props: any) {
+    const
+      states: any[] = useRef([]).current,
+      updateListeners: (() => void)[] = useRef([]).current,
+      disposeListeners: (() => void)[] = useRef([]).current,
 
-      setLifecycleHandlers({
-        onUpdate() {
-          listeners.onUpdate.forEach(listener => listener())
+      component = useRef({
+        handleState: (init: any) => {
+          const idx = states.length
+
+          states[idx] = [undefined, null, init]
+
+          return [() => states[idx][0], (init: any) => states[idx][1](init)]
         },
 
-        onDispose() {
-          listeners.onUpdate.forEach(listener => listener())
-        }
-      })
+         onUpdate(listener: () => void): () => void {
+           const subscriber = () => listener()
 
-  }
+           updateListeners.push(subscriber)
 
-  // will be set by constructor
-  //get props(): any {
-  //  return ....
-  //}
+           return () => {
+              const idx = updateListeners.indexOf(subscriber)
+              updateListeners.splice(idx, 1)
+           }
+         },
 
-  handleState(initialValue: any) { 
-    // will be overridden by constructor
-  }
+         onDispose(listener: () => void): () => void {
+           const subscriber = () => listener()
 
-  consumeContext(ctx: Context<any>) {
-    // will be overridden by constructor
-  }
+           disposeListeners.push(subscriber)
 
-  onUpdate() {
-    // will be overridden by constructor
-  }
+           return () => {
+              const idx = disposeListeners.indexOf(subscriber)
+              disposeListeners.splice(idx, 1)
+           }
+         }
+      }).current,
 
-  onDispose() {
-    // will be overridden by constructor
-  }
+      renderRef = useRef(null)
+      
+    useEffect(() => {
+      updateListeners.forEach(
+        listener => listener())
+    })
+
+    useEffect(() => {
+      return () => disposeListeners.forEach(
+        listener => listener()) 
+    }, [])
+
+    if (!renderRef.current) {
+      renderRef.current = it.meta.init(component)
+    }
+
+    states.forEach(state => {
+      const [value, setValue] = useState(state[2])
+
+      state[0] = value
+      state[1] = setValue
+    })
+
+    return convertNode(renderRef.current(props))
+  } 
+  
+  Object.defineProperty(it, '__internal_type', {
+    value: ret
+  })
+
+  return ret
 }
