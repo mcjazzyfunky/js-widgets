@@ -205,9 +205,11 @@ function convertStatelessComponent(it: any): Function {
 function convertStatefulComponent(it: any): Function {
   let ret = function StatefulComponent(props: any) {
     const
+      [, setForceUpdateValue] = useState(false),
       currPropsRef = useRef(props),
       isMountedRef = useRef(false),
       states: any[] = useRef([]).current,
+      contexts: any[] = useRef([]).current,
       updateListeners: (() => void)[] = useRef([]).current,
       disposeListeners: (() => void)[] = useRef([]).current,
 
@@ -216,12 +218,28 @@ function convertStatefulComponent(it: any): Function {
           return currPropsRef.current
         },
 
-        handleState: (init: any) => {
+        handleState(init: any) {
           const idx = states.length
 
           states[idx] = [undefined, null, init]
 
           return [() => states[idx][0], (init: any) => states[idx][1](init)]
+        },
+
+        consumeContext(context: any) {
+          const idx = contexts.length
+
+          if (!context.Provider.__internal_type) {
+            convertContext(context)
+          }
+
+          contexts[idx] = [undefined, context]
+
+          return () => contexts[idx][0]
+        },
+
+        forceUpdate() {
+          return () => setForceUpdateValue((it: boolean) => !it)
         },
 
         isMounted() {
@@ -251,8 +269,7 @@ function convertStatefulComponent(it: any): Function {
          }
       }).current,
 
-      renderRef = useRef(null)
-
+    renderRef = useRef(null)
     currPropsRef.current = props
 
     useEffect(() => {
@@ -275,11 +292,16 @@ function convertStatefulComponent(it: any): Function {
       renderRef.current = it.meta.init(component)
     }
 
-    states.forEach(state => {
-      const [value, setValue] = useState(state[2])
+    states.forEach(item => {
+      const [value, setValue] = useState(item[2])
 
-      state[0] = value
-      state[1] = setValue
+      item[0] = value
+      item[1] = setValue
+    })
+
+    contexts.forEach(item => {
+      const value = useContext(item[1].Provider.__internal_type._context)
+      item[0] = value
     })
 
     return convertNode(renderRef.current(props))
