@@ -27,7 +27,7 @@ const Counter = defineComponent<CounterProps>({
     const
       getProps = useProps(c),
       [getCount, setCount] = useState(c, getProps().initialValue),
-      onIncrement = () => setCount(count => count + 1)
+      onIncrement = () => setCount(count => count! + 1)
 
     useOnMount(c, () => {
       console.log('Component has been mounted.')

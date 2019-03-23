@@ -22,7 +22,7 @@ const Counter = defineComponent<CounterProps>({
   init(c) {
     const
       getProps = useProps(c), 
-      [getCount, setCount] = useState(c, getProps().initialValue),
+      [getCount, setCount] = useState(c, getProps().initialValue!),
       onIncrement = () => setCount(it => it + 1),
       onDecrement = () => setCount(it => it - 1)
 
@@ -48,11 +48,11 @@ const Demo = defineComponent({
 
   init() {
     const
-      counterRef = { current: null as CounterMethods },
+      counterRef = { current: null as any },
       onResetTo0 = () => counterRef.current.reset(0),
       onResetTo100 = () => counterRef.current.reset(100)
 
-    return props => (
+    return () => (
       <div>
         <Counter ref={counterRef}/>
         <br/>

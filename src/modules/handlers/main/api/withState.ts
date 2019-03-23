@@ -4,7 +4,7 @@ export default function withState<T, A extends any[]>(c: Component, init: (...ar
   [(...args: A) => T, (updater: (T | ((oldState: T) => T))) => void] {
   
   const
-    [getState, setState] = c.handleState<T>(undefined),
+    [getState, setState] = c.handleState<T>(undefined!),
 
     unsubscribe = c.onUpdate(() => {
       isInitialized = true

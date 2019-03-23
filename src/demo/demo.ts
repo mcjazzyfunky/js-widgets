@@ -27,7 +27,7 @@ const DemoSelector = defineComponent<DemoSelectorProps>({
 
     const
       getProps = useProps(c),
-      options: [string, VirtualElement][] = []
+      options: VirtualElement[] = []
 
     for (let i = 0; i < getProps().demos.length; ++i) {
       const demo = getProps().demos[i]
@@ -46,7 +46,7 @@ const DemoSelector = defineComponent<DemoSelectorProps>({
                 autoFocus: true
               }, options)),
               div(null,
-                h4('Example: ', props.demos[demoIdx][0]),
+                h4(null, 'Example: ', props.demos[demoIdx][0]),
                 props.demos[demoIdx][1])))
     }
   }

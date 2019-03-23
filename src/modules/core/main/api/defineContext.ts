@@ -36,13 +36,13 @@ export default function defineContext<T>(config: ContextConfig<T>): Context<T> {
   }
 
   let
-    createProvider: (...args: any[]) => VirtualElement = null,
-    createConsumer: (...args: any[]) => VirtualElement = null
+    createProvider: (...args: any[]) => VirtualElement = null!,
+    createConsumer: (...args: any[]) => VirtualElement = null!
 
   let ret: Context<T> = new ContextClass(
     (...args: any[]) => {
       if (createProvider === null) {
-        createProvider = createElement.bind(null, ret.Provider)
+        createProvider = createElement.bind(null, ret.Provider as any)
       }
 
       return createProvider(...args)
@@ -96,7 +96,7 @@ export default function defineContext<T>(config: ContextConfig<T>): Context<T> {
 
 const REGEX_DISPLAY_NAME = /^([a-z]+:)*[A-Z][a-zA-Z0-9.]*$/
 
-let contextConfigSpec: SpecValidator = null
+let contextConfigSpec: SpecValidator = null!
 
 if (process.env.NODE_ENV === 'development' as any) {
   contextConfigSpec =

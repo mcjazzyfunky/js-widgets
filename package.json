@@ -15,9 +15,10 @@
   "files": [
     "index.js",
     "dom.js",
+    "handlers.js",
+    "hooks.js",
     "html.js",
     "svg.js",
-    "use.js",
     "util.js",
     "dist"
   ],

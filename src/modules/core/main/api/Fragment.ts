@@ -3,7 +3,7 @@ import VirtualElement from './types/VirtualElement'
 import ComponentMeta from './types/ComponentMeta'
 import ComponentFactory from './types/ComponentFactory'
 
-let createFragment: (...args: any[]) => VirtualElement = null
+let createFragment: (...args: any[]) => VirtualElement = null!
 
 type FragmentProps = {
   key?: number | string
@@ -11,7 +11,7 @@ type FragmentProps = {
 
 function Fragment(props?: FragmentProps, ...args: any[]): VirtualElement {
   if (!createFragment) {
-    createFragment = createElement.bind(null, Fragment)
+    createFragment = createElement.bind(null, Fragment as any)
   }
 
   return createFragment(...args)

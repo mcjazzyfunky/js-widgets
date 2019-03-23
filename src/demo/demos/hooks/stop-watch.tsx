@@ -5,7 +5,7 @@ const StopWatch = defineComponent({
   displayName: 'StopWatch',
 
   init(c) {
-    let timerId: number
+    let interval: number | null = null
 
     const
       [getTime, setTime] = useState(c, 0),
@@ -29,7 +29,7 @@ const StopWatch = defineComponent({
       if (!isRunning()) {
         const startTime = Date.now() - getTime() 
 
-        timerId = window.setInterval(() => {
+        interval = window.setInterval(() => {
           setTime(Date.now() - startTime)
         }, 10)
 
@@ -39,8 +39,8 @@ const StopWatch = defineComponent({
 
     function stopTimer() {
       if (isRunning()) {
-        clearInterval(timerId)
-        timerId = null
+        clearInterval(interval!)
+        interval = null
         setRunning(false)
       }
     }

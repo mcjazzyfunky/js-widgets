@@ -5,12 +5,12 @@ export default function useEffect(
   action: () => void,
   getDependencies?: () => any[] | null
 ): void {
-  let oldDeps: any[] = null
+  let oldDeps: any[] | null = null
 
   c.onUpdate(() => {
     const newDeps = getDependencies ? getDependencies() : null
 
-    if (oldDeps === null ||!isEqual(oldDeps, newDeps)) {
+    if (oldDeps === null || newDeps ===  null || !isEqual(oldDeps, newDeps)) {
       action()
     }
 

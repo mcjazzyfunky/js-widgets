@@ -3,8 +3,8 @@ import useEffect from './useEffect'
 
 export default function usePrevious<T>(c: Component, getCurrent: () => T | undefined) {
   let
-    current: T = undefined,
-    previous: T = undefined
+    current: T | undefined = undefined,
+    previous: T | undefined = undefined
 
   useEffect(c, () => {
     previous = current

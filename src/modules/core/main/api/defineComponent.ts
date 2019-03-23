@@ -2,6 +2,7 @@ import Props from './types/Props'
 //import Methods from './types/Methods'
 import PropertiesConfig from './types/PropertiesConfig'
 import ComponentConfig from './types/ComponentConfig'
+import ComponentMeta from './types/ComponentMeta'
 import ComponentFactory from './types/ComponentFactory'
 import createElement from './createElement'
 import { Spec } from 'js-spec'
@@ -18,18 +19,18 @@ function defineComponent<P extends Props = {}/*, M extends Methods = {}*/>(
     }
   }
 
-  let createComponentElement: Function = null
+  let createComponentElement: Function | null = null
 
   const ret: ComponentFactory<P/*, M*/> =
     Object.assign(
       function (/* arguments */) {
-        return createComponentElement.apply(null, arguments)
+        return createComponentElement!.apply(null, arguments)
       },
       {
-        meta: null // TODO!!!!
+        meta: null! as  ComponentMeta<P>
       })
   
-  createComponentElement = createElement.bind(null, ret)
+  createComponentElement = createElement.bind(null, ret as any)
 
   Object.defineProperty(ret, 'js-widgets:kind', {
     value: 'componentFactory'
