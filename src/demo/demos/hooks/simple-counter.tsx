@@ -1,5 +1,6 @@
 import { createElement, defineComponent } from '../../../modules/core/main/index'
 import { useOnMount, useOnUpdate, useProps, useState } from '../../../modules/hooks/main/index'
+import { Spec } from 'js-spec'
 
 type CounterProps = {
   label?: string,
@@ -9,9 +10,17 @@ type CounterProps = {
 const Counter = defineComponent<CounterProps>({
   displayName: 'Counter',
 
-  defaultProps: {
-    initialValue: 0,
-    label: 'Counter'
+  properties: {
+    initialValue: {
+      type: Number,
+      defaultValue: 0,
+      validate: Spec.integer
+    },
+
+    label: {
+      type: String,
+      defaultValue: 'Counter'
+    }
   },
 
   init(c) {
