@@ -13,6 +13,6 @@ export default interface Component<P extends Props = {}> {
   consumeContext<T>(ctx: Context<T>): () => T,
   forceUpdate(): void,
   onUpdate(listener: Listener): Unsubscribe,
-  onDispose(listener: Listener): Unsubscribe,
+  onUnmount(listener: Listener): Unsubscribe,
   // plus some more methods (mostly for lifecycle)
 }

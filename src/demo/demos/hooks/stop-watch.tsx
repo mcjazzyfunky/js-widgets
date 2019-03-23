@@ -1,11 +1,11 @@
 import { createElement, defineComponent } from '../../../modules/core/main/index'
-import { useOnMount, useState } from '../../../modules/hooks/main/index'
+import { useOnUnmount, useState } from '../../../modules/hooks/main/index'
 
 const StopWatch = defineComponent({
   displayName: 'StopWatch',
 
   init(c) {
-    let timerId: any
+    let timerId: number
 
     const
       [getTime, setTime] = useState(c, 0),
@@ -21,15 +21,15 @@ const StopWatch = defineComponent({
 
       onReset = () => resetTimer()
 
-    useOnMount(c, () => {
-      return () => stopTimer()
+    useOnUnmount(c, () => {
+      stopTimer()
     })
     
     function startTimer() {
       if (!isRunning()) {
         const startTime = Date.now() - getTime() 
 
-        timerId = setInterval(() => {
+        timerId = window.setInterval(() => {
           setTime(Date.now() - startTime)
         }, 10)
 

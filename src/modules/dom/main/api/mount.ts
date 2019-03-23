@@ -257,7 +257,7 @@ function convertStatefulComponent(it: any): Function {
            }
          },
 
-         onDispose(listener: () => void): () => void {
+         onUnmount(listener: () => void): () => void {
            const subscriber = () => listener()
 
            disposeListeners.push(subscriber)
