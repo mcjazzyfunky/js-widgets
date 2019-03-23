@@ -128,32 +128,25 @@ What are the main difference to React's API?
 * `defineContext(contextConfig)`
 * `Fragment(props?, ...children)`
 
-### Modules "_js-widgets/dom" ###
+### Modules "_js-widgets/dom_" ###
 
 * `mount(content, container)`
 * `unmount(container)`
 
-### Modules "__js-widgets/use":
-* `useCallback(...)`
+### Modules "_js-widgets/hooks_":
 * `useContext(...)`
 * `useEffect(...)`
-* `useForceUpdate(...)`
-* `useMethods(...)`
+* `useOnMount(...)`
+* `useOnUnmount(...)`
+* `useOnUpdate(...)`
 * `usePrevious(...)`
-* `useRef(...)`
+* `useProps(...)`
 * `useState(...)`
 
-### Modules "__js-widgets/util":
+### Modules "_js-widgets/util_":
 * `isElement(it)`
 * `isNode(it)`
-* `propsOf(element)`
-* `typeOf(element)`
-* `childCount(children)`
-* `forEachChild(children, callback)`
-* `mapChildren(children, mapper)`
-* `onlyChild(children)`
-* `toChildArray(element)`
-* `withChildren(f)`
+* `forceUpdate(...)`
 
 #### Module "_js-widgets/html_"
 
