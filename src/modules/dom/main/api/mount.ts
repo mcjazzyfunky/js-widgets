@@ -187,7 +187,9 @@ export function convertContext(it: any): any {
 }
 
 function convertStatelessComponent(it: any): Function {
-  let ret: any = (props: any, ref: any = null) => convertNode(it.meta.render(props, ref))
+  let ret: any = (props: any, ref: any = null) => {
+    return convertNode(it.meta.render(mergeDefaultProps(props, it), ref))
+  }
 
   ret.displayName = it.meta.displayName
 
@@ -204,6 +206,8 @@ function convertStatelessComponent(it: any): Function {
 
 function convertStatefulComponent(it: any): Function {
   let ret = function StatefulComponent(props: any) {
+    props = mergeDefaultProps(props, it)
+
     const
       [, setForceUpdateValue] = useState(false),
       currPropsRef = useRef(props),
@@ -311,5 +315,34 @@ function convertStatefulComponent(it: any): Function {
     value: ret
   })
 
+  return ret
+}
+
+function mergeDefaultProps(props: any, type: any) {
+  let ret: any = {...props} 
+  
+  if (type && type.meta) {
+    if (type.meta.defaultProps) {
+      Object.assign(ret, type.meta.defaultProps)
+    } else if (type.meta.properties) {
+      const keys = Object.keys(type.meta.properties)
+
+      for (let i = 0; i < keys.length; ++i) {
+        const
+          key = keys[i]
+
+        if (!props.hasOwnProperty(key)) {
+          const propConfig = type.meta.properties[key]
+
+          if (propConfig && propConfig.hasOwnProperty('defaultValue')) {
+            const defaultValue = propConfig.defaultValue
+
+            ret[key] = defaultValue
+          }
+        }
+      }
+    }
+  }
+  
   return ret
 }

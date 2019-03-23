@@ -69,44 +69,12 @@ function createElement(/* arguments */): VirtualElement {
     props = { children }
   }
 
-  // TODO - optimize!
   if (type && type.meta) {
-    if (type.meta.defaultProps) {
-      if (!props) {
-        props = Object.assign({}, type.meta.defaultProps)
-      } else if (props === originalProps) {
-        props = Object.assign({}, type.meta.defaultProps, props)
-      } else {
-        props = Object.assign({}, type.meta.defaultProps, props)
-      }
-    } else if (type.meta.properties) {
-      const keys = Object.keys(type.meta.properties)
-
-      for (let i = 0; i < keys.length; ++i) {
-        const
-          key = keys[i]
-
-        if (!props || !props.hasOwnProperty(key)) {
-          const propConfig = type.meta.properties[key]
-
-          if (propConfig && propConfig.hasOwnProperty('defaultValue')) {
-            const defaultValue = propConfig.defaultValue
-
-            if (!props) {
-              props = { [key]: defaultValue }
-            } else if (props === originalProps) {
-              props = Object.assign({ [key]: defaultValue }, props)
-            } else {
-              props[key] = defaultValue
-            }
-          }
-        }
-      }
-
+    if (props && type.meta.properties) {
       if (process.env.NODE_ENV === 'development' as any) {
         const error = validateProperties(
           props, type.meta.properties, type.meta.validate, type.meta.variableProps, type.meta.displayName,
-          type['js-widgets:kind'] === 'constexProvider')
+          type['js-widgets:kind'] === 'contextProvider')
 
         if (error) {
           throw error
