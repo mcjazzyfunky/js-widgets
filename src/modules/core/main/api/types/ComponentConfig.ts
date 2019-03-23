@@ -1,5 +1,5 @@
 import Props from './Props'
-import Methods from './Methods'
+//import Methods from './Methods'
 import VirtualNode from './VirtualNode'
 import PropertiesConfig from './PropertiesConfig'
 import Component from './Component'
@@ -9,10 +9,10 @@ type Stateless<P extends Props = {}> = {
   render(props: P, ref?: any): VirtualNode
 }
 
-type Stateful<P extends Props = {}, M extends Methods = {}> = {
+type Stateful<P extends Props = {}/*, M extends Methods = {}*/> = {
   displayName: string,
-  methods?: (keyof M)[],
-  init: ((c: Component<P>, ref?: any) => (props: P) => VirtualNode) | (() => any) // TODO
+  //methods?: (keyof M)[],
+  init: ((c: Component<P>, ref?: any) => (props: P) => VirtualNode) // TODO
 }
 
 type WithProperties<P extends Props = {}> = {
@@ -25,10 +25,10 @@ type WithDefaultProps<P extends Props = {}> = {
   properties?: never,
 }
 
-type ComponentConfig<P extends Props = {}, M extends Methods = {}> =
+type ComponentConfig<P extends Props = {}/*, M extends Methods = {}*/> =
   (Stateless<P> & WithProperties<P>)
     | (Stateless<P> & WithDefaultProps<P>)
-    | (Stateful<P, M> & WithProperties<P>)
-    | (Stateful<P, M> & WithDefaultProps<P>)
+    | (Stateful<P/*, M*/> & WithProperties<P>)
+    | (Stateful<P/*, M*/> & WithDefaultProps<P>)
 
 export default ComponentConfig

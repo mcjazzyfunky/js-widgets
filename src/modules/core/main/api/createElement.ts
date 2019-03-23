@@ -5,7 +5,7 @@ import Props from './types/Props'
 import PropertiesConfig from './types/PropertiesConfig'
 import PropertyConfig from './types/PropertyConfig'
 import Key from './types/Key'
-import Ref from './types/Ref'
+//import Ref from './types/Ref'
 
 function createElement(type: string | ComponentFactory | AltComponentFactory, props?: Props, ...children: any[]): VirtualElement
 function createElement(/* arguments */): VirtualElement {
@@ -20,7 +20,8 @@ function createElement(/* arguments */): VirtualElement {
 
     originalProps = skippedProps ? null : (secondArg || null),
     hasChildren = argCount > 2 || argCount === 2 && skippedProps,
-    needsToCopyProps = hasChildren || (originalProps && (originalProps.key !== undefined || originalProps.ref !== undefined))
+    needsToCopyProps = hasChildren || (originalProps && (originalProps.key !== undefined /*|| originalProps.ref !== undefined */))
+  
 
 
   let
@@ -84,21 +85,21 @@ function createElement(/* arguments */): VirtualElement {
   }
 
   let
-    key = null,
-    ref = null
+    key = null
+    //ref = null
 
   // TODO - fix!!!!
-  if (originalProps && (originalProps.key !== undefined || originalProps.ref !== undefined)) {
+  if (originalProps && (originalProps.key !== undefined /* || originalProps.ref !== undefined */)) {
     props = Object.assign({}, props)
 
     delete props.key
-    delete props.ref
+    //delete props.ref
 
     key = originalProps.key === undefined ? null : originalProps.key
-    ref = originalProps.ref === undefined ? null : originalProps.ref
+    //ref = originalProps.ref === undefined ? null : originalProps.ref
   }
 
-  return new VirtualElementClass(type, props, key, ref)
+  return new VirtualElementClass(type, props, key/*, ref*/)
 }
 
 export default createElement
@@ -115,18 +116,18 @@ const VirtualElementClass = class VirtualElement {
   type: string | ComponentFactory | AltComponentFactory
   props: Props | null
   key: Key
-  ref: Ref<any> 
+  //ref: Ref<any> 
 
   constructor(
     type: string | ComponentFactory | AltComponentFactory,
     props: Props | null,
     key: Key,
-    ref: Ref<any>
+    //ref: Ref<any>
   ) {
     this.type = type
     this.props = props
     this.key = key
-    this.ref = ref
+    //this.ref = ref
   }
 }
 

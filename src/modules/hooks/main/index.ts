@@ -1,5 +1,6 @@
 export { default as useContext } from './api/useContext'
 export { default as useEffect } from './api/useEffect'
+export { default as useMethods } from './api/useMethods'
 export { default as usePrevious } from './api/usePrevious'
 export { default as useProps } from './api/useProps'
 export { default as useOnMount } from './api/useOnMount'

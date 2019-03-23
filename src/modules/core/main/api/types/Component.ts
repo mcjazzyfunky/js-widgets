@@ -1,6 +1,5 @@
 import Context from './Context'
 import Props from './Props'
-import Methods from './Methods'
 
 type Listener = () => void
 type Unsubscribe = () => void

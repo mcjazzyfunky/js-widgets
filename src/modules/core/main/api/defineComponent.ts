@@ -1,13 +1,13 @@
 import Props from './types/Props'
-import Methods from './types/Methods'
+//import Methods from './types/Methods'
 import PropertiesConfig from './types/PropertiesConfig'
 import ComponentConfig from './types/ComponentConfig'
 import ComponentFactory from './types/ComponentFactory'
 import createElement from './createElement'
 import { Spec } from 'js-spec'
 
-function defineComponent<P extends Props = {}, M extends Methods = {}>(
-  config: ComponentConfig<P>): ComponentFactory<P, M> {
+function defineComponent<P extends Props = {}/*, M extends Methods = {}*/>(
+  config: ComponentConfig<P>): ComponentFactory<P/*, M*/> {
 
   if (process.env.NODE_ENV === 'development' as any) {
     const error = validateComponentConfig(config)
@@ -20,7 +20,7 @@ function defineComponent<P extends Props = {}, M extends Methods = {}>(
 
   let createComponentElement: Function = null
 
-  const ret: ComponentFactory<P, M> =
+  const ret: ComponentFactory<P/*, M*/> =
     Object.assign(
       function (/* arguments */) {
         return createComponentElement.apply(null, arguments)
@@ -107,11 +107,13 @@ const
       variableProps: Spec.optional(Spec.boolean),
       validate: Spec.optional(Spec.function),
 
+      /*
       methods:
         Spec.optional(
           Spec.and(
             Spec.arrayOf(Spec.string),
             Spec.unique())),
+      */
 
       init: Spec.function
     }),
@@ -190,9 +192,11 @@ function convertConfigToMeta(config: any): any {
   } else {
     ret.init = config.init
 
+    /*
     if (config.methods) {
       ret.methods = Object.freeze(config.methods.slice(0))
     }
+    */
   }
 
   return Object.freeze(ret)

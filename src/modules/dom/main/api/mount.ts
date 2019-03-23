@@ -110,7 +110,7 @@ function convertNode(node: any) {
 
   if (newProps) {
     delete newProps.key
-    delete newProps.ref
+    //delete newProps.ref
   }
 
   if (node.key !== null || node.ref !== null) {
@@ -188,14 +188,26 @@ export function convertContext(it: any): any {
 
 function convertStatelessComponent(it: any): Function {
   let ret: any = (props: any, ref: any = null) => {
-    return convertNode(it.meta.render(mergeDefaultProps(props, it), ref))
+    props = mergeDefaultProps(props, it)
+
+    if (ref) {
+      props.ref = ref
+    }
+    
+    return convertNode(it.meta.render(props))
   }
+
+
 
   ret.displayName = it.meta.displayName
+  ret = React.forwardRef(ret)
 
-  if (it.meta.render.length > 1) {
-    ret = React.forwardRef(ret)
-  }
+  //if (it.meta.render.length > 1) {
+  //  ret = React.forwardRef(ret)
+  //}
+
+
+
 
   Object.defineProperty(it, '__internal_type', {
     value: ret
@@ -205,8 +217,12 @@ function convertStatelessComponent(it: any): Function {
 }
 
 function convertStatefulComponent(it: any): Function {
-  let ret = function StatefulComponent(props: any) {
+  let ret = function StatefulComponent(props: any, ref: any) {
     props = mergeDefaultProps(props, it)
+
+    if (ref) {
+      props.ref = ref
+    }
 
     const
       [, setForceUpdateValue] = useState(false),
@@ -309,8 +325,12 @@ function convertStatefulComponent(it: any): Function {
     })
 
     return convertNode(renderRef.current(props))
-  } 
+  }
   
+  ;(ret as any).displayName = it.meta.displayName
+
+  ret = React.forwardRef(ret)
+
   Object.defineProperty(it, '__internal_type', {
     value: ret
   })
