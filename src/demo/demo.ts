@@ -1,4 +1,5 @@
 import { defineComponent, Component, VirtualElement } from '../modules/core/main/index'
+import { useProps } from '../modules/hooks/main/index'
 import { forceUpdate } from '../modules/util/main/index'
 import { mount } from '../modules/dom/main/index'
 import { div, h4, label, option, select } from '../modules/html/main/index'
@@ -18,27 +19,29 @@ const DemoSelector = defineComponent<DemoSelectorProps>({
     let
       demoIdx = getCurrentDemoIndex()
 
-    function startDemo(c: Component, idx: number) {
+    function startDemo(idx: number) {
       demoIdx = idx
       document.location.href = document.location.href.replace(/#.*$/, '') + '#idx=' + idx
       forceUpdate(c)
     }
 
-    const options: [string, VirtualElement][] = []
+    const
+      getProps = useProps(c),
+      options: [string, VirtualElement][] = []
+
+    for (let i = 0; i < getProps().demos.length; ++i) {
+      const demo = getProps().demos[i]
+          
+      options.push(option({ key: i, value: i }, demo[0]))
+    }
 
     return props => {
-      for (let i = 0; i < props.demos.length; ++i) {
-        const demo = props.demos[i]
-            
-        options.push(option({ key: i, value: i }, demo[0]))
-      }
-
       return (
         div(null,
           div(null,
             label(null, 'Select demo: '),
               select({
-                onChange: (ev: any) => startDemo(c, ev.target.value),
+                onChange: (ev: any) => startDemo(ev.target.value),
                 value: demoIdx,
                 autoFocus: true
               }, options)),
@@ -73,6 +76,3 @@ function getCurrentDemoIndex() {
 // --- main ---------------------------------------------------------
 
 mount(Demo({ demos: availableDemos }), 'main-content')
-
-declare module 'react'
-declare module 'react-dom'

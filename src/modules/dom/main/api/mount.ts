@@ -239,7 +239,7 @@ function convertStatefulComponent(it: any): Function {
         },
 
         forceUpdate() {
-          return () => setForceUpdateValue((it: boolean) => !it)
+          return setForceUpdateValue((it: boolean) => !it)
         },
 
         isMounted() {
