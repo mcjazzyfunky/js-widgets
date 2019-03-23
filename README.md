@@ -128,12 +128,12 @@ What are the main difference to React's API?
 * `defineContext(contextConfig)`
 * `Fragment(props?, ...children)`
 
-### Modules "_js-widgets/dom_" ###
+#### Modules "_js-widgets/dom_" ###
 
 * `mount(content, container)`
 * `unmount(container)`
 
-### Modules "_js-widgets/hooks_":
+#### Modules "_js-widgets/hooks_":
 * `useContext(...)`
 * `useEffect(...)`
 * `useOnMount(...)`
@@ -143,7 +143,7 @@ What are the main difference to React's API?
 * `useProps(...)`
 * `useState(...)`
 
-### Modules "_js-widgets/util_":
+#### Modules "_js-widgets/util_":
 * `isElement(it)`
 * `isNode(it)`
 * `forceUpdate(...)`
@@ -155,7 +155,7 @@ Factory functions for all HTML entities (to be used in non-JSX context: `div('so
 #### Module "_js-widgets/svg_"
 
 Factory functions for all SVG entities
-
+  
 ### Project status
 
 **Important**: This project is in a very early state and it is not meant 
