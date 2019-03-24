@@ -1,6 +1,6 @@
 {
   "name": "js-widgets",
-  "version": "0.0.27",
+  "version": "0.0.29",
   "license": "LGPL-3.0",
   "homepage": "https://github.com/js-works/js-widgets",
   "repository": {
@@ -36,6 +36,7 @@
     "copyfiles": "^2.1.0",
     "cross-conf-env": "^1.1.2",
     "cross-env": "^5.2.0",
+    "fast-memoize": "^2.5.1",
     "js-spec": "^0.1.63",
     "mocha": "^6.0.2",
     "nyc": "^13.3.0",

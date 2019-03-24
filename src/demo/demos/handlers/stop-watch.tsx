@@ -1,37 +1,38 @@
 import { createElement, defineComponent } from '../../../modules/core/main/index'
-import { withEffect, withState } from '../../../modules/handlers/main/index' 
+import { withState } from '../../../modules/handlers/main/index' 
+import { memoize } from '../../../modules/util/main/index'
 
 const StopWatch = defineComponent({
   displayName: 'StopWatch',
 
   init(c) {
-    let 
-      timerId: any = null,
-      startTime: number = 0
+    let interval = 0
 
     const
       [useTime, setTime] = withState(c, (time: number) => time),
       [useRunning, setRunning] = withState(c, (running: boolean) => running),
 
-      onStartStopBy = (running: boolean, startTimer: () => void) => {
+      createStartStopListener = memoize((running: boolean, time: number) => {
         if (running) {
           stopTimer(running)
         } else {
-          startTimer(running)
+          startTimer(running, time)
         }
-      },
+      }),
 
-      onResetBy = (running: boolean) => resetTimer(running)
+      createResetListener = memoize((running: boolean) => resetTimer(running))
 
+    /*
     useEffect(c, (running: boolean) => {
       return () => stopTimer(running)
     })
+    */
     
     function startTimer(running: boolean, time: number) {
       if (!running) {
-        startTime = Date.now() - time
+        const startTime = Date.now() - time
 
-        timerId = setInterval(() => {
+        interval = window.setInterval(() => {
           setTime(Date.now() - startTime)
         }, 10)
 
@@ -41,8 +42,8 @@ const StopWatch = defineComponent({
 
     function stopTimer(running: boolean) {
       if (running) {
-        clearInterval(timerId.current)
-        timerId.current = null
+        clearInterval(interval)
+        interval = 0 
         setRunning(false)
       }
     }
@@ -54,18 +55,18 @@ const StopWatch = defineComponent({
 
     return () => {
       const
-        time = useTime(Date.now() - startTime),
+        time = useTime(0),
         running = useRunning(false)
 
       return (
         <div>
             <div>Time: {time}</div>
             <br/>
-            <button onClick={onStartStopBy(running)}>
+            <button onClick={createStartStopListener(running, time)}>
             { running ? 'Stop' : 'Start'}
             </button>
             {' '}
-            <button onClick={onReset}>
+            <button onClick={createResetListener(running)}>
             Reset
             </button>
         </div>

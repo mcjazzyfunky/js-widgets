@@ -9,7 +9,7 @@ import i18n from './demos/hooks/i18n'
 
 // handlers
 import simpleCounter2 from './demos/handlers/simple-counter'
-//import stopWatch from './demos/stop-watch'
+import stopWatch2 from './demos/handlers/stop-watch'
 
 const demos: [string, VirtualElement][] = [
   ['Simple counter (hooks)', simpleCounter],
@@ -18,7 +18,7 @@ const demos: [string, VirtualElement][] = [
   ['Internationalization (hooks)', i18n],
 
   ['Simple counter (handlers)', simpleCounter2],
-//  ['Stop watch', stopWatch],
+  ['Stop watch (handlers)', stopWatch2],
 ]
 
 export default demos
