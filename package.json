@@ -1,6 +1,6 @@
 {
   "name": "js-widgets",
-  "version": "0.0.32",
+  "version": "0.0.33",
   "license": "LGPL-3.0",
   "homepage": "https://github.com/js-works/js-widgets",
   "repository": {
@@ -11,7 +11,7 @@
   "module": "dist/js-widgets.core.esm.production.js",
   "unpkg": "dist/js-widgets.core.umd.production.js",
   "jsdelivr": "dist/js-widgets.core.umd.production.js",
-  "types": "dist/types/modules/core/main/index.d.ts",
+  "types": "dist/types/core/main/index.d.ts",
   "files": [
     "index.js",
     "all",
