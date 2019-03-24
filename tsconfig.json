@@ -37,6 +37,6 @@
   ],
 
   "include": [
-		"./src/**/*.ts*"
+		"./src/modules/*/main/**/*.ts*"
   ],
 }

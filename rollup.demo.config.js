@@ -31,7 +31,11 @@ export default {
         'process.env.NODE_ENV': "'development'"
       }
     }),
-    typescript(),
+    typescript({
+      tsconfigOverride: {
+        include: ['./src/modules/*/main/**/*.ts*', './src/demo/**/*.ts*']
+      }
+    }),
     serve({
       open: true,
       contentBase: '.',

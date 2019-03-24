@@ -1,6 +1,6 @@
 {
   "name": "js-widgets",
-  "version": "0.0.29",
+  "version": "0.0.32",
   "license": "LGPL-3.0",
   "homepage": "https://github.com/js-works/js-widgets",
   "repository": {
@@ -14,12 +14,13 @@
   "types": "dist/types/modules/core/main/index.d.ts",
   "files": [
     "index.js",
-    "dom.js",
-    "handlers.js",
-    "hooks.js",
-    "html.js",
-    "svg.js",
-    "util.js",
+    "all",
+    "dom",
+    "handlers",
+    "hooks",
+    "html",
+    "svg",
+    "util",
     "dist"
   ],
   "devDependencies": {
@@ -37,12 +38,9 @@
     "cross-conf-env": "^1.1.2",
     "cross-env": "^5.2.0",
     "fast-memoize": "^2.5.1",
-    "js-spec": "^0.1.63",
     "mocha": "^6.0.2",
     "nyc": "^13.3.0",
-    "react": "^16.8.5",
-    "react-dom": "^16.8.5",
-    "rollup": "^1.7.0",
+    "rollup": "^1.7.2",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-commonjs": "^9.2.1",
     "rollup-plugin-eslint": "^5.1.0",
@@ -61,11 +59,6 @@
     "typescript": "^3.3.4000",
     "ziptool": "^1.0.2"
   },
-  "depencencies": {
-    "js-spec": "^0.1.63",
-    "react": "16.7.0-alpha.0",
-    "react-dom": "16.7.0-alpha.0"
-  },
   "scripts": {
     "clean": "shx rm -rf ./build ./dist",
     "build": "cross-env NODE_OPTIONS=--max_old_space_size=4096 rollup --c rollup.config.js && tsc -d --emitDeclarationOnly --declarationDir dist/types",
@@ -75,5 +68,9 @@
     "zipsource": "shx rm -rf ./build/source && shx mkdir -p ./build/source && copyfiles -a ./* ./build/source && shx cp -r ./src ./build/source && shx mkdir -p ./dist/source && cd build/source && bestzip ../../dist/source/source.zip . && cd ../..",
     "dist": "npm run clean && npm run test && npm run build && npm run zipsource"
   },
-  "dependencies": {}
+  "dependencies": {
+    "js-spec": "^0.1.63",
+    "react": "^16.8.5",
+    "react-dom": "^16.8.5"
+  }
 }
