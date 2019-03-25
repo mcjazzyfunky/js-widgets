@@ -10,6 +10,7 @@ type CounterProps = {
 const Counter = defineComponent<CounterProps>({
   displayName: 'Counter',
 
+  /*
   properties: {
     initialValue: {
       type: Number,
@@ -21,6 +22,12 @@ const Counter = defineComponent<CounterProps>({
       type: String,
       defaultValue: 'Counter'
     }
+  },
+  */
+
+  defaultProps: {
+    initialValue: 0,
+    label: 'Counter'
   },
 
   init(c) {

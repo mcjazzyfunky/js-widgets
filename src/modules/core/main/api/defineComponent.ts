@@ -1,11 +1,32 @@
 import Props from './types/Props'
-//import Methods from './types/Methods'
 import PropertiesConfig from './types/PropertiesConfig'
-import ComponentConfig from './types/ComponentConfig'
 import ComponentMeta from './types/ComponentMeta'
 import ComponentFactory from './types/ComponentFactory'
 import createElement from './createElement'
+import StatelessComponentConfig from './types/StatelessComponentConfig' 
+import StatelessComponentConfigAlt from './types/StatelessComponentConfigAlt' 
+import StatefulComponentConfig from './types/StatefulComponentConfig' 
+import StatefulComponentConfigAlt from './types/StatefulComponentConfigAlt' 
+
 import { Spec } from 'js-spec'
+
+type ComponentConfig<T> = 
+  StatelessComponentConfig<T>
+    | StatelessComponentConfigAlt<T>
+    | StatefulComponentConfig<T>
+    | StatefulComponentConfigAlt<T>
+
+function defineComponent<P extends Props = {}>(config: StatelessComponentConfig<P>):
+  ComponentFactory<P>
+
+function defineComponent<P extends Props = {}>(config: StatelessComponentConfigAlt<P>):
+  ComponentFactory<P>
+
+function defineComponent<P extends Props = {}>(config: StatefulComponentConfig<P>):
+  ComponentFactory<P>
+
+function defineComponent<P extends Props = {}>(config: StatefulComponentConfigAlt<P>):
+  ComponentFactory<P>
 
 function defineComponent<P extends Props = {}/*, M extends Methods = {}*/>(
   config: ComponentConfig<P>): ComponentFactory<P/*, M*/> {
