@@ -8,6 +8,8 @@ type StatefulComponentConfig<P extends Props = {}> = {
   properties?: PropertiesConfig<P>,
   validate?(props: P): boolean | null | Error,
   init: (c: Component<P>) => (props: P) => VirtualNode,
+  render?: never
+  defaultProps?: never
 }
 
 export default StatefulComponentConfig

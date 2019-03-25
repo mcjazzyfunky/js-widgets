@@ -6,7 +6,9 @@ type StatelessComponentConfigAlt<P extends Props = {}> = {
   displayName: string,
   defaultProps?: PickOptionalProps<P>,
   validate?(props: P): boolean | null | Error,
-  render(props: Required<P>): VirtualNode,
+  render(props: P): VirtualNode,
+  init?: never
+  properties?: never
 }
 
 export default StatelessComponentConfigAlt

@@ -8,6 +8,8 @@ type StatefulComponentConfigAlt<P extends Props = {}> = {
   defaultProps?: PickOptionalProps<P>, 
   validate?(props: P): boolean | null | Error,
   init: (c: Component<P>) => (props: P) => VirtualNode,
+  render?: never
+  properties?: never
 }
 
 export default StatefulComponentConfigAlt 

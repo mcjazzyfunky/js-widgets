@@ -7,6 +7,8 @@ type StatelessComponentConfig<P extends Props = {}> = {
   properties?: PropertiesConfig<P>,
   validate?(props: P): boolean | null | Error
   render(props: P): VirtualNode,
+  init?: never
+  defaultProps?: never
 }
 
 export default StatelessComponentConfig
