@@ -167,7 +167,7 @@ export function convertContext(it: any): any {
   const ret =
     it.Provider.__internal_type && it.Provider.__internal_type._context
       || it.Consumer.__internal_type && it.Consumer.__internal_type._context
-      || React.createContext(it.Provider.meta.properties.value.defaultValue)
+      || React.createContext(it.Provider.meta.default)
   
   // TODO
 
@@ -342,25 +342,8 @@ function mergeDefaultProps(props: any, type: any) {
   let ret: any = {...props} 
   
   if (type && type.meta) {
-    if (type.meta.defaultProps) {
-      Object.assign(ret, type.meta.defaultProps)
-    } else if (type.meta.properties) {
-      const keys = Object.keys(type.meta.properties)
-
-      for (let i = 0; i < keys.length; ++i) {
-        const
-          key = keys[i]
-
-        if (!props.hasOwnProperty(key)) {
-          const propConfig = type.meta.properties[key]
-
-          if (propConfig && propConfig.hasOwnProperty('defaultValue')) {
-            const defaultValue = propConfig.defaultValue
-
-            ret[key] = defaultValue
-          }
-        }
-      }
+    if (type.meta.defaults) {
+      Object.assign(ret, type.meta.defaults)
     }
   }
   

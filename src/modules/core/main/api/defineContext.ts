@@ -1,8 +1,6 @@
 import ContextConfig from './types/ContextConfig'
 import { Spec, SpecValidator } from 'js-spec'
 import Context from './types/Context'
-import PropertyConfig from './types/PropertyConfig'
-import PropertiesConfig from './types/PropertiesConfig'
 import VirtualElement from './types/VirtualElement'
 import createElement from './createElement'
 
@@ -15,24 +13,6 @@ export default function defineContext<T>(config: ContextConfig<T>): Context<T> {
     if (error) {
       throw new Error(`[defineContext] ${error.message}`)
     }
-  }
-
-  const
-    providerValuePropertyConfig: PropertyConfig<T> = { defaultValue: config.defaultValue },
-    providerPropertiesConfig: PropertiesConfig<{ value: T }> = {
-      value: providerValuePropertyConfig
-    }
-
-  if (config.hasOwnProperty('type')) {
-    providerValuePropertyConfig.type = config.type
-  }
-
-  if (config.hasOwnProperty('nullable')) {
-    providerValuePropertyConfig.nullable = config.nullable
-  }
-
-  if (config.hasOwnProperty('validate')) {
-    providerValuePropertyConfig.validate = config.validate
   }
 
   let
@@ -75,16 +55,16 @@ export default function defineContext<T>(config: ContextConfig<T>): Context<T> {
   
   Object.defineProperty(ret.Provider, 'meta', {
     value: Object.freeze({
+      type: 'statelessComponent',
       displayName: `${config.displayName}.Provider`,
-      properties: Object.freeze({...providerPropertiesConfig, children: {}}), // TODO
       render: ret.Provider
     }) 
   })
 
   Object.defineProperty(ret.Consumer, 'meta', {
     value: Object.freeze({
+      type: 'statelessComponent',
       displayName: `${config.displayName}.Consumer`,
-      properties: Object.freeze({ children: {} }), // TODO
       render: ret.Provider
     }) 
   })
@@ -100,12 +80,10 @@ let contextConfigSpec: SpecValidator = null!
 
 if (process.env.NODE_ENV === 'development' as any) {
   contextConfigSpec =
-    Spec.strictShape({
+    Spec.exact({
       displayName: Spec.match(REGEX_DISPLAY_NAME),
-      type: Spec.optional(Spec.function),
-      nullable: Spec.optional(Spec.boolean),
       validate: Spec.optional(Spec.function),
-      defaultValue: Spec.any
+      default: Spec.any
     })
 }
 

@@ -16,7 +16,7 @@ const translations: Record<string, Record<string, string>> = {
 
 const LocaleCtx = defineContext({
   displayName: 'LocaleCtx',
-  defaultValue: 'en'
+  default: 'en'
 })
 
 type AppProps = {
@@ -26,12 +26,12 @@ type AppProps = {
 const App = defineComponent<AppProps>({
   displayName: 'App',
 
-  properties: {
-    defaultLocale: {
-      type: String,
-      validate: Spec.oneOf('en', 'fr', 'de'),
-      defaultValue: 'en'
-    }
+  validate: Spec.exact({
+    defaultLocale: Spec.optional(Spec.oneOf('en', 'fr', 'de'))
+  }),
+
+  defaults: {
+    defaultLocale: 'en'
   },
 
   init(c) {
@@ -61,11 +61,9 @@ interface LocaleTextProps {
 const LocaleText = defineComponent<LocaleTextProps>({
   displayName: 'LocaleText',
 
-  properties: {
-    id: {
-      type: String,
-    }
-  },
+  validate: Spec.exact({
+    id: Spec.string
+  }),
 
   init(c) {
     const getLocale = useContext(c, LocaleCtx)

@@ -1,20 +1,16 @@
-import { createElement, defineComponent } from '../../../modules/core/main/index'
+import { createElement, defineComponent, Ref } from '../../../modules/core/main/index'
 import { useMethods, useProps, useState } from '../../../modules/hooks/main/index'
 
 type CounterProps = {
   label?: string,
   initialValue?: number,
-  ref?: any // TODO
-}
-
-type CounterMethods = {
-  reset(n: number): void
+  ref?: Ref<{ reset(n: number): void }>
 }
 
 const Counter = defineComponent<CounterProps>({
   displayName: 'Counter',
 
-  defaultProps: {
+  defaults: {
     label: 'Counter',
     initialValue: 0
   },
@@ -48,7 +44,7 @@ const Demo = defineComponent({
 
   init() {
     const
-      counterRef = { current: null as any },
+      counterRef = { current: null } as any, // TODO
       onResetTo0 = () => counterRef.current.reset(0),
       onResetTo100 = () => counterRef.current.reset(100)
 

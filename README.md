@@ -2,6 +2,84 @@
 
 Disclaimer: This is just an initial draft of README. A lot is missing yet....
 
+### Examples
+
+#### Example 1 (pure ECMAScript / no JSX)
+
+```javascript
+import { createElement, defineComponent } from 'js-widgets'
+import { mount } from 'js-widgets/dom'
+import { div } from 'js-widgets/html'
+
+const SayHello = defineComponent({
+  displayName: 'Counter',
+
+  render({ name = 'world'}) {
+    return div(`Hello, ${name}!`)
+  }
+})
+
+const content =
+  div(
+    SayHello()
+    SayHello({ name: 'Jane Doe' }))
+
+mount(content, document.getElementById('app'))
+```
+#### Example 2 (TypeScript)
+
+```jsx
+import { createElement, defineComponent } from 'js-widgets'
+import { useOnMount, useOnUpdate, useProps, useState } from 'js-widgets/hooks'
+import { Spec } from 'js-spec' // third-party validation library
+
+type CounterProps = {
+  label?: string,
+  initialValue?: number
+}
+
+const Counter = defineComponent<CounterProps>({
+  displayName: 'Counter',
+
+  validate: Spec.shape({
+    initialValue: Spec.integer
+  })
+  
+  defaults: {
+    initialValue: 0,
+    label: 'Counter'
+  },
+
+  init(c) {
+    const
+      getProps = useProps(c),
+      [getCount, setCount] = useState(c, getProps().initialValue),
+      onIncrement = () => setCount(count => count + 1)
+
+    useOnMount(c, () => {
+      console.log('Component has been mounted.')
+    })
+
+    useOnUpdate(c, () => {
+      console.log('Component has been rendered.')
+    })
+
+    return props => {
+      return (
+        <div>
+          <label>{props.label + ': '}</label> 
+          <button onClick={onIncrement}>
+            {getCount()}
+          </button>
+        </div>
+      )
+    }
+  }
+})
+
+mount(<Counter/>, document.getElementById('app'))
+```
+
 ### Motivation
 
 What are the main difference to React's API?

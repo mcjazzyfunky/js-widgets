@@ -1,10 +1,8 @@
+import { Spec } from 'js-spec'
 import ComponentFactory from './types/ComponentFactory'
 import VirtualElement from './types/VirtualElement'
 import Props from './types/Props'
-import PropertiesConfig from './types/PropertiesConfig'
-import PropertyConfig from './types/PropertyConfig'
 import Key from './types/Key'
-//import Ref from './types/Ref'
 
 function createElement(type: string | ComponentFactory, props?: Props | null, ...children: any[]): VirtualElement
 function createElement(/* arguments */): VirtualElement {
@@ -20,8 +18,6 @@ function createElement(/* arguments */): VirtualElement {
     originalProps = skippedProps ? null : (secondArg || null),
     hasChildren = argCount > 2 || argCount === 2 && skippedProps,
     needsToCopyProps = hasChildren || (originalProps && (originalProps.key !== undefined /*|| originalProps.ref !== undefined */))
-  
-
 
   let
     props: Props | null = null,
@@ -69,12 +65,16 @@ function createElement(/* arguments */): VirtualElement {
     props = { children }
   }
 
+  let error: Error | null = null
+
   if (type && type.meta) {
     if (props && type.meta.properties) {
       if (process.env.NODE_ENV === 'development' as any) {
-        const error = validateProperties(
-          props, type.meta.properties, type.meta.validate, type.meta.variableProps, type.meta.displayName,
-          type['js-widgets:kind'] === 'contextProvider')
+        if (type['js-widgets:kind'] !== 'contextProvider') {
+          error = validateComponentProps(props, type.meta.validate, type.meta.displayName)
+        } else {
+          error = validateContextProps(props, type.meta.validate, type.meta.displayName)
+        }
 
         if (error) {
           throw error
@@ -85,20 +85,15 @@ function createElement(/* arguments */): VirtualElement {
 
   let
     key = null
-    //ref = null
 
   // TODO - fix!!!!
   if (originalProps && (originalProps.key !== undefined /* || originalProps.ref !== undefined */)) {
     props = Object.assign({}, props)
-
     delete props.key
-    //delete props.ref
-
     key = originalProps.key === undefined ? null : originalProps.key
-    //ref = originalProps.ref === undefined ? null : originalProps.ref
   }
 
-  return new VirtualElementClass(type, props, key/*, ref*/)
+  return new VirtualElementClass(type, props, key)
 }
 
 export default createElement
@@ -115,18 +110,15 @@ const VirtualElementClass = class VirtualElement {
   type: string | ComponentFactory
   props: Props | null
   key: Key
-  //ref: Ref<any> 
 
   constructor(
     type: string | ComponentFactory,
     props: Props | null,
     key: Key,
-    //ref: Ref<any>
   ) {
     this.type = type
     this.props = props
     this.key = key
-    //this.ref = ref
   }
 }
 
@@ -156,185 +148,77 @@ function isIterableObject(it: any) {
   return it !== null && typeof it === 'object' && (Array.isArray(it) || typeof it[SYMBOL_ITERATOR] === 'function')
 }
 
-function validateProperties<P extends Props>(
+function validateComponentProps<P extends Props>(
   props: P,
-  propsConfig: PropertiesConfig<P>,
-  propsValidator: (props: P) => null | Error | true | false,
-  variableProps: boolean,
-  componentName: string,
-  isCtxProvider: boolean
-) {
-  let ret = null
+  validate: (props: P) => boolean | null | Error,
+  displayName: string
+): null | Error {
+  let
+    ret = null,
+    errorMsg: string | null = null
 
-  const
-    propNames = propsConfig ? Object.keys(propsConfig) : [],
-    messages = []
+  if (validate) {
+    const result = validate(props)
 
-  if (propsConfig) {
-    for (let i = 0; i < propNames.length; ++i) {
-      const
-        propName = propNames[i],
-        propConfig = propsConfig[propName],
-        ret = validateProperty(
-          props, propConfig, propName, componentName, isCtxProvider)
-
-      if (ret) {
-        messages.push(ret.message)
-      }
-    }
-  }
-
-  if (!variableProps) {
-    const
-      usedPropNames = Object.keys(props),
-      invalidPropNames = []
-
-    for (let i = 0; i < usedPropNames.length; ++i) {
-      const usedPropName = usedPropNames[i]
-
-      if (!propsConfig || !propsConfig.hasOwnProperty(usedPropName)) {
-        if (usedPropName !== 'key' && usedPropName !=='ref') { // TODO: => DIO bug
-          invalidPropNames.push(usedPropName)
-        }
-      }
+    if (result === false) {
+      errorMsg = 'Invalid component properties'
+    } else if (result instanceof Error) {
+      errorMsg = result.message
+    } else if (result !== null && result !== true) {
+      errorMsg = 'Invalid return value from prop validation function'
     }
 
-    if (invalidPropNames.length == 1) {
-      messages.push(`Invalid prop key "${invalidPropNames[0]}"`)
-    } else if (invalidPropNames.length > 1) {
-      messages.push('Invalid prop keys: ' + invalidPropNames.join(', '))
-    }
-  }
-
-  if (propsValidator) {
-    const
-      validator = propsValidator && (<any>propsValidator)['js-spec:validate'] || propsValidator,
-      error = validator(props)
-
-    if (error === false) {
-      messages.push('Invalid value')
-    } else if (error) {
-      messages.push(error instanceof Error ? error.message : String(error))
-    }
-  }
-
-  if (messages.length > 0) {
-    const errorMsgIntro =
-      'Prop validation error for '
-        + (isCtxProvider ? 'provider of context ' : 'component ')
-        + `"${componentName}"`
-        + ' => '
-
-    if (messages.length === 1) {
-      ret = new Error(`${errorMsgIntro} ${messages[0]}`)
-    } else if (messages.length > 1) {
-      ret = new Error(`\n- ${messages.join('\n- ')}`)
+    if (errorMsg) {
+      ret = new Error(
+        'Prop validation error for context '
+          + `"${displayName}"`
+          + ' => '
+          + errorMsg)
     }
   }
 
   return ret
 }
 
-function validateProperty<P extends Props, K extends keyof P>(
+function validateContextProps<P extends Props>(
   props: P,
-  propConfig: PropertyConfig<K>,
-  propName: K,
-  componentName: string,
-  isCtxProvider: boolean
-) {
+  validate: (props: P) => boolean | null | Error,
+  displayName: string
+): null | Error {
   let
     ret = null,
-    errMsg = null
+    errorMsg: string | null = null
 
-  const
-    valueIsSet = props.hasOwnProperty(propName),
-    value = valueIsSet ? props[propName] : undefined,
-    nullable = propConfig.nullable === true,
-    typeConstructor = propConfig.type || null,
+  const clone = { ... props }
 
-    propInfo = `'${propName}' of `
-      + `${isCtxProvider ? 'context provider for' : 'component'} '${componentName}'`
-    
-  let validate = propConfig.validate || null
+  delete clone.key
+  delete clone.value
 
-  validate = validate && (<any>validate)['js-spec:validate'] || validate
+  const keys = Object.keys(clone)
 
-  if (!valueIsSet) {
-    if (!propConfig.hasOwnProperty('defaultValue') && propConfig.required === true) {
-      errMsg = `Missing mandatory property ${propInfo}`
+  if (keys.length > 0) {
+    errorMsg = 'Invalid keys: ' + keys.join(', ')
+  }
+
+  if (!errorMsg && validate) {
+    const result = validate(props.value)
+
+    if (result === false) {
+      errorMsg = 'Invalid context value'
+    } else if (result instanceof Error) {
+      errorMsg = result.message
+    } else if (result !== null && result !== true) {
+      errorMsg = 'Invalid return value from context validation function'
     }
-  } else if (value === null && nullable === true || value === undefined && propConfig.required !== true) {
-    // Perfectly fine
-  } else if (value === null && nullable === false) {
-    errMsg = `Property ${propInfo} must not be null`
-  } else if (typeConstructor !== undefined && typeConstructor !== null) {
-    const type = typeof value
 
-    switch (<any>typeConstructor) {
-      case Boolean:
-        if (type !== 'boolean') {
-          errMsg = `Property ${propInfo} must be boolean`
-        }
-        
-        break
-        
-      case Number:
-        if (type !== 'number') {
-          errMsg = `Property ${propInfo} must be a number`
-        }
-        
-        break
-      
-      case String:
-        if (type !== 'string') {
-          errMsg = `Property ${propInfo} must be a string`
-        }
-        
-        break
-        
-      case Function:
-        if (type !== 'function') {
-          errMsg = `Property ${propInfo} must be a function`
-        }
-        
-        break
-        
-      default:
-        if (typeConstructor && !(<Function>value instanceof typeConstructor)) {
-          errMsg = `The property ${propInfo} must be of type `
-            + typeConstructor.name 
-        }
+    if (errorMsg) {
+      ret = new Error(
+        'Prop validation error for context '
+          + `"${displayName}"`
+          + ' => '
+          + errorMsg)
     }
   }
-  
-  if (!errMsg && !(nullable && value === null)
-    && valueIsSet && validate) {
 
-    let err = (<Function>validate)(value)
-      
-    if (err === undefined || err === null || err === true) {
-      // everything fine
-    } else if (err === false) {
-      errMsg = `Invalid value for property ${propInfo}`
-    } else if (typeof err === 'string') {
-      errMsg = `Invalid value for property ${propInfo} => ${err}`
-    } else if (err && typeof err.message === 'string') {
-      errMsg = `Invalid value for property ${propInfo} => `
-        + err.message
-    } else {
-      const msg = String(err).trim()
-
-      errMsg = `Invalid value for property ${propInfo}`
-
-      if (msg !== '') {
-        errMsg += ` => ${msg}`
-      }
-    }
-  }
-  
-  if (errMsg) {
-    ret = new Error(errMsg)
-  } 
-  
   return ret
 }

@@ -10,22 +10,7 @@ type CounterProps = {
 const Counter = defineComponent<CounterProps>({
   displayName: 'Counter',
 
-  /*
-  properties: {
-    initialValue: {
-      type: Number,
-      defaultValue: 0,
-      validate: Spec.integer
-    },
-
-    label: {
-      type: String,
-      defaultValue: 'Counter'
-    }
-  },
-  */
-
-  defaultProps: {
+  defaults: {
     initialValue: 0,
     label: 'Counter'
   },

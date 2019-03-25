@@ -1,14 +1,13 @@
 import Props from './Props'
 import VirtualNode from './VirtualNode'
-import PropertiesConfig from './PropertiesConfig'
+import Component from './Component'
+import PickOptionalProps from '../../internal/types/PickOptionalProps'
 
-type StatelessComponentConfig<P extends Props = {}> = {
+type StatefulComponentConfig<P extends Props = {}> = {
   displayName: string,
-  properties?: PropertiesConfig<P>,
-  validate?(props: P): boolean | null | Error
+  defaults?: PickOptionalProps<P>, 
+  validate?(props: P): boolean | null | Error,
   render(props: P): VirtualNode,
-  init?: never
-  defaultProps?: never
 }
 
-export default StatelessComponentConfig
+export default StatefulComponentConfig

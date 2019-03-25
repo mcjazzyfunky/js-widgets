@@ -1,14 +1,12 @@
 import VirtualElement from './VirtualElement'
 import ComponentMeta from './ComponentMeta'
 import Props from './Props'
-//import Methods from './Methods'
 
 type ExtProps<P extends Props> = P & {
-  key?: string | number,
-  ref?: any // TODO
+  key?: string | number
 }
 
-export default interface ComponentFactory<P extends Props = {}/*, M extends Methods = {}*/> {
+export default interface ComponentFactory<P extends Props = {}> {
   (props?: ExtProps<P>, ...children: any[]): VirtualElement,
-  meta: ComponentMeta<P/*, M*/>
+  meta: ComponentMeta<P>
 }
