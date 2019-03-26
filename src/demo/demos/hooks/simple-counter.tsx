@@ -42,4 +42,4 @@ const Counter = defineComponent<CounterProps>({
   }
 })
 
-export default <Counter/>
+export default <Counter label="xxx"/>

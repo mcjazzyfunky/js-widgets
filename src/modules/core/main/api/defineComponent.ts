@@ -130,6 +130,10 @@ function convertConfigToMeta(config: any): any {
     Object.freeze(ret.defaults)
   }
 
+  if (config.validate) {
+    ret.validate = config.validate
+  }
+
   if (config.render) {
     ret.render = config.render
   } else {

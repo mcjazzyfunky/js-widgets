@@ -67,18 +67,16 @@ function createElement(/* arguments */): VirtualElement {
 
   let error: Error | null = null
 
-  if (type && type.meta) {
-    if (props && type.meta.properties) {
-      if (process.env.NODE_ENV === 'development' as any) {
-        if (type['js-widgets:kind'] !== 'contextProvider') {
-          error = validateComponentProps(props, type.meta.validate, type.meta.displayName)
-        } else {
-          error = validateContextProps(props, type.meta.validate, type.meta.displayName)
-        }
+  if (process.env.NODE_ENV === 'development' as any) {
+    if (type && type.meta && type.meta.validate) {
+      if (type['js-widgets:kind'] !== 'contextProvider') {
+        error = validateComponentProps(props, type.meta.validate, type.meta.displayName)
+      } else {
+        error = validateContextProps(props, type.meta.validate, type.meta.displayName)
+      }
 
-        if (error) {
-          throw error
-        }
+      if (error) {
+        throw error
       }
     }
   }
@@ -149,8 +147,8 @@ function isIterableObject(it: any) {
 }
 
 function validateComponentProps<P extends Props>(
-  props: P,
-  validate: (props: P) => boolean | null | Error,
+  props: P | null,
+  validate: (props: P | null) => boolean | null | Error,
   displayName: string
 ): null | Error {
   let
@@ -170,7 +168,7 @@ function validateComponentProps<P extends Props>(
 
     if (errorMsg) {
       ret = new Error(
-        'Prop validation error for context '
+        'Prop validation error for component '
           + `"${displayName}"`
           + ' => '
           + errorMsg)
@@ -181,15 +179,15 @@ function validateComponentProps<P extends Props>(
 }
 
 function validateContextProps<P extends Props>(
-  props: P,
-  validate: (props: P) => boolean | null | Error,
+  props: P | null,
+  validate: (props: P | null) => boolean | null | Error,
   displayName: string
 ): null | Error {
   let
     ret = null,
     errorMsg: string | null = null
 
-  const clone = { ... props }
+  const clone: any = { ... props }
 
   delete clone.key
   delete clone.value
@@ -201,7 +199,7 @@ function validateContextProps<P extends Props>(
   }
 
   if (!errorMsg && validate) {
-    const result = validate(props.value)
+    const result = validate(props && props.value)
 
     if (result === false) {
       errorMsg = 'Invalid context value'
