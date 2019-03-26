@@ -42,8 +42,8 @@ const Counter = defineComponent<CounterProps>({
   displayName: 'Counter',
 
   validate: Spec.shape({
-    initialValue: Spec.integer
-  })
+    initialValue: Spec.optional(Spec.integer)
+  }),
   
   defaults: {
     initialValue: 0,
