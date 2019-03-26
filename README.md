@@ -50,6 +50,8 @@ const Counter = defineComponent<CounterProps>({
     label: 'Counter'
   },
 
+  memoize: true,
+
   init(c) {
     const
       getProps = useProps(c),
