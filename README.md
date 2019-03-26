@@ -28,7 +28,7 @@ mount(content, document.getElementById('app'))
 ```
 #### Example 2 (TypeScript)
 
-```jsx
+```tsx
 import { createElement, defineComponent } from 'js-widgets'
 import { useOnMount, useOnUpdate, useProps, useState } from 'js-widgets/hooks'
 import { Spec } from 'js-spec' // third-party validation library
