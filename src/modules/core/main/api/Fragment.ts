@@ -22,7 +22,10 @@ export default Fragment as ComponentFactory<FragmentProps>
 
 const meta: StatelessComponentMeta<{ key?: any }> = Object.freeze({
   displayName: 'Fragment',
+  memoize: false,
   type: 'statelessComponent' as any,
+  defaults: null,
+  validate: null,
   render: Fragment
 })
 

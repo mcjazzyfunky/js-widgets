@@ -7,6 +7,7 @@ type StatefulComponentConfig<P extends Props = {}> = {
   displayName: string,
   defaults?: PickOptionalProps<P>, 
   validate?(props: P): boolean | null | Error,
+  memoize?: boolean,
   render(props: P): VirtualNode,
 }
 

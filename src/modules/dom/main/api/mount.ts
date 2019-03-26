@@ -110,7 +110,6 @@ function convertNode(node: any) {
 
   if (newProps) {
     delete newProps.key
-    //delete newProps.ref
   }
 
   if (node.key !== null || node.ref !== null) {
@@ -197,17 +196,12 @@ function convertStatelessComponent(it: any): Function {
     return convertNode(it.meta.render(props))
   }
 
-
+  if (it.meta.memoize) {
+    ret = React.memo(ret)
+  }
 
   ret.displayName = it.meta.displayName
   ret = React.forwardRef(ret)
-
-  //if (it.meta.render.length > 1) {
-  //  ret = React.forwardRef(ret)
-  //}
-
-
-
 
   Object.defineProperty(it, '__internal_type', {
     value: ret
@@ -331,6 +325,10 @@ function convertStatefulComponent(it: any): Function {
 
   ret = React.forwardRef(ret)
 
+  if (it.meta.memoize) {
+    ret = React.memo(ret)
+  }
+  
   Object.defineProperty(it, '__internal_type', {
     value: ret
   })

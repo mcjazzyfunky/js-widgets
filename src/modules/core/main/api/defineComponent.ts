@@ -76,6 +76,7 @@ const
           displayName: specOfDisplayName,
           defaults: Spec.optional(specOfDefaultProps),
           validate: Spec.optional(Spec.function),
+          memoize: Spec.optional(Spec.boolean),
           render: Spec.function
         })
       }, 
@@ -86,6 +87,7 @@ const
           displayName: specOfDisplayName,
           defaults: Spec.optional(specOfDefaultProps),
           validate: Spec.optional(Spec.function),
+          memoize: Spec.optional(Spec.boolean),
           init: Spec.function
         })
       })
@@ -113,13 +115,15 @@ function validateComponentConfig(config: any): null | Error {
 
 function convertConfigToMeta(config: any): any {
   const ret: any = {
-    displayName: config.displayName
+    displayName: config.displayName,
+    defaults: config.defaults ? {} : null,
+    validate: config.validate || null,
+    memoize: !!config.memoize
+    // plus key "render" or "init"
   }
 
   if (config.defaults) {
     const keys = Object.keys(config.defaults)
-
-    ret.defaults = {}
 
     for (let i = 0; i < keys.length; ++i) {
       const key = keys[i]
@@ -128,10 +132,6 @@ function convertConfigToMeta(config: any): any {
     }
 
     Object.freeze(ret.defaults)
-  }
-
-  if (config.validate) {
-    ret.validate = config.validate
   }
 
   if (config.render) {

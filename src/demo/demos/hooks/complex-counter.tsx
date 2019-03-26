@@ -9,6 +9,7 @@ type CounterProps = {
 
 const Counter = defineComponent<CounterProps>({
   displayName: 'Counter',
+  memoize: true,
 
   defaults: {
     label: 'Counter',

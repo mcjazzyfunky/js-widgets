@@ -6,6 +6,7 @@ type SayHelloProps = {
 
 const SayHello = defineComponent<SayHelloProps>({
   displayName: 'Counter',
+  memoize: true,
 
   render({ name = 'world'}) {
     return <div>Hello, {name}!</div>
