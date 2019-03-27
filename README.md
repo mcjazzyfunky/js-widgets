@@ -1,6 +1,6 @@
 # jsWidgets
 
-Disclaimer: This is just an initial draft of README. A lot is missing yet....
+Disclaimer: This is just an initial draft of README. A lot is missing ....
 
 ### Examples
 
