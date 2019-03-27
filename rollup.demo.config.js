@@ -15,11 +15,13 @@ export default {
     globals: {
       'react': 'React',
       'react-dom': 'ReactDOM',
-      'js-spec': 'jsSpec'
+      'js-spec': 'jsSpec',
+      'js-stores': 'jsStores',
+      'js-stores/with-js-widgets': 'jsStores.withJsWidgets'
     }
   },
 
-  external: ['react', 'react-dom', 'js-spec'],
+  external: ['react', 'react-dom', 'js-spec', 'js-stores', 'js-stores/with-js-widgets'],
   
   plugins: [
     resolve(),

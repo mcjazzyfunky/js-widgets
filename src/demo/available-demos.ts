@@ -5,6 +5,7 @@ import helloWorld from './demos/hooks/hello-world'
 import simpleCounter from './demos/hooks/simple-counter'
 import complexCounter from './demos/hooks/complex-counter'
 import stopWatch from './demos/hooks/stop-watch'
+import stopWatchAlt from './demos/hooks/stop-watch-alt'
 import i18n from './demos/hooks/i18n'
 
 
@@ -17,6 +18,7 @@ const demos: [string, VirtualElement][] = [
   ['Simple counter (hooks)', simpleCounter],
   ['Complex counter (hooks)', complexCounter],
   ['Stop watch (hooks)', stopWatch],
+  ['Stop watch - alternative (hooks)', stopWatchAlt],
   ['Internationalization (hooks)', i18n],
 
   ['Simple counter (handlers)', simpleCounter2],

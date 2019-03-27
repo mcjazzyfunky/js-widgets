@@ -65,7 +65,7 @@ const StopWatch = defineComponent({
             <div>Time: {time}</div>
             <br/>
             <button onClick={createStartStopListener(running, time)}>
-            { running ? 'Stop' : 'Start'}
+              { running ? 'Stop' : 'Start'}
             </button>
             {' '}
             <button onClick={createResetListener(running)}>
