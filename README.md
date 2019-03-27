@@ -1,6 +1,6 @@
 # jsWidgets
 
-Disclaimer: This is just an initial draft of README. A lot is missing yet....
+Disclaimer: This is just an initial draft of README. A lot is missing ....
 
 ### Examples
 
@@ -238,5 +238,4 @@ Factory functions for all SVG entities
 
 ### Project status
 
-**Important**: This project is in a very early state and it is not meant 
-to be used in production.
+**Important**: This project is in a very early state and it is not and never will be meant to be used in production.
