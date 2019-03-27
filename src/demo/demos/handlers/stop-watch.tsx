@@ -1,5 +1,5 @@
 import { createElement, defineComponent } from '../../../modules/core/main/index'
-import { withState } from '../../../modules/handlers/main/index' 
+import { withState, withOnUnmount } from '../../../modules/handlers/main/index' 
 import { memoize } from '../../../modules/util/main/index'
 
 const StopWatch = defineComponent({
@@ -9,24 +9,24 @@ const StopWatch = defineComponent({
     let interval = 0
 
     const
-      [useTime, setTime] = withState(c, (time: number) => time),
-      [useRunning, setRunning] = withState(c, (running: boolean) => running),
+      [getTime, setTime] = withState(c, (time: number) => time),
+      [getRunning, setRunning] = withState(c, (running: boolean) => running),
 
-      createStartStopListener = memoize((running: boolean, time: number) => {
-        if (running) {
-          stopTimer(running)
-        } else {
-          startTimer(running, time)
-        }
-      }),
+      createStartStopListener = memoize((running: boolean, time: number) =>
+        () => {
+          if (running) {
+            stopTimer(running)
+          } else {
+            startTimer(running, time)
+          }
+        }),
 
-      createResetListener = memoize((running: boolean) => resetTimer(running))
+      createResetListener = memoize((running: boolean) =>
+        () => resetTimer(running)),
 
-    /*
-    useEffect(c, (running: boolean) => {
-      return () => stopTimer(running)
-    })
-    */
+      stopTimerOnUnmount = withOnUnmount(c, (running: boolean) => {
+        return stopTimer(running)
+      })
     
     function startTimer(running: boolean, time: number) {
       if (!running) {
@@ -55,8 +55,10 @@ const StopWatch = defineComponent({
 
     return () => {
       const
-        time = useTime(0),
-        running = useRunning(false)
+        time = getTime(0),
+        running = getRunning(false)
+
+      stopTimerOnUnmount(running)
 
       return (
         <div>

@@ -2,28 +2,31 @@ import { Component } from '../../../core/main/index'
 
 export default function withState<T, A extends any[]>(c: Component, init: (...args: A) => T):
   [(...args: A) => T, (updater: (T | ((oldState: T) => T))) => void] {
-  
-  const
-    [getState, setState] = c.handleState<T>(undefined!),
 
-    unsubscribe = c.onUpdate(() => {
-      isInitialized = true
-      unsubscribe()
-    })
-  
-  let isInitialized = false
+  let
+    isInitialized = false,
+    initialState: any = undefined,
+    hasUpdatedState = false
+
+  const
+    [getState, setState] = c.handleState<T>(undefined!)
 
   function updateState(updater: (T | ((oldState: T) => T))) {
+    if (!hasUpdatedState) {
+      hasUpdatedState = true
+      setState(initialState)
+    }
+
     setState(updater)
   }
 
   function useState(...args: A) {
-    let ret = undefined
+    let ret: T
 
     if (!isInitialized) {
+      initialState = init(...args)
+      ret = initialState
       isInitialized = true
-      ret = init(...args)
-      setState(ret)
     } else {
       ret = getState()
     }

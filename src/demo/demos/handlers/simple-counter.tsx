@@ -11,11 +11,11 @@ const Counter = defineComponent<CounterProps>({
 
   init(c) {
     const
-      [useCount, setCount] = withState(c, (n: number) => n),
+      [getCount, setCount] = withState(c, (n: number) => n),
       onIncrement = () => setCount(count => count + 1)
 
     return ({ label = 'Counter', initialValue = 0 }) => {
-      const count = useCount(initialValue)
+      const count = getCount(initialValue)
 
       return (
         <div>

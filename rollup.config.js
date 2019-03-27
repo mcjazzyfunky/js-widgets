@@ -31,7 +31,7 @@ function createConfig(pkg, moduleFormat, productive) {
         : `dist/js-widgets.${pkg}.${moduleFormat}.development.js`,
 
       format: moduleFormat,
-      name: pkg === 'all' ? 'jsWidgets' : `jsWidgets.${pkg}`,
+      name: pkg === 'core' || pkg === 'all' ? 'jsWidgets' : `jsWidgets.${pkg}`,
       sourcemap: productive ? false : 'inline',
 
       globals: {

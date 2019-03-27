@@ -196,12 +196,12 @@ function convertStatelessComponent(it: any): Function {
     return convertNode(it.meta.render(props))
   }
 
+  ret.displayName = it.meta.displayName
+  ret = React.forwardRef(ret)
+
   if (it.meta.memoize) {
     ret = React.memo(ret)
   }
-
-  ret.displayName = it.meta.displayName
-  ret = React.forwardRef(ret)
 
   Object.defineProperty(it, '__internal_type', {
     value: ret
@@ -237,7 +237,13 @@ function convertStatefulComponent(it: any): Function {
 
           states[idx] = [undefined, null, init]
 
-          return [() => states[idx][0], (init: any) => states[idx][1](init)]
+          return [() => states[idx][0], (init: any) => {
+            states[idx][0] = init
+            
+            if (isMountedRef.current) {
+              states[idx][1](init)
+            }
+          }]
         },
 
         consumeContext(context: any) {
