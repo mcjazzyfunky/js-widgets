@@ -47,7 +47,7 @@ const Friendly = defineComponent({
     return () => (
       <div>
         <input value={store.newFriendEntry} onChange={onChangeNewFriend} />
-        <button onClick={onClickAddFriend}>Add friend </button>
+        <button onClick={onClickAddFriend}>Add friend</button>
         <button onClick={onClickAddFavoriteFriend}>Add favorite friend</button>
         <div>
            <h4>Count of friends: {store.friends.length}</h4>
