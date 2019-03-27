@@ -12,6 +12,10 @@ const StopWatch = defineComponent({
       [getTime, setTime] = withState(c, (time: number) => time),
       [getRunning, setRunning] = withState(c, (running: boolean) => running),
 
+      stopTimerOnUnmount = withOnUnmount(c, (running: boolean) => {
+        return stopTimer(running)
+      }),
+
       createStartStopListener = memoize((running: boolean, time: number) =>
         () => {
           if (running) {
@@ -22,11 +26,7 @@ const StopWatch = defineComponent({
         }),
 
       createResetListener = memoize((running: boolean) =>
-        () => resetTimer(running)),
-
-      stopTimerOnUnmount = withOnUnmount(c, (running: boolean) => {
-        return stopTimer(running)
-      })
+        () => resetTimer(running))
     
     function startTimer(running: boolean, time: number) {
       if (!running) {
