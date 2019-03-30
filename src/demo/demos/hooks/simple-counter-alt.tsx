@@ -16,6 +16,10 @@ const Counter = defineComponent<CounterProps>({
   },
 
   init(c, getProps) {
+    let
+      props: CounterProps,
+      count: number | undefined
+
     const
       [getCount, setCount] = useState(c, getProps().initialValue),
       onIncrement = () => setCount(count => count! + 1)
@@ -28,8 +32,6 @@ const Counter = defineComponent<CounterProps>({
       console.log('Component has been rendered - props:', props, ' - count value:', count)
     })
     
-    let [props, count] = [getProps(), getCount()] 
-
     return () => {
       [props, count] = [getProps(), getCount()]
 
