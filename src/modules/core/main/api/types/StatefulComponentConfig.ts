@@ -8,7 +8,7 @@ type StatefulComponentConfig<P extends Props = {}> = {
   defaults?: PickOptionalProps<P>, 
   validate?(props: P): boolean | null | Error,
   memoize?: boolean,
-  init: (c: Component<P>) => (props: P) => VirtualNode,
+  init: (c: Component<P>, getProps: () => P) => (props: P) => VirtualNode,
 }
 
 export default StatefulComponentConfig 

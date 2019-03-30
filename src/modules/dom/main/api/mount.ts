@@ -221,6 +221,7 @@ function convertStatefulComponent(it: any): Function {
     const
       [, setForceUpdateValue] = useState(false),
       currPropsRef = useRef(props),
+      getProps = useRef(() => currPropsRef.current).current,
       isMountedRef = useRef(false),
       states: any[] = useRef([]).current,
       contexts: any[] = useRef([]).current,
@@ -232,10 +233,10 @@ function convertStatefulComponent(it: any): Function {
           return currPropsRef.current
         },
 
-        handleState(init: any) {
+        handleState(initialState: any) {
           const idx = states.length
 
-          states[idx] = [undefined, null, init]
+          states[idx] = [initialState, null]
 
           return [() => states[idx][0], (init: any) => {
             states[idx][0] = init
@@ -309,11 +310,11 @@ function convertStatefulComponent(it: any): Function {
     }, [])
 
     if (!renderRef.current) {
-      renderRef.current = it.meta.init(component)
+      renderRef.current = it.meta.init(component, getProps)
     }
 
     states.forEach(item => {
-      const [value, setValue] = useState(item[2])
+      const [value, setValue] = useState(item[0])
 
       item[0] = value
       item[1] = setValue
@@ -343,13 +344,15 @@ function convertStatefulComponent(it: any): Function {
 }
 
 function mergeDefaultProps(props: any, type: any) {
-  let ret: any = {...props} 
+  let ret: any = {} 
   
   if (type && type.meta) {
     if (type.meta.defaults) {
       Object.assign(ret, type.meta.defaults)
     }
   }
+
+  Object.assign(ret, props)
   
   return ret
 }

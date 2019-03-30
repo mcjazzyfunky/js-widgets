@@ -7,7 +7,7 @@ type StatefulComponentMeta<P extends Props = {}> = {
   displayName: string,
   defaults: Partial<P> | null,
   validate: ((props: P) => null | Error | true | false) | null,
-  init: (c: Component) => (props: P) =>  VirtualNode,
+  init: (c: Component<P>, getProps: () => P) => (props: P) =>  VirtualNode,
   memoize: boolean,
   render: never
 }

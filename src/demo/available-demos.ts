@@ -3,6 +3,7 @@ import { VirtualElement } from '../modules/core/main/index'
 // hooks
 import helloWorld from './demos/hooks/hello-world'
 import simpleCounter from './demos/hooks/simple-counter'
+import simpleCounterAlt from './demos/hooks/simple-counter-alt'
 import complexCounter from './demos/hooks/complex-counter'
 import stopWatch from './demos/hooks/stop-watch'
 import stopWatchAlt from './demos/hooks/stop-watch-alt'
@@ -18,6 +19,7 @@ import stopWatch2Alt from './demos/handlers/stop-watch-alt'
 const demos: [string, VirtualElement][] = [
   ['Hello world (hooks)', helloWorld],
   ['Simple counter (hooks)', simpleCounter],
+  ['Simple counter - alternative (hooks)', simpleCounterAlt],
   ['Complex counter (hooks)', complexCounter],
   ['Stop watch (hooks)', stopWatch],
   ['Stop watch - using store (hooks)', stopWatchAlt],
