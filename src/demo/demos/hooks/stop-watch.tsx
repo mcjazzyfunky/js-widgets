@@ -51,11 +51,9 @@ const StopWatch = defineComponent({
     return () =>
       <div>
         <div>Time: {getTime()}</div>
-        <br/>
         <button onClick={onStartStop}>
           { isRunning() ? 'Stop' : 'Start'}
         </button>
-        {' '}
         <button onClick={onReset}>
           Reset
         </button>

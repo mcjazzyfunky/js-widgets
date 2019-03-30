@@ -6,28 +6,26 @@ const StopWatch = defineComponent({
   displayName: 'StopWatch',
 
   init(c) {
-    let interval = 0
+    let
+      interval = 0,
+      running = false,
+      time = 0
 
     const
       [getTime, setTime] = withState(c, (time: number) => time),
       [getRunning, setRunning] = withState(c, (running: boolean) => running),
+      stopTimerOnUnmount = withOnUnmount(c, () => stopTimer()),
 
-      stopTimerOnUnmount = withOnUnmount(c, (running: boolean) => {
-        return stopTimer(running)
-      }),
+      onStartStop = () => {
+        if (running) {
+          stopTimer()
+        } else {
+          startTimer(running, time)
+        }
+      },
 
-      createStartStopListener = memoize((running: boolean, time: number) =>
-        () => {
-          if (running) {
-            stopTimer(running)
-          } else {
-            startTimer(running, time)
-          }
-        }),
+      onReset = () => resetTimer()
 
-      createResetListener = memoize((running: boolean) =>
-        () => resetTimer(running))
-    
     function startTimer(running: boolean, time: number) {
       if (!running) {
         const startTime = Date.now() - time
@@ -40,7 +38,7 @@ const StopWatch = defineComponent({
       }
     }
 
-    function stopTimer(running: boolean) {
+    function stopTimer() {
       if (running) {
         clearInterval(interval)
         interval = 0 
@@ -48,28 +46,25 @@ const StopWatch = defineComponent({
       }
     }
 
-    function resetTimer(running: boolean) {
-      stopTimer(running)
+    function resetTimer() {
+      stopTimer()
       setTime(0)
     }
 
     return () => {
-      const
-        time = getTime(0),
-        running = getRunning(false)
+      time = getTime(0),
+      running = getRunning(false)
 
-      stopTimerOnUnmount(running)
+      stopTimerOnUnmount()
 
       return (
         <div>
             <div>Time: {time}</div>
-            <br/>
-            <button onClick={createStartStopListener(running, time)}>
+            <button onClick={onStartStop}>
               { running ? 'Stop' : 'Start'}
             </button>
-            {' '}
-            <button onClick={createResetListener(running)}>
-            Reset
+            <button onClick={onReset}>
+              Reset
             </button>
         </div>
       )

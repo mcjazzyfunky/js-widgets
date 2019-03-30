@@ -1,5 +1,5 @@
 import { createElement, defineComponent } from '../../../modules/core/main/index'
-import { useOnUnmount, useState } from '../../../modules/hooks/main/index'
+import { withState, withOnUnmount } from '../../../modules/handlers/main/index' 
 import { initStore } from 'js-stores'
 import { useStore } from 'js-stores/with-js-widgets'
 
@@ -45,22 +45,26 @@ const StopWatch = defineComponent({
   init(c) {
     const
       store = useStore(c, createStopWatchStore),
+      stopTimerOnUnmount = withOnUnmount(c, () => store.stopTimer()),
       onStartStop = () => store.running ? store.stopTimer() : store.startTimer(),
       onReset = () => store.resetTimer()
 
-    useOnUnmount(c, () => store.resetTimer())
-    
-    return () =>
-      <div>
-        <div>Time: {store.time}</div>
-        <button onClick={onStartStop}>
-          { store.running ? 'Stop' : 'Start'}
-        </button>
-        <button onClick={onReset}>
-          Reset
-        </button>
-      </div>
+    return () => {
+      stopTimerOnUnmount()
+
+      return (
+        <div>
+            <div>Time: {store.time}</div>
+            <button onClick={onStartStop}>
+              { store.running ? 'Stop' : 'Start'}
+            </button>
+            <button onClick={onReset}>
+              Reset
+            </button>
+        </div>
+      )
+    }
   }
 })
 
-export default <StopWatch/>
+export default StopWatch()
