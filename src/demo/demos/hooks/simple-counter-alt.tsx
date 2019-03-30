@@ -1,5 +1,5 @@
 import { createElement, defineComponent } from '../../../modules/core/main/index'
-import { useOnMount, useOnUpdate, useProviders, useState } from '../../../modules/hooks/main/index'
+import { useOnMount, useOnUpdate, useState } from '../../../modules/hooks/main/index'
 
 type CounterProps = {
   label?: string,
@@ -17,28 +17,27 @@ const Counter = defineComponent<CounterProps>({
 
   init(c, getProps) {
     const
-      [getCount, setCount] = useState(c, getProps().initialValue)
-
-    let [props, count] = useProviders(c,
-      [getProps, getCount],
-      (a, b) => { props = a, count = b })
-
-    const onIncrement = () => setCount(count => count! + 1)
+      [getCount, setCount] = useState(c, getProps().initialValue),
+      onIncrement = () => setCount(count => count! + 1)
 
     useOnMount(c, () => {
-      console.log('Component has been mounted.')
+      console.log('Component has been mounted - props:', props)
     })
 
     useOnUpdate(c, () => {
-      console.log('Component has been rendered - props:', props, ' - count value: ', count)
+      console.log('Component has been rendered - props:', props, ' - count value:', count)
     })
+    
+    let [props, count] = [getProps(), getCount()] 
 
     return () => {
+      [props, count] = [getProps(), getCount()]
+
       return (
         <div>
           <label>{props.label + ': '}</label> 
           <button onClick={onIncrement}>
-            {count} instead of {getCount() }
+            {count}
           </button>
         </div>
       )
