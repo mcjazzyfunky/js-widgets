@@ -31,6 +31,7 @@ mount(content, document.getElementById('app'))
 ```tsx
 import { createElement, defineComponent } from 'js-widgets'
 import { useOnMount, useOnUpdate, useProps, useState } from 'js-widgets/hooks'
+import { prepareView } from 'js-widgets/util'
 import { Spec } from 'js-spec' // third-party validation library
 
 type CounterProps = {
@@ -56,8 +57,9 @@ const Counter = defineComponent<CounterProps>({
   memoize: true,
 
   init(c, getProps) {
-    // We will update them before each rendering, so we
-    // do not have to "unwrap" those values all the time
+    // We will update these varables before each rendering
+    // (see the prepareView(...) call below), so we
+    // do not have to "unwrap"  those values all the time
     // by calling the corresponding getter methods
     let
       props = getProps(),
@@ -65,7 +67,15 @@ const Counter = defineComponent<CounterProps>({
 
     const
       [getCount, setCount] = useState(c, count),
-      onIncrement = () => setCount(count => count + 1)
+      onIncrement = () => setCount(count => count + 1),
+
+      // automatically update the mutable (=> "let") variables
+      // which have been declared above so we do not need to
+      // "unwrap" the corresponding values all the time
+      view = prepareView(() => {
+        props = getProps(),
+        count = getCount()
+      })
 
     useOnMount(c, () => {
       console.log(
@@ -77,13 +87,7 @@ const Counter = defineComponent<CounterProps>({
         'Component has been rendered - props: ', props, ', count:' count)
     })
 
-    return () => {
-      // update the mutable (=> "let") variables above so we do
-      // not need to "unwrap" the corresponding values
-      // all the time (especially in the lifecycle callbacks above)
-      props = getProps()
-      count = getCount()
-
+    return view(() => {
       return (
         <div>
           <label>{props.label + ': '}</label> 
@@ -92,7 +96,7 @@ const Counter = defineComponent<CounterProps>({
           </button>
         </div>
       )
-    }
+    })
   }
 })
 

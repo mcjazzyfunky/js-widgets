@@ -1,5 +1,6 @@
 import { createElement, defineComponent } from '../../../modules/core/main/index'
 import { useOnMount, useOnUpdate, useState } from '../../../modules/hooks/main/index'
+import { prepareView } from '../../../modules/util/main/index'
 
 type CounterProps = {
   label?: string,
@@ -17,12 +18,17 @@ const Counter = defineComponent<CounterProps>({
 
   init(c, getProps) {
     let
-      props: CounterProps,
-      count: number | undefined
+      props = getProps(),
+      count = props.initialValue
 
     const
-      [getCount, setCount] = useState(c, getProps().initialValue),
-      onIncrement = () => setCount(count => count! + 1)
+      [getCount, setCount] = useState(c, count),
+      onIncrement = () => setCount(count => count! + 1),
+      
+      view = prepareView(() => {
+        props = getProps()
+        count = getCount()
+      })
 
     useOnMount(c, () => {
       console.log('Component has been mounted - props:', props)
@@ -32,10 +38,7 @@ const Counter = defineComponent<CounterProps>({
       console.log('Component has been rendered - props:', props, ' - count value:', count)
     })
     
-    return () => {
-      props = getProps()
-      count = getCount()
-
+    return view(() => {
       return (
         <div>
           <label>{props.label + ': '}</label> 
@@ -44,7 +47,7 @@ const Counter = defineComponent<CounterProps>({
           </button>
         </div>
       )
-    }
+    })
   }
 })
 
