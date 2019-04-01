@@ -34,7 +34,7 @@ mount(content, document.getElementById('app'))
 ```tsx
 import { createElement, defineComponent } from 'js-widgets'
 import { useOnMount, useOnUpdate, useProps, useState } from 'js-widgets/hooks'
-import { prepareView } from 'js-widgets/util'
+import { decorateView } from 'js-widgets/util'
 import { Spec } from 'js-spec' // third-party validation library
 
 type CounterProps = {
@@ -75,7 +75,7 @@ const Counter = defineComponent<CounterProps>({
       // automatically update the mutable (=> "let") variables
       // which have been declared above so we do not always
       // need to use the corresponding getter functions 
-      view = prepareView(() => {
+      view = decorateView(null, () => {
         props = getProps()
         count = getCount()
       })

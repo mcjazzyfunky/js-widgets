@@ -1,6 +1,6 @@
 import { createElement, defineComponent } from '../../../modules/core/main/index'
 import { useOnMount, useOnUpdate, useState } from '../../../modules/hooks/main/index'
-import { prepareView } from '../../../modules/util/main/index'
+import { decorateView } from '../../../modules/util/main/index'
 
 type CounterProps = {
   label?: string,
@@ -25,7 +25,7 @@ const Counter = defineComponent<CounterProps>({
       [getCount, setCount] = useState(c, count),
       onIncrement = () => setCount(count => count! + 1),
       
-      view = prepareView(() => {
+      view = decorateView(null, () => {
         props = getProps()
         count = getCount()
       })
