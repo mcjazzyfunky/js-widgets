@@ -90,16 +90,14 @@ const Counter = defineComponent<CounterProps>({
         'Component has been rendered - props: ', props, ', count:' count)
     })
 
-    return view(() => {
-      return (
-        <div>
-          <label>{props.label + ': '}</label> 
-          <button onClick={onIncrement}>
-            {count}
-          </button>
-        </div>
-      )
-    })
+    return view(() =>
+      <div>
+        <label>{props.label + ': '}</label> 
+        <button onClick={onIncrement}>
+          {count}
+        </button>
+      </div>
+    )
   }
 })
 
