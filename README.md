@@ -57,12 +57,12 @@ const Counter = defineComponent<CounterProps>({
   memoize: true,
 
   init(c, getProps) {
-    // We will update these varables before each rendering
+    // we will update these variables before each rendering
     // (see the prepareView(...) call below), so we
-    // do not have to "unwrap"  those values all the time
+    // do not have to "unwrap" those values all the time
     // by calling the corresponding getter methods
     let
-      props = getProps(),
+      props = getProps()
       count = props.initialValue
 
     const
@@ -70,10 +70,10 @@ const Counter = defineComponent<CounterProps>({
       onIncrement = () => setCount(count => count + 1),
 
       // automatically update the mutable (=> "let") variables
-      // which have been declared above so we do not need to
-      // "unwrap" the corresponding values all the time
+      // which have been declared above so we do not always
+      // need to use the corresponding getter functions 
       view = prepareView(() => {
-        props = getProps(),
+        props = getProps()
         count = getCount()
       })
 
