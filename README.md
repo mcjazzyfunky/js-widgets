@@ -41,8 +41,11 @@ type CounterProps = {
 const Counter = defineComponent<CounterProps>({
   displayName: 'Counter',
 
-  validate: Spec.shape({
-    initialValue: Spec.optional(Spec.integer)
+  validate: Spec.exactProps({
+    optional: {
+      label: Spec.string,
+      initialValue: Spec.integer
+    }
   }),
   
   defaults: {
@@ -52,26 +55,36 @@ const Counter = defineComponent<CounterProps>({
 
   memoize: true,
 
-  init(c) {
+  init(c, getProps) {
+    // We will update them before each rendering, so we
+    // do not have to "unwrap" those values all the time
+    // by calling the corresponding getter methods
+    let props, count
+
     const
-      getProps = useProps(c),
       [getCount, setCount] = useState(c, getProps().initialValue),
       onIncrement = () => setCount(count => count + 1)
 
     useOnMount(c, () => {
-      console.log('Component has been mounted.')
+      console.log('Component has been mounted - props: ', props, ', count:' count)
     })
 
     useOnUpdate(c, () => {
-      console.log('Component has been rendered.')
+      console.log('Component has been renderd - props: ', props, ', count:' count)
     })
 
-    return props => {
+    return () => {
+      // update the "let" variable above so we do
+      // not need to "unwrap" the corresponding values
+      // all the time (especially in the lifecycle handling above)
+      props = getProps()
+      count = getCount()
+
       return (
         <div>
           <label>{props.label + ': '}</label> 
           <button onClick={onIncrement}>
-            {getCount()}
+            {count}
           </button>
         </div>
       )

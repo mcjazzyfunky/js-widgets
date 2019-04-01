@@ -33,7 +33,8 @@ const Counter = defineComponent<CounterProps>({
     })
     
     return () => {
-      [props, count] = [getProps(), getCount()]
+      props = getProps()
+      count = getCount()
 
       return (
         <div>
