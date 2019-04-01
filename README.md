@@ -59,10 +59,12 @@ const Counter = defineComponent<CounterProps>({
     // We will update them before each rendering, so we
     // do not have to "unwrap" those values all the time
     // by calling the corresponding getter methods
-    let props, count
+    let
+      props = getProps(),
+      count = props.initialValue
 
     const
-      [getCount, setCount] = useState(c, getProps().initialValue),
+      [getCount, setCount] = useState(c, count),
       onIncrement = () => setCount(count => count + 1)
 
     useOnMount(c, () => {
