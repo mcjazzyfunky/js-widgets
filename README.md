@@ -1,5 +1,8 @@
 # jsWidgets
 
+Just a R&D project to noodle around with some alternative approaches
+and APIs for UI development.
+
 Disclaimer: This is just an initial draft of README. A lot is missing ....
 
 ### Examples
