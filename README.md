@@ -17,7 +17,7 @@ import { div } from 'js-widgets/html'
 const SayHello = defineComponent({
   displayName: 'Counter',
 
-  render({ name = 'world'}) {
+  render({ name = 'world' }) {
     return div(`Hello, ${name}!`)
   }
 })
