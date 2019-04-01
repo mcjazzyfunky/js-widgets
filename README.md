@@ -66,11 +66,13 @@ const Counter = defineComponent<CounterProps>({
       onIncrement = () => setCount(count => count + 1)
 
     useOnMount(c, () => {
-      console.log('Component has been mounted - props: ', props, ', count:' count)
+      console.log(
+        'Component has been mounted - props: ', props, ', count:' count)
     })
 
     useOnUpdate(c, () => {
-      console.log('Component has been renderd - props: ', props, ', count:' count)
+      console.log(
+        'Component has been rendered - props: ', props, ', count:' count)
     })
 
     return () => {
