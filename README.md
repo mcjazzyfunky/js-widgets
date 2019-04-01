@@ -78,9 +78,9 @@ const Counter = defineComponent<CounterProps>({
     })
 
     return () => {
-      // update the "let" variable above so we do
+      // update the mutable (=> "let") variables above so we do
       // not need to "unwrap" the corresponding values
-      // all the time (especially in the lifecycle handling above)
+      // all the time (especially in the lifecycle callbacks above)
       props = getProps()
       count = getCount()
 
