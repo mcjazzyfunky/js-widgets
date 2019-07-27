@@ -66,7 +66,7 @@ const Counter = defineComponent<CounterProps>({
     const
       [getCount, setCount] = useState(c, getProps().initialValue),
       
-      [data, view] = withData({
+      [$, view] = withData({
         props: getProps,
         count: getCount 
       }),
@@ -75,12 +75,12 @@ const Counter = defineComponent<CounterProps>({
 
     useOnMount(c, () => {
       console.log(
-        'Component has been mounted - props: ', data.props, ', count:', data.count)
+        'Component has been mounted - props: ', $.props, ', count:', $.count)
     })
 
     useOnUpdate(c, () => {
       console.log(
-        'Component has been rendered - props: ', data.props, ', count:', data.count)
+        'Component has been rendered - props: ', $.props, ', count:', $.count)
     })
 
     return view(({ props, count }) =>
