@@ -1,6 +1,6 @@
 import { createElement, defineComponent } from '../../../modules/core/main/index'
 import { useOnMount, useOnUpdate, useState } from '../../../modules/hooks/main/index'
-import { decorateView } from '../../../modules/util/main/index'
+import { withData } from '../../../modules/util/main/index'
 
 type CounterProps = {
   label?: string,
@@ -17,28 +17,25 @@ const Counter = defineComponent<CounterProps>({
   },
 
   init(c, getProps) {
-    let
-      props = getProps(),
-      count = props.initialValue
-
     const
-      [getCount, setCount] = useState(c, count),
-      onIncrement = () => setCount(count => count! + 1),
-      
-      view = decorateView(null, () => {
-        props = getProps()
-        count = getCount()
-      })
+      [getCount, setCount] = useState(c, getProps().initialValue),
+
+      [data, view] = withData({
+        props: getProps,
+        count: getCount
+      }),
+
+      onIncrement = () => setCount(count => count! + 1)
 
     useOnMount(c, () => {
-      console.log('Component has been mounted - props:', props)
+      console.log('Component has been mounted - props:', data.props)
     })
 
     useOnUpdate(c, () => {
-      console.log('Component has been rendered - props:', props, ' - count value:', count)
+      console.log('Component has been rendered - props:', data.props, ' - count value:', data.count)
     })
     
-    return view(() => {
+    return view(({ props, count }) => {
       return (
         <div>
           <label>{props.label + ': '}</label> 

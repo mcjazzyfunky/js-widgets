@@ -1,24 +1,24 @@
 import { createElement, defineComponent } from '../../../modules/core/main/index'
 import { useOnUnmount, useStateObject } from '../../../modules/hooks/main/index'
-import { decorateView } from '../../../modules/util/main/index'
+import { withData } from '../../../modules/util/main/index'
 
 const StopWatch = defineComponent({
   displayName: 'StopWatch',
 
   init(c) {
-    let
-      interval = 0,
-      state = { time: 0, running: false }
-
     const
-      [getState, setState] = useStateObject(c, state),
+      [getState, setState] = useStateObject(c, { time: 0, running: false}),
 
-      view = decorateView(null, () => {
-        state = getState()
+      [data, view] = withData({
+        state: getState
       }),
 
+      vars = {
+        interval: 0
+      },
+
       onStartStop = () => {
-        if (state.running) {
+        if (data.state.running) {
           stopTimer()
         } else {
           startTimer()
@@ -30,10 +30,10 @@ const StopWatch = defineComponent({
     useOnUnmount(c, () => stopTimer())
     
     function startTimer() {
-      if (!state.running) {
-        const startTime = Date.now() - state.time
+      if (!data.state.running) {
+        const startTime = Date.now() - data.state.time
 
-        interval = window.setInterval(() => {
+        vars.interval = window.setInterval(() => {
           setState({ time: Date.now() - startTime })
         }, 10)
 
@@ -42,9 +42,9 @@ const StopWatch = defineComponent({
     }
 
     function stopTimer() {
-      if (state.running) {
-        clearInterval(interval)
-        interval = 0
+      if (data.state.running) {
+        clearInterval(vars.interval)
+        vars.interval = 0
         setState({ running: false })
       }
     }
@@ -54,7 +54,7 @@ const StopWatch = defineComponent({
       setState({ time: 0 })
     }
 
-    return view(() =>
+    return view(({ state }) =>
       <div>
         <div>Time: {state.time}</div>
         <button onClick={onStartStop}>

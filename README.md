@@ -34,7 +34,7 @@ mount(content, document.getElementById('app'))
 ```tsx
 import { createElement, defineComponent } from 'js-widgets'
 import { useOnMount, useOnUpdate, useProps, useState } from 'js-widgets/hooks'
-import { decorateView } from 'js-widgets/util'
+import { withData } from 'js-widgets/util'
 import { Spec } from 'js-spec' // third-party validation library
 
 type CounterProps = {
@@ -63,37 +63,27 @@ const Counter = defineComponent<CounterProps>({
   memoize: true,
 
   init(c, getProps) {
-    // we will update these variables before each rendering
-    // (see the prepareView(...) call below), so we
-    // do not have to "unwrap" those values all the time
-    // by calling the corresponding getter methods
-    let
-      props = getProps(),
-      count = props.initialValue
-
     const
-      [getCount, setCount] = useState(c, count),
-      onIncrement = () => setCount(count => count + 1),
+      [getCount, setCount] = useState(c, getProps().initialValue),
+      
+      [data, view] = withData({
+        props: getProps,
+        count: getCount 
+      }),
 
-      // automatically update the mutable (=> "let") variables
-      // which have been declared above so we do not always
-      // need to use the corresponding getter functions 
-      view = decorateView(null, () => {
-        props = getProps()
-        count = getCount()
-      })
+      onIncrement = () => setCount(count => count + 1),
 
     useOnMount(c, () => {
       console.log(
-        'Component has been mounted - props: ', props, ', count:' count)
+        'Component has been mounted - props: ', data.props, ', count:', data.count)
     })
 
     useOnUpdate(c, () => {
       console.log(
-        'Component has been rendered - props: ', props, ', count:' count)
+        'Component has been rendered - props: ', data.props, ', count:', data.count)
     })
 
-    return view(() =>
+    return view(({ props, count }) =>
       <div>
         <label>{props.label + ': '}</label> 
         <button onClick={onIncrement}>

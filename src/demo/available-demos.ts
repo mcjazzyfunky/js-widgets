@@ -24,7 +24,7 @@ const demos: [string, VirtualElement][] = [
   ['Complex counter (hooks)', complexCounter],
   ['Stop watch (hooks)', stopWatch],
   ['Stop watch - using store (hooks)', stopWatchAlt],
-  ['Stop watch - using view decorator (hooks)', stopWatchAlt2],
+  ['Stop watch - using withData (hooks)', stopWatchAlt2],
   ['Internationalization (hooks)', i18n],
   ['Friend list (hooks)', friendList],
 
