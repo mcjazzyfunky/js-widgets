@@ -71,7 +71,7 @@ const Counter = defineComponent<CounterProps>({
         count: getCount 
       }),
 
-      onIncrement = () => setCount(count => count + 1),
+      onIncrement = () => setCount(it => it + 1),
 
     useOnMount(c, () => {
       console.log(

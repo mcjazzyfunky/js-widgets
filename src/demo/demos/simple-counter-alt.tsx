@@ -1,6 +1,6 @@
-import { createElement, defineComponent } from '../../../modules/core/main/index'
-import { useOnMount, useOnUpdate, useState } from '../../../modules/hooks/main/index'
-import { withData } from '../../../modules/util/main/index'
+import { createElement, defineComponent } from '../../modules/core/main/index'
+import { useOnMount, useOnUpdate, useState } from '../../modules/hooks/main/index'
+import { withData } from '../../modules/util/main/index'
 
 type CounterProps = {
   label?: string,

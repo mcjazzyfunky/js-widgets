@@ -1,4 +1,4 @@
-import { createElement, defineComponent } from '../../../modules/core/main/index'
+import { createElement, defineComponent } from '../../modules/core/main/index'
 import { initStore } from 'js-stores'
 import { useStore } from 'js-stores/with-js-widgets'
 

@@ -1,4 +1,4 @@
-import { createElement, defineComponent } from '../../../modules/core/main/index'
+import { createElement, defineComponent } from '../../modules/core/main/index'
 
 type SayHelloProps = {
   name?: string

@@ -1,6 +1,6 @@
-import { createElement, defineComponent } from '../../../modules/core/main/index'
-import { useOnUnmount, useStateObject } from '../../../modules/hooks/main/index'
-import { withData } from '../../../modules/util/main/index'
+import { createElement, defineComponent } from '../../modules/core/main/index'
+import { useOnUnmount, useStateObject } from '../../modules/hooks/main/index'
+import { withData } from '../../modules/util/main/index'
 
 const StopWatch = defineComponent({
   displayName: 'StopWatch',

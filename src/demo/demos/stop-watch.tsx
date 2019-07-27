@@ -1,5 +1,5 @@
-import { createElement, defineComponent } from '../../../modules/core/main/index'
-import { useOnUnmount, useState } from '../../../modules/hooks/main/index'
+import { createElement, defineComponent } from '../../modules/core/main/index'
+import { useOnUnmount, useState } from '../../modules/hooks/main/index'
 
 const StopWatch = defineComponent({
   displayName: 'StopWatch',

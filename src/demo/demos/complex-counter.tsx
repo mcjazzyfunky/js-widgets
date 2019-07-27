@@ -1,5 +1,5 @@
-import { createElement, defineComponent, Ref } from '../../../modules/core/main/index'
-import { useMethods, useProps, useState } from '../../../modules/hooks/main/index'
+import { createElement, defineComponent, Ref } from '../../modules/core/main/index'
+import { useMethods, useProps, useState } from '../../modules/hooks/main/index'
 
 type CounterProps = {
   label?: string,

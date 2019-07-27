@@ -1,5 +1,5 @@
-import { createElement, defineComponent, defineContext } from '../../../modules/core/main/index'
-import { useContext, useProps, useState } from '../../../modules/hooks/main/index'
+import { createElement, defineComponent, defineContext } from '../../modules/core/main/index'
+import { useContext, useProps, useState } from '../../modules/hooks/main/index'
 import { Spec } from 'js-spec'
 
 const translations: Record<string, Record<string, string>> = {
