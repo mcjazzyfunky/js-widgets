@@ -242,6 +242,7 @@ What are the main difference to React's API?
 * `isElement(it)`
 * `isNode(it)`
 * `forceUpdate(...)`
+* `withData(...)`
 
 #### Module "_js-widgets/html_"
 
