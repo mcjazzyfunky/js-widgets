@@ -48,7 +48,7 @@ const Counter = defineComponent<CounterProps>({
   // normally prop validation will mostly be used
   // in JavaScript context not necessarily with
   // TypeScript, but anyway, just to show....
-  validate: Spec.exactProps({
+  validate: Spec.checkProps({
     optional: {
       label: Spec.string,
       initialValue: Spec.integer
