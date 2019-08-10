@@ -74,7 +74,7 @@ const
         
         then: Spec.exact({
           displayName: specOfDisplayName,
-          defaults: Spec.optional(specOfDefaultProps),
+          defaultProps: Spec.optional(specOfDefaultProps),
           validate: Spec.optional(Spec.function),
           memoize: Spec.optional(Spec.boolean),
           render: Spec.function
@@ -85,7 +85,7 @@ const
 
         then: Spec.exact({
           displayName: specOfDisplayName,
-          defaults: Spec.optional(specOfDefaultProps),
+          defaultProps: Spec.optional(specOfDefaultProps),
           validate: Spec.optional(Spec.function),
           memoize: Spec.optional(Spec.boolean),
           init: Spec.function
@@ -116,22 +116,22 @@ function validateComponentConfig(config: any): null | Error {
 function convertConfigToMeta(config: any): any {
   const ret: any = {
     displayName: config.displayName,
-    defaults: config.defaults ? {} : null,
+    defaultProps: config.defaultProps ? {} : null,
     validate: config.validate || null,
     memoize: !!config.memoize
     // plus key "render" or "init"
   }
 
-  if (config.defaults) {
-    const keys = Object.keys(config.defaults)
+  if (config.defaultProps) {
+    const keys = Object.keys(config.defaultProps)
 
     for (let i = 0; i < keys.length; ++i) {
       const key = keys[i]
 
-      ret.defaults[key] = config.defaults[key]
+      ret.defaultProps[key] = config.defaultProps[key]
     }
 
-    Object.freeze(ret.defaults)
+    Object.freeze(ret.defaultProps)
   }
 
   if (config.render) {

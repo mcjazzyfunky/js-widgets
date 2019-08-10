@@ -347,8 +347,8 @@ function mergeDefaultProps(props: any, type: any) {
   let ret: any = {} 
   
   if (type && type.meta) {
-    if (type.meta.defaults) {
-      Object.assign(ret, type.meta.defaults)
+    if (type.meta.defaultProps) {
+      Object.assign(ret, type.meta.defaultProps)
     }
   }
 

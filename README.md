@@ -55,7 +55,7 @@ const Counter = defineComponent<CounterProps>({
     }
   }),
   
-  defaults: {
+  defaultProps: {
     initialValue: 0,
     label: 'Counter'
   },

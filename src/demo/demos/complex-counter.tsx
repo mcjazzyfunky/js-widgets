@@ -11,7 +11,7 @@ const Counter = defineComponent<CounterProps>({
   displayName: 'Counter',
   memoize: true,
 
-  defaults: {
+  defaultProps: {
     label: 'Counter',
     initialValue: 0
   },

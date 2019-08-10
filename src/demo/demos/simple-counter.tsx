@@ -10,7 +10,7 @@ const Counter = defineComponent<CounterProps>({
   displayName: 'Counter',
   memoize: true,
 
-  defaults: {
+  defaultProps: {
     initialValue: 0,
     label: 'Counter'
   },

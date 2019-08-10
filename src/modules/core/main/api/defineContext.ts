@@ -83,7 +83,7 @@ if (process.env.NODE_ENV === 'development' as any) {
     Spec.exact({
       displayName: Spec.match(REGEX_DISPLAY_NAME),
       validate: Spec.optional(Spec.function),
-      default: Spec.any
+      defaultValue: Spec.any
     })
 }
 

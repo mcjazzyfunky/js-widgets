@@ -24,7 +24,7 @@ const meta: StatelessComponentMeta<{ key?: any }> = Object.freeze({
   displayName: 'Fragment',
   memoize: false,
   type: 'statelessComponent' as any,
-  defaults: null,
+  defaultProps: null,
   validate: null,
   render: Fragment
 })
