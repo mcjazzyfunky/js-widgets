@@ -1,6 +1,6 @@
 import { createElement, defineComponent } from '../../modules/core/main/index'
-import { useOnMount, useOnUpdate, useState } from '../../modules/hooks/main/index'
-import { withData } from '../../modules/util/main/index'
+import { useOnMount, useOnUpdate, usePropsProxy, useStateProxy } from '../../modules/hooks/main/index'
+import { buildDataProxy } from '../../modules/util/main/index'
 
 type CounterProps = {
   label?: string,
@@ -16,35 +16,30 @@ const Counter = defineComponent<CounterProps>({
     label: 'Counter'
   },
 
-  init(c, getProps) {
+  init(c) {
     const
-      [getCount, setCount] = useState(c, getProps().initialValue),
-
-      [data, view] = withData({
-        props: getProps,
-        count: getCount
-      }),
-
-      onIncrement = () => setCount(count => count! + 1)
+      props = usePropsProxy(c),
+      [state, update] = useStateProxy(c, { count: props.initialValue }),
+      onIncrement = () => update({ count: (state as any).count + 1 })
 
     useOnMount(c, () => {
-      console.log('Component has been mounted - props:', data.props)
+      console.log('Component has been mounted - props:', props())
     })
 
     useOnUpdate(c, () => {
-      console.log('Component has been rendered - props:', data.props, ' - count value:', data.count)
+      console.log('Component has been rendered - props:', props(), ' - state:', state())
     })
     
-    return view(({ props, count }) => {
+    return () => {
       return (
         <div>
           <label>{props.label + ': '}</label> 
           <button onClick={onIncrement}>
-            {count}
+            {state.count}
           </button>
         </div>
       )
-    })
+    }
   }
 })
 

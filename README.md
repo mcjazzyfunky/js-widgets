@@ -33,8 +33,7 @@ mount(content, document.getElementById('app'))
 
 ```tsx
 import { createElement, defineComponent } from 'js-widgets'
-import { useOnMount, useOnUpdate, useProps, useState } from 'js-widgets/hooks'
-import { withData } from 'js-widgets/util'
+import { useOnMount, useOnUpdate, usePropsProxy, useStateProxy } from 'js-widgets/hooks'
 import { Spec } from 'js-spec' // third-party validation library
 
 type CounterProps = {
@@ -54,7 +53,7 @@ const Counter = defineComponent<CounterProps>({
       initialValue: Spec.integer
     }
   }),
-  
+
   defaultProps: {
     initialValue: 0,
     label: 'Counter'
@@ -62,32 +61,27 @@ const Counter = defineComponent<CounterProps>({
 
   memoize: true,
 
-  init(c, getProps) {
+  init(c) {
     const
-      [getCount, setCount] = useState(c, getProps().initialValue),
-      
-      [data, view] = withData({
-        props: getProps,
-        count: getCount 
-      }),
-
-      onIncrement = () => setCount(it => it + 1),
+      props = usePropsProxy(c),
+      [state, update] = useStateProxy(c, { count: props.initialValue }),
+      onIncrement = () => update({ count: state.count + 1 }),
 
     useOnMount(c, () => {
       console.log(
-        'Component has been mounted - props: ', data.props, ', count:', data.count)
+        'Component has been mounted - props: ', props(), ', state:', state())
     })
 
     useOnUpdate(c, () => {
       console.log(
-        'Component has been rendered - props: ', data.props, ', count:', data.count)
+        'Component has been rendered - props: ', data.props, ', state:', state())
     })
 
-    return view(({ props, count }) =>
+    return () =>
       <div>
         <label>{props.label + ': '}</label> 
         <button onClick={onIncrement}>
-          {count}
+          {state.count}
         </button>
       </div>
     )
