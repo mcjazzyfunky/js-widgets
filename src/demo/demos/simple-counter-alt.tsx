@@ -1,6 +1,5 @@
 import { createElement, defineComponent } from '../../modules/core/main/index'
 import { useOnMount, useOnUpdate, usePropsProxy, useStateProxy } from '../../modules/hooks/main/index'
-import { buildDataProxy } from '../../modules/util/main/index'
 
 type CounterProps = {
   label?: string,
@@ -20,7 +19,7 @@ const Counter = defineComponent<CounterProps>({
     const
       props = usePropsProxy(c),
       [state, update] = useStateProxy(c, { count: props.initialValue }),
-      onIncrement = () => update({ count: (state as any).count + 1 })
+      onIncrement = () => update({ count: state.count! + 1 })
 
     useOnMount(c, () => {
       console.log('Component has been mounted - props:', props())

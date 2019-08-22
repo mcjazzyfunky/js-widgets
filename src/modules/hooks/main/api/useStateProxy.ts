@@ -10,7 +10,6 @@ export default function useStateProxy<T extends object>(
   const [getState, updateState] = useStateObject(c, initialState)
 
   return [new Proxy(getState, {
-    get: (target, name) => (getState as any)()[name],
-    apply: getState,
-  }) as any, updateState]
+    get: (target, name) => (getState as any)()[name]
+  }), updateState] as any
 }
