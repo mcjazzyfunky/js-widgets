@@ -66,7 +66,7 @@ const Counter = defineComponent<CounterProps>({
     const
       props = usePropsProxy(c),
       [state, update] = useStateProxy(c, { count: props.initialValue }),
-      onIncrement = () => update({ count: state.count + 1 }),
+      onIncrement = () => update({ count: state.count + 1 })
 
     useOnMount(c, () => {
       console.log(
