@@ -10,7 +10,7 @@ Disclaimer: This is just an initial draft of README. A lot is missing ....
 #### Example 1 (pure ECMAScript / no JSX)
 
 ```javascript
-import { createElement, defineComponent } from 'js-widgets'
+import { defineComponent } from 'js-widgets'
 import { mount } from 'js-widgets/dom'
 import { div } from 'js-widgets/html'
 
@@ -29,11 +29,12 @@ const content =
 
 mount(content, document.getElementById('app'))
 ```
-#### Example 2 (TypeScript)
+#### Example 2 (TypeScript / using JSX)
 
 ```tsx
 import { createElement, defineComponent } from 'js-widgets'
-import { useOnMount, useOnUpdate, usePropsProxy, useStateProxy } from 'js-widgets/hooks'
+import { usePropsProxy, useStateProxy, useOnMount, useOnUpdate } from 'js-widgets/hooks'
+import { mount } from 'js-widgets/dom'
 import { Spec } from 'js-spec' // third-party validation library
 
 type CounterProps = {
