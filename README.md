@@ -75,7 +75,7 @@ const Counter = defineComponent<CounterProps>({
 
     useOnUpdate(c, () => {
       console.log(
-        'Component has been rendered - props: ', data.props, ', state:', state())
+        'Component has been rendered - props: ', props(), ', state:', state())
     })
 
     return () =>
@@ -226,17 +226,21 @@ What are the main difference to React's API?
 #### Module "_js-widgets/hooks_":
 * `useContext(...)`
 * `useEffect(...)`
+* `useForceUpdate(...)`
 * `useOnMount(...)`
 * `useOnUnmount(...)`
 * `useOnUpdate(...)`
 * `usePrevious(...)`
 * `useProps(...)`
+* `usePropsProxy(...)`
 * `useState(...)`
+* `useStateObject(...)`
+* `useStateProxy(...)`
 
 #### Module "_js-widgets/util_":
+* `buildDataProxy(...)`
 * `isElement(it)`
 * `isNode(it)`
-* `forceUpdate(...)`
 * `withData(...)`
 
 #### Module "_js-widgets/html_"
