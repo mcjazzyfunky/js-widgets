@@ -1,6 +1,5 @@
 import { defineComponent, Component, VirtualElement } from '../modules/core/main/index'
-import { useProps } from '../modules/hooks/main/index'
-import { forceUpdate } from '../modules/util/main/index'
+import { useProps, useForceUpdate } from '../modules/hooks/main/index'
 import { mount } from '../modules/dom/main/index'
 import { div, h4, label, option, select } from '../modules/html/main/index'
 
@@ -16,13 +15,14 @@ const DemoSelector = defineComponent<DemoSelectorProps>({
   displayName: 'DemoSelector',
 
   init(c) {
-    let
-      demoIdx = getCurrentDemoIndex()
+    let demoIdx = getCurrentDemoIndex()
+
+    const forceUpdate = useForceUpdate(c)
 
     function startDemo(idx: number) {
       demoIdx = idx
       document.location.href = document.location.href.replace(/#.*$/, '') + '#idx=' + idx
-      forceUpdate(c)
+      forceUpdate()
     }
 
     const
