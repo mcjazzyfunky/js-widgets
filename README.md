@@ -13,6 +13,7 @@ Disclaimer: This is just an initial draft of README. A lot is missing ....
 import { defineComponent } from 'js-widgets'
 import { mount } from 'js-widgets/dom'
 import { div } from 'js-widgets/html'
+import { Spec } from 'js-spec' // third-party validation library
 
 const SayHello = component('Counter')
   .validate(
@@ -43,7 +44,6 @@ mount(content, document.getElementById('app'))
 import { createElement, defineComponent } from 'js-widgets'
 import { usePropsProxy, useStateProxy, useOnMount, useOnUpdate } from 'js-widgets/hooks'
 import { mount } from 'js-widgets/dom'
-import { Spec } from 'js-spec' // third-party validation library
 
 type CounterProps = {
   label?: string,
