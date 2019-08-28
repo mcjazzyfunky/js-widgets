@@ -28,8 +28,7 @@ const SayHello = component('Counter')
   })
   .render(props => {
     return div(`Hello, ${props.name}!`)
-  }
-})
+  })
 
 const content =
   div(
