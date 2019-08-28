@@ -6,7 +6,7 @@ type ExtProps<P extends Props> = P & {
   key?: string | number
 }
 
-export default interface ComponentFactory<P extends Props = {}> {
-  (props?: ExtProps<P>, ...children: any[]): VirtualElement,
-  meta: ComponentMeta<P>
-}
+type ComponentFactory<P extends Props = {}> =
+  (props?: P & { key?: string | number }, ...children: any[]) => VirtualElement
+
+export default ComponentFactory

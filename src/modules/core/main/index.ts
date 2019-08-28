@@ -1,4 +1,6 @@
 // functions
+export { default as component } from './api/component'
+export { default as context } from './api/context'
 export { default as createElement } from './api/createElement'
 export { default as defineComponent } from './api/defineComponent'
 export { default as defineContext } from './api/defineContext'

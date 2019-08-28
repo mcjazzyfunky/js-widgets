@@ -14,11 +14,19 @@ import { defineComponent } from 'js-widgets'
 import { mount } from 'js-widgets/dom'
 import { div } from 'js-widgets/html'
 
-const SayHello = defineComponent({
-  displayName: 'Counter',
-
-  render({ name = 'world' }) {
-    return div(`Hello, ${name}!`)
+const SayHello = component('Counter')
+  .validate(
+    Spec.checkProps({
+      optional: {
+        name: Spec.string
+      }
+    })
+  )
+  .defaultValue({
+    name: 'world'
+  })
+  .render(props => {
+    return div(`Hello, ${props.name}!`)
   }
 })
 
@@ -42,27 +50,13 @@ type CounterProps = {
   initialValue?: number
 }
 
-const Counter = defineComponent<CounterProps>({
-  displayName: 'Counter',
-
-  // normally prop validation will mostly be used
-  // in JavaScript context not necessarily with
-  // TypeScript, but anyway, just to show....
-  validate: Spec.checkProps({
-    optional: {
-      label: Spec.string,
-      initialValue: Spec.integer
-    }
-  }),
-
-  defaultProps: {
+const Counter = component<CounterProps>('Counter')
+  .memoize()
+  .defaultProps({
     initialValue: 0,
     label: 'Counter'
-  },
-
-  memoize: true,
-
-  init(c) {
+  })
+  .init(c => {
     const
       props = usePropsProxy(c),
       [state, update] = useStateProxy(c, { count: props.initialValue }),
@@ -86,8 +80,7 @@ const Counter = defineComponent<CounterProps>({
         </button>
       </div>
     )
-  }
-})
+  })
 
 mount(<Counter/>, document.getElementById('app'))
 ```
@@ -214,8 +207,8 @@ What are the main difference to React's API?
 #### Module "_js-widgets_"
 
 * `createElement(type, props?, ...children)`
-* `defineComponent(componentConfig)`
-* `defineContext(contextConfig)`
+* `component(componentConfig)`
+* `context(contextConfig)`
 * `Fragment(props?, ...children)`
 
 #### Module "_js-widgets/dom_" ###

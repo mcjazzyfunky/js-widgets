@@ -9,7 +9,11 @@ export default function useMethods<M extends Methods>(
   ref: any,
   methods: Methods
 ) {
-  if (!c.isMounted()) {
+  let isMounted = false
+
+  c.onUpdate(() => true)
+
+  if (!isMounted) {
     const unsubscribe = c.onUpdate(() => {
       unsubscribe()
 

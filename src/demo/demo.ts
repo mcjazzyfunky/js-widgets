@@ -1,4 +1,4 @@
-import { defineComponent, Component, VirtualElement } from '../modules/core/main/index'
+import { component, Component, VirtualElement } from '../modules/core/main/index'
 import { useProps, useForceUpdate } from '../modules/hooks/main/index'
 import { mount } from '../modules/dom/main/index'
 import { div, h4, label, option, select } from '../modules/html/main/index'
@@ -11,10 +11,8 @@ type DemoSelectorProps = {
   demos: [string, VirtualElement][]
 }
 
-const DemoSelector = defineComponent<DemoSelectorProps>({
-  displayName: 'DemoSelector',
-
-  init(c) {
+const DemoSelector = component<DemoSelectorProps>('DemoSelector')
+  .init(c => {
     let demoIdx = getCurrentDemoIndex()
 
     const forceUpdate = useForceUpdate(c)
@@ -49,8 +47,7 @@ const DemoSelector = defineComponent<DemoSelectorProps>({
                 h4(null, 'Example: ', props.demos[demoIdx][0]),
                 props.demos[demoIdx][1])))
     }
-  }
-})
+  })
 
 // --- Component Demo -----------------------------------------------
 
@@ -58,16 +55,13 @@ type DemoProps = {
   demos: [string, VirtualElement][]
 }
 
-const Demo = defineComponent<DemoProps>({
-  displayName: 'Demo',
-
-  render(props) {
+const Demo = component<DemoProps>('Demo')
+  .render(props => {
     return (
       div(null,
         DemoSelector({ demos: props.demos }))
     )
-  }
-})
+  })
 
 function getCurrentDemoIndex() {
   return parseInt(document.location.href.replace(/^.*idx=/, ''), 10) || 0

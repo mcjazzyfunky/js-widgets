@@ -219,7 +219,6 @@ function convertStatefulComponent(it: any): Function {
     }
 
     const
-      [, setForceUpdateValue] = useState(false),
       currPropsRef = useRef(props),
       getProps = useRef(() => currPropsRef.current).current,
       isMountedRef = useRef(false),
@@ -257,14 +256,6 @@ function convertStatefulComponent(it: any): Function {
           contexts[idx] = [undefined, context]
 
           return () => contexts[idx][0]
-        },
-
-        forceUpdate() {
-          return setForceUpdateValue((it: boolean) => !it)
-        },
-
-        isMounted() {
-          return isMountedRef.current
         },
 
          onUpdate(listener: () => void): () => void {

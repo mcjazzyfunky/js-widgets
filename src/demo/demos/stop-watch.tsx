@@ -1,10 +1,8 @@
-import { createElement, defineComponent } from '../../modules/core/main/index'
+import { createElement, component } from '../../modules/core/main/index'
 import { useOnUnmount, useState } from '../../modules/hooks/main/index'
 
-const StopWatch = defineComponent({
-  displayName: 'StopWatch',
-
-  init(c) {
+const StopWatch = component('StopWatch')
+  .init(c => {
     let interval = 0
 
     const
@@ -58,7 +56,6 @@ const StopWatch = defineComponent({
           Reset
         </button>
       </div>
-  }
-})
+  })
 
 export default <StopWatch/>

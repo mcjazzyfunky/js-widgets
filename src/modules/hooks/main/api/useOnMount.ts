@@ -4,7 +4,11 @@ export default function useOnMount(
   c: Component,
   action: () => void,
 ): void {
-  if (!c.isMounted()) {
+  let isMounted = false
+
+  c.onUpdate(() => isMounted = true)
+
+  if (!isMounted) {
     const unsubscribe = c.onUpdate(() => {
       unsubscribe()
 

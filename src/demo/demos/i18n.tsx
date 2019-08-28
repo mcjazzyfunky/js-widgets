@@ -1,4 +1,4 @@
-import { createElement, defineComponent, defineContext } from '../../modules/core/main/index'
+import { createElement, component, context } from '../../modules/core/main/index'
 import { useContext, useProps, useState } from '../../modules/hooks/main/index'
 import { Spec } from 'js-spec'
 
@@ -14,27 +14,25 @@ const translations: Record<string, Record<string, string>> = {
   }
 }
 
-const LocaleCtx = defineContext({
-  displayName: 'LocaleCtx',
-  defaultValue: 'en'
-})
+const LocaleCtx = context<string>('LocaleCtx')
+  .defaultValue('en')
 
 type AppProps = {
-  defaultLocale: string
+  defaultLocale?: string
 }
 
-const App = defineComponent<AppProps>({
-  displayName: 'App',
-
-  validate: Spec.exact({
-    defaultLocale: Spec.optional(Spec.oneOf('en', 'fr', 'de'))
-  }),
-
-  defaultProps: {
+const App = component<AppProps>('App')
+  .validate(
+    Spec.checkProps({
+      optional: {
+        defaultLocale: Spec.oneOf('en', 'fr', 'de')
+      }
+    })
+   )
+  .defaultProps({
     defaultLocale: 'en'
-  },
-
-  init(c) {
+  })
+  .init(c => {
     const
       getProps = useProps(c),
       [getLocale, setLocale] = useState(c, getProps().defaultLocale)
@@ -51,28 +49,27 @@ const App = defineComponent<AppProps>({
           <LocaleText id="salutation"/>
         </div>
       </LocaleCtx.Provider>
-  }
-})
+  })
 
 interface LocaleTextProps {
   id: string
 }
 
-const LocaleText = defineComponent<LocaleTextProps>({
-  displayName: 'LocaleText',
-
-  validate: Spec.exact({
-    id: Spec.string
-  }),
-
-  init(c) {
+const LocaleText = component<LocaleTextProps>('LocaleText')
+  .validate(
+    Spec.checkProps({
+      required: {
+        id: Spec.string
+      }
+    })
+  )
+  .init(c => {
     const getLocale = useContext(c, LocaleCtx)
 
     return props =>
       <p>
         { translations[getLocale()][props.id] }
       </p>
-  }
-})
+  })
 
 export default <App defaultLocale="en"/>
