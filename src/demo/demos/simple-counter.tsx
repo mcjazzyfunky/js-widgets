@@ -1,5 +1,6 @@
 import { createElement, component } from '../../modules/core/main/index'
-import { useGetters, useOnMount, useOnUpdate, useProps, useState } from '../../modules/hooks/main/index'
+import { useOnMount, useOnUpdate, useProps, useState } from '../../modules/hooks/main/index'
+import { withGetters } from '../../modules/util/main/index'
 
 type CounterProps = {
   label?: string,
@@ -16,15 +17,15 @@ const Counter = component<CounterProps>('Counter')
     const
       getProps = useProps(c),
       [getCount, setCount] = useState(c, getProps().initialValue),
-      using = useGetters(c, getProps, getCount),
-      onIncrement = () => setCount(count => count! + 1)
+      using = withGetters(getProps, getCount),
+      onIncrement = () => setCount(it => it + 1)
 
     useOnMount(c, () => {
       console.log('Component has been mounted')
     })
 
-    useOnUpdate(c, using((props, state) => {
-      console.log('Component has been rendered - props:', props, ' - state:', state)
+    useOnUpdate(c, using((props, count) => {
+      console.log(`Component has been rendered - ${props.label}: ${count}`)
     }))
 
     return using((props, count) => {

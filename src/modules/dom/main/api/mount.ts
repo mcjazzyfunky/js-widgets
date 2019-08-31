@@ -166,9 +166,9 @@ export function convertContext(it: any): any {
   const ret =
     it.Provider.__internal_type && it.Provider.__internal_type._context
       || it.Consumer.__internal_type && it.Consumer.__internal_type._context
-      || React.createContext(it.Provider.meta.default)
-  
-  // TODO
+      || React.createContext(it.Provider.__internal_defaultValue)
+
+    // TODO
 
   if (!it.Provider.__internal_type) {
     Object.defineProperty(it.Provider, '__internal_type', {
@@ -253,9 +253,11 @@ function convertStatefulComponent(it: any): Function {
             convertContext(context)
           }
 
-          contexts[idx] = [undefined, context]
+          contexts[idx] = [context.Provider.__internal_defaultValue, context]
 
-          return () => contexts[idx][0]
+          return () => {
+            return contexts[idx][0]
+          }
         },
 
          onUpdate(listener: () => void): () => void {
@@ -313,6 +315,7 @@ function convertStatefulComponent(it: any): Function {
 
     contexts.forEach(item => {
       const value = useContext(item[1].Provider.__internal_type._context)
+    
       item[0] = value
     })
 

@@ -62,13 +62,12 @@ const Counter = component<CounterProps>('Counter')
       onIncrement = () => update({ count: state.count + 1 })
 
     useOnMount(c, () => {
-      console.log(
-        'Component has been mounted - props: ', props(), ', state:', state())
+      console.log(`Component has been rendered mounted`)
     })
 
     useOnUpdate(c, () => {
       console.log(
-        'Component has been rendered - props: ', props(), ', state:', state())
+        `Component has been rendered - ${props.label}: ${state.count}`)
     })
 
     return () =>

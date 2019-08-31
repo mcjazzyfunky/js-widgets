@@ -1,9 +1,3 @@
-import { Component } from 'js-widgets'
-
-// WHAT A MESS!!!!
-// TODO - Fix typing
-// TODO - make it component lifecyle dependent
-
 type Getter = () => any
 type Getters = [Getter] | [Getter, Getter] | [Getter, Getter, Getter] | [Getter, Getter, Getter, Getter]
 
@@ -18,17 +12,16 @@ type Values<G extends Getters> =
           ? [ReturnType<G[0]>, ReturnType<G[1]>, ReturnType<G[2]>, ReturnType<G[3]>]
           : never
 
-export default function useGetters<G extends Getters>(C: Component, ...getters: G):
+export default function withGetters<G extends Getters>(...getters: G):
   (f: (...args: Values<G>) => any) => any {
-  const ret: any = []
 
-  return ((f: any) => {
-    const args: any[] = []
+  return (f: any) => () => {
+    const values: any[] = []
 
     for (let i = 0; i < getters.length; ++i) {
-      args.push(getters[i]())
+      values.push(getters[i]())
     }
 
-    return () => f(...args)
-  }) as any
+    return f.apply(null, values)
+  }
 }

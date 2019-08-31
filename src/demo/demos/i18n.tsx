@@ -37,7 +37,7 @@ const App = component<AppProps>('App')
       getProps = useProps(c),
       [getLocale, setLocale] = useState(c, getProps().defaultLocale)
 
-    return () => 
+    return () =>
       <LocaleCtx.Provider value={getLocale()}>
         <div>
           <label htmlFor="lang-selector">Select language: </label>

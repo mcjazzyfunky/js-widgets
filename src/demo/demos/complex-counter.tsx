@@ -1,4 +1,4 @@
-import { createElement, defineComponent, Ref } from '../../modules/core/main/index'
+import { createElement, component, Ref } from '../../modules/core/main/index'
 import { useMethods, useProps, useState } from '../../modules/hooks/main/index'
 
 type CounterProps = {
@@ -7,16 +7,13 @@ type CounterProps = {
   ref?: Ref<{ reset(n: number): void }>
 }
 
-const Counter = defineComponent<CounterProps>({
-  displayName: 'Counter',
-  memoize: true,
-
-  defaultProps: {
+const Counter = component<CounterProps>('Counter')
+  .memoize()
+  .defaultProps({
     label: 'Counter',
     initialValue: 0
-  },
-
-  init(c) {
+  })
+  .init(c => {
     const
       getProps = useProps(c), 
       [getCount, setCount] = useState(c, getProps().initialValue!),
@@ -37,13 +34,10 @@ const Counter = defineComponent<CounterProps>({
         <button onClick={onIncrement}>+</button>
       </div>
     )
-  }
-})
+  })
 
-const Demo = defineComponent({
-  displayName: 'Demo',
-
-  init() {
+const Demo = component('Demo')
+  .init(() => {
     const
       counterRef = { current: null } as any, // TODO
       onResetTo0 = () => counterRef.current.reset(0),
@@ -60,7 +54,6 @@ const Demo = defineComponent({
         </div>
       </div>
     )
-  }
-})
+  })
 
 export default <Demo/>

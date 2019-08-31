@@ -62,6 +62,10 @@ function buildContext<T>(defaultValue: T, attrs: BuilderAttrs<T>): Context<T> {
 
   provider.displayName = attrs.displayName
 
+  Object.defineProperty(provider, '__internal_defaultValue', {
+    value: defaultValue 
+  })
+
   if (validate) {
     provider.propTypes = {
       value: (props: any) => {

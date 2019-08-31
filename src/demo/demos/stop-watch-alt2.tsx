@@ -1,11 +1,9 @@
-import { createElement, defineComponent } from '../../modules/core/main/index'
+import { createElement, component } from '../../modules/core/main/index'
 import { useOnUnmount, useStateObject } from '../../modules/hooks/main/index'
 import { withData } from '../../modules/util/main/index'
 
-const StopWatch = defineComponent({
-  displayName: 'StopWatch',
-
-  init(c) {
+const StopWatch = component('StopWatch')
+  .init(c => {
     const
       [getState, setState] = useStateObject(c, { time: 0, running: false}),
 
@@ -65,7 +63,6 @@ const StopWatch = defineComponent({
         </button>
       </div>
     )
-  }
-})
+  })
 
 export default <StopWatch/>

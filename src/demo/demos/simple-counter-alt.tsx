@@ -1,4 +1,4 @@
-import { createElement, defineComponent } from '../../modules/core/main/index'
+import { createElement, component } from '../../modules/core/main/index'
 import { useOnMount, useOnUpdate, usePropsProxy, useStateProxy } from '../../modules/hooks/main/index'
 
 type CounterProps = {
@@ -6,27 +6,24 @@ type CounterProps = {
   initialValue?: number
 }
 
-const Counter = defineComponent<CounterProps>({
-  displayName: 'Counter',
-  memoize: true,
-
-  defaultProps: {
+const Counter = component<CounterProps>('Counter')
+  .memoize()
+  .defaultProps({
     initialValue: 0,
     label: 'Counter'
-  },
-
-  init(c) {
+  })
+  .init(c => {
     const
       props = usePropsProxy(c),
       [state, update] = useStateProxy(c, { count: props.initialValue }),
       onIncrement = () => update({ count: state.count! + 1 })
 
     useOnMount(c, () => {
-      console.log('Component has been mounted - props:', props())
+      console.log('Component has been mounted', )
     })
 
     useOnUpdate(c, () => {
-      console.log('Component has been rendered - props:', props(), ' - state:', state())
+      console.log(`Component has been rendered - ${props.label}: ${state.count}`)
     })
     
     return () => {
@@ -39,7 +36,6 @@ const Counter = defineComponent<CounterProps>({
         </div>
       )
     }
-  }
-})
+  })
 
 export default <Counter/>

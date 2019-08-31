@@ -1,5 +1,5 @@
 import { component, Component, VirtualElement } from '../modules/core/main/index'
-import { useProps, useForceUpdate } from '../modules/hooks/main/index'
+import { useForceUpdate } from '../modules/hooks/main/index'
 import { mount } from '../modules/dom/main/index'
 import { div, h4, label, option, select } from '../modules/html/main/index'
 
@@ -23,17 +23,15 @@ const DemoSelector = component<DemoSelectorProps>('DemoSelector')
       forceUpdate()
     }
 
-    const
-      getProps = useProps(c),
-      options: VirtualElement[] = []
-
-    for (let i = 0; i < getProps().demos.length; ++i) {
-      const demo = getProps().demos[i]
-          
-      options.push(option({ key: i, value: i }, demo[0]))
-    }
-
     return props => {
+      const options: VirtualElement[] = []
+
+      for (let i = 0; i < props.demos.length; ++i) {
+        const demo = props.demos[i]
+            
+        options.push(option({ key: i, value: i }, demo[0]))
+      }
+
       return (
         div(null,
           div(null,

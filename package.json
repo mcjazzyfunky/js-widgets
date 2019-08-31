@@ -39,7 +39,6 @@
     "cross-env": "^5.2.0",
     "fast-memoize": "^2.5.1",
     "js-spec": "^0.1.67",
-    "js-stores": "^0.1.14",
     "mocha": "^6.2.0",
     "nyc": "^14.1.1",
     "rollup": "^1.20.0",
