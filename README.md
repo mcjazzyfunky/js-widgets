@@ -244,6 +244,7 @@ What are the main difference to React's API?
 * `isElement(it)`
 * `isNode(it)`
 * `withData(...)`
+* `withGetters(...)`
 * `wrapByProxies(...)`
 
 #### Module "_js-widgets/html_"
