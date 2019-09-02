@@ -36,7 +36,7 @@ const content =
 
 mount(content, document.getElementById('app'))
 ```
-#### Example 2 (TypeScript / using JSX)
+#### Example 2 (ECMAScript + JSX)
 
 ```tsx
 import { h, component } from 'js-widgets'
@@ -44,14 +44,16 @@ import { useProps, useStateObject, useOnUpdate } from 'js-widgets/hooks'
 import { wrapByProxies } from 'js-widgets/util'
 import { mount } from 'js-widgets/dom'
 
-type CounterProps = {
-  label?: string,
-  initialValue?: number
-}
-
-const Counter = component<CounterProps>({
+const Counter = component({
   displayName: 'Counter',
   memoize: true,
+
+  validate: Spec.checkProps({
+    optional: {
+      initialValue: Spec.integer,
+      label: Spec.string
+    }
+  }),
 
   defaultProps: {
     initialValue: 0,
