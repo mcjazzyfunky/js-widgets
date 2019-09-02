@@ -59,9 +59,9 @@ const Counter = component<CounterProps>('Counter')
   .init(c => {
     const
       getProps = useProps(c),
-      [getState, setState] = useStateProxy(c, { count: getProps().initialValue }),
+      [getState, setState] = useState(c, { count: getProps().initialValue }),
       [props, state, using] = wrapByProxies(getProps, getState),
-      onIncrement = () => update({ count: state.count + 1 })
+      onIncrement = () => setState({ count: state.count + 1 })
 
     useOnUpdate(c, () => {
       console.log(
