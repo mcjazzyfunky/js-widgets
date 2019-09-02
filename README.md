@@ -68,6 +68,7 @@ const Counter = component<CounterProps>({
 
       [props, state, using] = wrapByProxies(getProps, getState),
       onIncrement = () => setState({ count: state.count + 1 })
+      onDerement = () => setState({ count: state.count - 1 })
 
     useOnUpdate(c, () => {
       console.log(
@@ -75,10 +76,16 @@ const Counter = component<CounterProps>({
     })
 
     return using((props, state) =>
-      <div>
+      <div className="counter">
         <label>{props.label + ': '}</label> 
         <button onClick={onIncrement}>
+          -1
+        </button>
+        <span>
           {state.count}
+        </span>
+        <button onClick={onIncrement}>
+          +1
         </button>
       </div>
     )
