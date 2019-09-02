@@ -1,4 +1,4 @@
-import { createElement, component, Ref } from '../../modules/core/main/index'
+import { h, component, Ref } from '../../modules/core/main/index'
 import { useMethods, useProps, useState } from '../../modules/hooks/main/index'
 
 type CounterProps = {

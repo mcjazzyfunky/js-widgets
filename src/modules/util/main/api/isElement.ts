@@ -1,4 +1,4 @@
-import { createElement } from '../../../core/main/index'
+import { h } from '../../../core/main/index'
 
 export default function isElement(it: any): boolean {
   return it instanceof VirtualElementClass
@@ -14,4 +14,4 @@ Object.defineProperty(isElement, 'js-spec:validate', {
 
 // --- locals -------------------------------------------------------
 
-const VirtualElementClass = createElement('div').constructor
+const VirtualElementClass = h('div').constructor

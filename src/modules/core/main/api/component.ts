@@ -1,13 +1,35 @@
 import React, { FunctionComponent, ReactElement, ReactNode, RefAttributes } from 'react'
 
-import defineComponent from './defineComponent'
 import Props from '../internal/types/Props'
 import Component from './types/Component'
-import ComponentFactory from './types/ComponentFactory'
+import Ctrl from './types/Ctrl'
 import VirtualNode from './types/VirtualNode'
+import defineComponent from './defineComponent'
+import StatelessComponentConfig from './types/StatelessComponentConfig';
+import StatefulComponentConfig from './types/StatefulComponentConfig';
 
-export default function component<P extends Props = {}>(displayName: string) {
-  return new ComponentBuilder<P>(displayName)
+function component<P extends Props = {}>(
+  config: StatelessComponentConfig<P>
+): Component<P>
+
+function component<P extends Props = {}>(
+  config: StatefulComponentConfig<P>
+): Component<P>
+
+function component<P extends Props = {}>(
+  displayName: string
+): ComponentBuilder<P>
+
+function component<P>(arg1: any): any {
+  let ret: any
+
+  if (typeof arg1 === 'string') {
+    ret = new ComponentBuilder<P>(arg1)
+  } else {
+    ret = defineComponent<P>(arg1)
+  }
+
+  return ret
 }
 
 // --- private ------------------------------------------------------
@@ -58,11 +80,11 @@ class ComponentBuilder<P extends Props> {
     return new DefaultPropsBuilder<P, D>(defaultProps, this._attrs)
   }
 
-  render(renderer: Renderer<P>): ComponentFactory<P> {
+  render(renderer: Renderer<P>): Component<P> {
     return createSimpleComponent<P>(renderer, this._attrs)
   }
   
-  init(initializer: (c: Component<P>) => (props: P) => VirtualNode): ComponentFactory<P> {
+  init(initializer: (c: Ctrl<P>) => (props: P) => VirtualNode): Component<P> {
     return createComplexComponent(initializer, this._attrs)
   }
 }
@@ -83,11 +105,11 @@ class ValidateBuilder<P extends Props> {
     return new DefaultPropsBuilder(defaultProps, this._attrs)
   }
 
-  render(renderer: Renderer<P>): ComponentFactory<P> {
+  render(renderer: Renderer<P>): Component<P> {
     return createSimpleComponent(renderer, this._attrs)
   }
 
-  init(initializer: (c: Component<P>) => (props: P) => VirtualNode): ComponentFactory<P> {
+  init(initializer: (c: Ctrl<P>) => (props: P) => VirtualNode): Component<P> {
     return createComplexComponent(initializer, this._attrs)
   }
 }
@@ -104,11 +126,11 @@ class MemoizeBuilder<P extends Props> {
     return new DefaultPropsBuilder<P, D>(defaultProps, this._attrs)
   }
 
-  render(renderer: Renderer<P>): ComponentFactory<P> {
+  render(renderer: Renderer<P>): Component<P> {
     return createSimpleComponent(renderer, this._attrs)
   }
 
-  init(initializer: (c: Component<P>) => (props: P) => VirtualNode): ComponentFactory<P> {
+  init(initializer: (c: Ctrl<P>) => (props: P) => VirtualNode): Component<P> {
     return createComplexComponent(initializer, this._attrs)
   }
 }
@@ -121,23 +143,27 @@ class DefaultPropsBuilder<P extends Props, D extends Partial<PickOptionalProps<P
     this._attrs.defaultProps = defaultProps
   }
 
-  render(renderer: Renderer<P & D>): ComponentFactory<P> {
+  render(renderer: Renderer<P & D>): Component<P> {
     return createSimpleComponent(renderer as any, this._attrs)
   }
 
-  init(initializer: (c: Component<P & D>) => (props: P & D) => VirtualNode): ComponentFactory<P> {
+  init(initializer: (c: Ctrl<P & D>) => (props: P & D) => VirtualNode): Component<P> {
     return createComplexComponent(initializer as any, this._attrs)
   }
 }
 
 function createSimpleComponent<P extends Props, D extends Partial<PickOptionalProps<P>> = {}>(
   render: (props: P & D) => any, attrs: BuilderAttrs<P, D>
-): ComponentFactory<P> {
+): Component<P> {
   return defineComponent({ ...attrs, render } as any)
 }
 
 function createComplexComponent<P extends Props, D extends Partial<PickOptionalProps<P>> = {}>(
-  initializer: (c: Component<P & D>) => (props: P & D) => VirtualNode, attrs: BuilderAttrs<P, D>
-): ComponentFactory<P> {
+  initializer: (c: Ctrl<P & D>) => (props: P & D) => VirtualNode, attrs: BuilderAttrs<P, D>
+): Component<P> {
   return defineComponent({ ...attrs, init: initializer } as any)
 }
+
+// --- exports ------------------------------------------------------
+
+export default component

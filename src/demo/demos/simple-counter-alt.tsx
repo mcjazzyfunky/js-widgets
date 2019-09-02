@@ -1,4 +1,4 @@
-import { createElement, component } from '../../modules/core/main/index'
+import { h, component } from '../../modules/core/main/index'
 import { useOnMount, useOnUpdate, useProps, useStateObject } from '../../modules/hooks/main/index'
 import { wrapByProxies } from '../../modules/util/main/index'
 

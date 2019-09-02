@@ -1,10 +1,10 @@
-import ComponentFactory from './ComponentFactory'
-import AltComponentFactory from './ComponentFactory'
+import Component from './Component'
+import AltComponent from './Component
 import Props from './Props'
 import Key from './Key'
 
 interface VirtualElement {
-  type: string | ComponentFactory | AltComponentFactory,
+  type: string | Component | AltComponent,
   props: Props | null,
   key: Key,
 }

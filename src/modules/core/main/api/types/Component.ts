@@ -1,15 +1,12 @@
-import Context from './Context'
+import VirtualElement from './VirtualElement'
+import ComponentMeta from './ComponentMeta'
 import Props from './Props'
 
-type Listener = () => void
-type Unsubscribe = () => void
-type Updater<T> = T | ((oldValue: T) => T)
-
-export default interface Component<P extends Props = {}> {
-  getProps(): P,
-  handleState<T>(initialValue: T): [() => T, (updater: Updater<T>) => void],
-  consumeContext<T>(ctx: Context<T>): () => T,
-  onUpdate(listener: Listener): Unsubscribe,
-  onUnmount(listener: Listener): Unsubscribe,
-  // plus some more methods (mostly for lifecycle)
+type ExtProps<P extends Props> = P & {
+  key?: string | number
 }
+
+type Component<P extends Props = {}> =
+  (props?: P & { key?: string | number }, ...children: any[]) => VirtualElement
+
+export default Component

@@ -1,5 +1,5 @@
-import { Component, Context } from '../../../core/main/index'
+import { Ctrl, Context } from '../../../core/main/index'
 
-export default function useProps<P>(c: Component<P>): () => P {
+export default function useProps<P>(c: Ctrl<P>): () => P {
   return () => c.getProps()
 }

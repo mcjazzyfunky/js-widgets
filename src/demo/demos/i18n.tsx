@@ -1,4 +1,4 @@
-import { createElement, component, context } from '../../modules/core/main/index'
+import { h, component, context } from '../../modules/core/main/index'
 import { useContext, useProps, useState } from '../../modules/hooks/main/index'
 import { Spec } from 'js-spec'
 

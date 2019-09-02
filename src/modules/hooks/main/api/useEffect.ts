@@ -1,7 +1,7 @@
-import { Component } from '../../../core/main/index'
+import { Ctrl } from '../../../core/main/index'
 
 export default function useEffect(
-  c: Component,
+  c: Ctrl,
   action: () => void,
   getDependencies?: () => any[] | null
 ): void {

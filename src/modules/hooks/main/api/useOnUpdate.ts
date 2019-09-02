@@ -1,7 +1,7 @@
-import { Component } from '../../../core/main/index'
+import { Ctrl } from '../../../core/main/index'
 
 export default function useOnUpdate(
-  c: Component,
+  c: Ctrl,
   action: () => (() => void) | void,
 ): void {
   let cleanup: (() => void) | null = null

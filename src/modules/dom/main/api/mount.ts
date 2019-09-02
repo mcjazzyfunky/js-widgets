@@ -1,4 +1,4 @@
-import { createElement, VirtualElement, Context, Fragment } from '../../../core/main/index'
+import { h, VirtualElement, Context, Fragment } from '../../../core/main/index'
 import React from 'react' 
 import ReactDOM from 'react-dom'
 
@@ -9,7 +9,7 @@ Object.defineProperty(Fragment, '__internal_type', {
 })
 
 const
-  VirtualElementClass = createElement('div').constructor,
+  VirtualElementClass = h('div').constructor,
 
   SYMBOL_ITERATOR =
     typeof Symbol === 'function' && Symbol.iterator

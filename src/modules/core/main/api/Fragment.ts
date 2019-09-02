@@ -1,7 +1,7 @@
-import createElement from './createElement'
+import h from './h'
 import VirtualElement from './types/VirtualElement'
 import StatelessComponentMeta from './types/StatelessComponentMeta'
-import ComponentFactory from './types/ComponentFactory'
+import Component from './types/Component'
 
 let createFragment: (...args: any[]) => VirtualElement = null!
 
@@ -11,13 +11,13 @@ type FragmentProps = {
 
 function Fragment(props?: FragmentProps, ...args: any[]): VirtualElement {
   if (!createFragment) {
-    createFragment = createElement.bind(null, Fragment as any)
+    createFragment = h.bind(null, Fragment as any)
   }
 
   return createFragment(...args)
 }
 
-export default Fragment as ComponentFactory<FragmentProps>
+export default Fragment as Component<FragmentProps>
 
 
 const meta: StatelessComponentMeta<{ key?: any }> = Object.freeze({

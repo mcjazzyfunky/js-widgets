@@ -1,11 +1,11 @@
-import { Component, Context } from '../../../core/main/index'
+import { Ctrl, Context } from '../../../core/main/index'
 
 interface Methods {
   [name: string]: (...args: any[]) => any 
 }
 
 export default function useMethods<M extends Methods>(
-  c: Component,
+  c: Ctrl,
   ref: any,
   methods: Methods
 ) {

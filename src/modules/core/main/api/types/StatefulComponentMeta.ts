@@ -1,15 +1,13 @@
-import Component from './Component'
+import Ctrl from './Ctrl'
 import Props from './Props'
 import VirtualNode from './VirtualNode'
 
 type StatefulComponentMeta<P extends Props = {}> = {
-  type: 'statefulComponent',
   displayName: string,
-  defaultProps: Partial<P> | null,
-  validate: ((props: P) => null | Error | true | false) | null,
-  init: (c: Component<P>, getProps: () => P) => (props: P) =>  VirtualNode,
+  type: 'statefulComponent',
   memoize: boolean,
-  render: never
+  validate: ((props: P) => null | Error | true | false) | null,
+  init(c: Ctrl<P>, getProps: () => P): (props: P) =>  VirtualNode,
 }
 
 export default StatefulComponentMeta

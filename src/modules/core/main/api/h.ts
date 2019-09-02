@@ -1,11 +1,10 @@
-import { Spec } from 'js-spec'
-import ComponentFactory from './types/ComponentFactory'
+import Component from './types/Component'
 import VirtualElement from './types/VirtualElement'
 import Props from './types/Props'
 import Key from './types/Key'
 
-function createElement(type: string | ComponentFactory, props?: Props | null, ...children: any[]): VirtualElement
-function createElement(/* arguments */): VirtualElement {
+function h(type: string | Component, props?: Props | null, ...children: any[]): VirtualElement
+function h(/* arguments */): VirtualElement {
   const
     argCount = arguments.length,
     type = arguments[0],
@@ -94,7 +93,7 @@ function createElement(/* arguments */): VirtualElement {
   return new VirtualElementClass(type, props, key)
 }
 
-export default createElement
+export default h
 
 // --- locals -------------------------------------------------------
 
@@ -105,12 +104,12 @@ const
       : '@@iterator'
 
 const VirtualElementClass = class VirtualElement {
-  type: string | ComponentFactory
+  type: string | Component
   props: Props | null
   key: Key
 
   constructor(
-    type: string | ComponentFactory,
+    type: string | Component,
     props: Props | null,
     key: Key,
   ) {

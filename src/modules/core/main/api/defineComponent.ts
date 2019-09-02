@@ -1,21 +1,21 @@
 import Props from './types/Props'
 import ComponentMeta from './types/ComponentMeta'
-import ComponentFactory from './types/ComponentFactory'
-import createElement from './createElement'
+import h from './h'
+import Component from './types/Component'
 import StatelessComponentConfig from './types/StatelessComponentConfig' 
 import StatefulComponentConfig from './types/StatefulComponentConfig' 
 
 import { Spec } from 'js-spec'
 
 function defineComponent<P extends Props = {}>(config: StatelessComponentConfig<P>):
-  ComponentFactory<P>
+  Component<P>
 
 function defineComponent<P extends Props = {}>(config: StatefulComponentConfig<P>):
-  ComponentFactory<P>
+  Component<P>
 
 function defineComponent<P extends Props = {}>(
   config: StatefulComponentConfig<P> | StatelessComponentConfig<P>
-): ComponentFactory<P> {
+): Component<P> {
 
   if (process.env.NODE_ENV === 'development' as any) {
     const error = validateComponentConfig(config)
@@ -28,7 +28,7 @@ function defineComponent<P extends Props = {}>(
 
   let createComponentElement: Function | null = null
 
-  const ret: ComponentFactory<P> =
+  const ret: Component<P> =
     Object.assign(
       function (/* arguments */) {
         return createComponentElement!.apply(null, arguments)
@@ -37,7 +37,7 @@ function defineComponent<P extends Props = {}>(
         meta: null! as  ComponentMeta<P>
       })
   
-  createComponentElement = createElement.bind(null, ret as any)
+  createComponentElement = h.bind(null, ret as any)
 
   Object.defineProperty(ret, 'js-widgets:kind', {
     value: 'componentFactory'

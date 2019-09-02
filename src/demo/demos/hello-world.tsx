@@ -1,18 +1,22 @@
-import { createElement, component } from '../../modules/core/main/index'
+import { h, component } from '../../modules/core/main/index'
 import { div } from '../../modules/html/main/index'
 
 type SayHelloProps = {
   name?: string
 }
 
-const SayHello = component<SayHelloProps>('SayHello')
-  .memoize()
-  .defaultProps({
+const SayHello = component<SayHelloProps>({
+  displayName: 'SayHello',
+  memoize: true,
+
+  defaultProps: {
     name: 'world'
-  })
-  .render(({ name }) => {
+  },
+
+  render({ name }) {
     return <div>Hello, {name}</div>
-  })
+  }
+})
 
 export default
   div(

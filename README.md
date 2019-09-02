@@ -15,20 +15,23 @@ import { mount } from 'js-widgets/dom'
 import { div } from 'js-widgets/html'
 import { Spec } from 'js-spec' // third-party validation library
 
-const SayHello = component('Counter')
-  .validate(
-    Spec.checkProps({
-      optional: {
-        name: Spec.string
-      }
-    })
-  )
-  .defaultValue({
+const SayHello = component({
+  displayName: 'Counter',
+
+  validate: Spec.checkProps({
+    optional: {
+      name: Spec.string
+    }
+  }),
+
+  defaultProps: {
     name: 'world'
-  })
-  .render(props => {
+  },
+
+  render(props) {
     return div(`Hello, ${props.name}!`)
-  })
+  }
+})
 
 const content =
   div(
@@ -50,13 +53,16 @@ type CounterProps = {
   initialValue?: number
 }
 
-const Counter = component<CounterProps>('Counter')
-  .memoize()
-  .defaultProps({
+const Counter = component<CounterProps>({
+  displayName: 'Counter',
+  memoize: true,
+
+  defaultProps: {
     initialValue: 0,
     label: 'Counter'
-  })
-  .init(c => {
+  },
+
+  init(c) {
     const
       getProps = useProps(c),
       [getState, setState] = useState(c, { count: getProps().initialValue }),
@@ -75,8 +81,9 @@ const Counter = component<CounterProps>('Counter')
           {state.count}
         </button>
       </div>
-    ))
-  })
+    )
+  }
+})
 
 mount(<Counter/>, document.getElementById('app'))
 ```

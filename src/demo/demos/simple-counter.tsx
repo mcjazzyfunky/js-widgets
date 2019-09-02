@@ -1,4 +1,4 @@
-import { createElement, component } from '../../modules/core/main/index'
+import { h, component } from '../../modules/core/main/index'
 import { useOnMount, useOnUpdate, useProps, useState } from '../../modules/hooks/main/index'
 import { withGetters } from '../../modules/util/main/index'
 

@@ -4,7 +4,7 @@
     "strict": true,
     "strictNullChecks": true,
     "jsx": "react",
-    "jsxFactory": "createElement",
+    "jsxFactory": "h",
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "removeComments": true,

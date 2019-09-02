@@ -1,7 +1,7 @@
-import { Component } from '../../../core/main/index'
+import { Ctrl } from '../../../core/main/index'
 
 export default function useOnMount(
-  c: Component,
+  c: Ctrl,
   action: () => void,
 ): void {
   let isMounted = false

@@ -1,5 +1,5 @@
-import { Component, Context } from '../../../core/main/index'
+import { Ctrl, Context } from '../../../core/main/index'
 
-export default function useContext<T>(c: Component, ctx: Context<T>) {
+export default function useContext<T>(c: Ctrl, ctx: Context<T>) {
   return c.consumeContext(ctx)
 }

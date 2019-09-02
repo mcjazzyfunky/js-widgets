@@ -1,4 +1,4 @@
-import { createElement, component } from '../../modules/core/main/index'
+import { h, component } from '../../modules/core/main/index'
 import { useOnUnmount, useState } from '../../modules/hooks/main/index'
 
 const StopWatch = component('StopWatch')

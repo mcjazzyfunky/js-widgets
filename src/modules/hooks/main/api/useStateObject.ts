@@ -1,8 +1,8 @@
-import { Component } from '../../../core/main/index'
+import { Ctrl } from '../../../core/main/index'
 
 type Updater<T extends object> = Partial<T> | ((oldState: T) => Partial<T>)
 
-export default function useStateObject<T extends object>(c: Component, initialValue: T):
+export default function useStateObject<T extends object>(c: Ctrl, initialValue: T):
   [() => T, (updater: Updater<T>) => void] {
 
   const [get, set] = c.handleState(initialValue)
