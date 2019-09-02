@@ -1,7 +1,7 @@
 import { h } from '../../../core/main/index'
 
 export default function isElement(it: any): boolean {
-  return it && typeof it === 'object' && it.constructor && it.constructor.name === 'VirtualElement'
+  return it && typeof it === 'object' && it.$kind === 'VirtualElement'
 }
 
 Object.defineProperty(isElement, 'js-spec:validate', {

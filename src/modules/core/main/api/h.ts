@@ -11,7 +11,7 @@ function h(/* arguments */): VirtualElement {
     secondArg = arguments[1],
 
     skippedProps = argCount > 1 && secondArg !== undefined && secondArg !== null
-        && (typeof secondArg !== 'object' || secondArg.constructor && secondArg.constructor.name === 'VirtualElement'
+        && (typeof secondArg !== 'object' || secondArg.$kind === 'VirtualElement'
           || typeof secondArg[Symbol.iterator] === 'function'),
 
     originalProps = skippedProps ? null : (secondArg || null),
@@ -90,11 +90,7 @@ function h(/* arguments */): VirtualElement {
     key = originalProps.key === undefined ? null : originalProps.key
   }
 
-  const ret: any = Object.create(VirtualElement.prototype)
-  
-  ret.type = type
-  ret.props = props
-  ret.key = key
+  const ret = { $kind: 'VirtualElement', type, props, key }
 
   return ret
 }
@@ -108,12 +104,6 @@ const
     typeof Symbol === 'function' && Symbol.iterator
       ? Symbol.iterator
       : '@@iterator'
-
-
-const VirtualElement = {
-  VirtualElement:
-    function () {}
-}['VirtualElement']
 
 function pushItems(array: any[], items: Iterable<any>) {
   if (Array.isArray(items)) {

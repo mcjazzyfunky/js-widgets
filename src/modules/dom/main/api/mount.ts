@@ -15,7 +15,7 @@ const
       : '@@iterator'
 
 function isElement(it: any) {
-  return it && typeof it === 'object' && it.constructor && it.constructor.name === 'VirtualElement'
+  return it && typeof it === 'object' && it.$kind === 'VirtualElement'
 }
 
 function isIterableObject(it: any): boolean {
