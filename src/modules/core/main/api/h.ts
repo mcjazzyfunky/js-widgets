@@ -90,9 +90,7 @@ function h(/* arguments */): VirtualElement {
     key = originalProps.key === undefined ? null : originalProps.key
   }
 
-  const ret = { $kind: 'VirtualElement', type, props, key }
-
-  return ret
+  return { $kind: 'VirtualElement', type, props, key }
 }
 
 export default h
