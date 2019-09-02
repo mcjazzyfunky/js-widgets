@@ -24,12 +24,8 @@ const SayHello = component({
     }
   }),
 
-  defaultProps: {
-    name: 'world'
-  },
-
-  render(props) {
-    return div(`Hello, ${props.name}!`)
+  render({ name: 'World' }) {
+    return div(`Hello, ${name}!`)
   }
 })
 
@@ -44,7 +40,7 @@ mount(content, document.getElementById('app'))
 
 ```tsx
 import { createElement, defineComponent } from 'js-widgets'
-import { useProps, useStateObject, useOnMount, useOnUpdate } from 'js-widgets/hooks'
+import { useProps, useStateObject, useOnMount } from 'js-widgets/hooks'
 import { wrapByProxies } from 'js-widgets/util'
 import { mount } from 'js-widgets/dom'
 
