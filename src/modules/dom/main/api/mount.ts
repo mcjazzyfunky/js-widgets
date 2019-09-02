@@ -22,8 +22,6 @@ function isIterableObject(it: any): boolean {
   return typeof it === 'object' && (Array.isArray(it) || typeof it[SYMBOL_ITERATOR] === 'function')
 }
 
-
-
 export default function mount(element: VirtualElement, container: Element | string) { 
   if (!isElement(element)) {
     throw new TypeError(

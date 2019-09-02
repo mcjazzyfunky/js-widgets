@@ -1,6 +1,6 @@
-import { h } from '../../core/main/index'
+import { h, VirtualElement } from '../../core/main/index'
 
-function f(tagName: string) {
+function f(tagName: string): (...args: any[]) => VirtualElement {
   return h.bind(null, tagName)
 }
 

@@ -138,7 +138,7 @@ function validateComponentProps<P extends Props>(
     ret = null,
     errorMsg: string | null = null
 
-  if (validate) {
+  if (validate && props) { 
     const result = validate(props)
 
     if (result === false) {
