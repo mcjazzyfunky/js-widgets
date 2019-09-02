@@ -126,9 +126,9 @@ What are the main difference to React's API?
   and consumers and the `Fragment` symbol.
 
   In jsWidgets things are different: Everything that can be used as first
-  argument of the `createElement` function besides strings is a factory
-  function that returns the result of a corresponding `createElement` call.
-  Besides the second argument (`props`) of the `createElement` function
+  argument of the `h` function besides strings is a factory
+  function that returns the result of a corresponding `h` call.
+  Besides the second argument (`props`) of the `h` function
   and also for all the component factories is optional to provide a concice
   syntax: All component types, `Fragment`, context providers, context
   consumers are factory functions with an optional second `props` argument:
@@ -200,7 +200,7 @@ What are the main difference to React's API?
   library ["js-spec"](https://github.com/js-works/js-spec).
 
 * In jsWidgets component types are represented by a corresponding factory
-  function (that does create a virtual element by using the `createElement` function).
+  function (that does create a virtual element by using the `h` function).
   That's simplifies the implemention of user interfaces in pure ECMAScript
   if desired - nevertheless it is recommended to use JSX as this is the
   de-facto standard in React-like UI development.
@@ -209,7 +209,7 @@ What are the main difference to React's API?
 
 #### Module "_js-widgets_"
 
-* `createElement(type, props?, ...children)`
+* `h(type, props?, ...children)`
 * `component(componentConfig)`
 * `context(contextConfig)`
 * `Fragment(props?, ...children)`
@@ -228,16 +228,15 @@ What are the main difference to React's API?
 * `useOnUpdate(...)`
 * `usePrevious(...)`
 * `useProps(...)`
-* `usePropsProxy(...)`
 * `useState(...)`
 * `useStateObject(...)`
-* `useStateProxy(...)`
 
 #### Module "_js-widgets/util_":
 * `buildDataProxy(...)`
 * `isElement(it)`
 * `isNode(it)`
 * `withData(...)`
+* `wrapByProxies(...)`
 
 #### Module "_js-widgets/html_"
 
