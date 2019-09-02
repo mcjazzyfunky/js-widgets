@@ -1,5 +1,6 @@
 import { createElement, component } from '../../modules/core/main/index'
-import { useOnMount, useOnUpdate, usePropsProxy, useStateProxy } from '../../modules/hooks/main/index'
+import { useOnMount, useOnUpdate, useProps, useStateObject } from '../../modules/hooks/main/index'
+import { wrapByProxies } from '../../modules/util/main/index'
 
 type CounterProps = {
   label?: string,
@@ -14,9 +15,10 @@ const Counter = component<CounterProps>('Counter')
   })
   .init(c => {
     const
-      props = usePropsProxy(c),
-      [state, update] = useStateProxy(c, { count: props.initialValue }),
-      onIncrement = () => update({ count: state.count! + 1 })
+      getProps = useProps(c),
+      [getState, setState] = useStateObject(c, { count: getProps().initialValue }),
+      [props, state, using] = wrapByProxies(getProps, getState),
+      onIncrement = () => setState({ count: state.count + 1 })
 
     useOnMount(c, () => {
       console.log('Component has been mounted', )
@@ -26,7 +28,7 @@ const Counter = component<CounterProps>('Counter')
       console.log(`Component has been rendered - ${props.label}: ${state.count}`)
     })
     
-    return () => {
+    return using((props, state) => {
       return (
         <div>
           <label>{props.label + ': '}</label> 
@@ -35,7 +37,7 @@ const Counter = component<CounterProps>('Counter')
           </button>
         </div>
       )
-    }
+    })
   })
 
 export default <Counter/>

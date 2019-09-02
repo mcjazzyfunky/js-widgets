@@ -41,7 +41,8 @@ mount(content, document.getElementById('app'))
 
 ```tsx
 import { createElement, defineComponent } from 'js-widgets'
-import { usePropsProxy, useStateProxy, useOnMount, useOnUpdate } from 'js-widgets/hooks'
+import { useProps, useStateObject, useOnMount, useOnUpdate } from 'js-widgets/hooks'
+import { wrapByProxies } from 'js-widgets/util'
 import { mount } from 'js-widgets/dom'
 
 type CounterProps = {
@@ -57,27 +58,24 @@ const Counter = component<CounterProps>('Counter')
   })
   .init(c => {
     const
-      props = usePropsProxy(c),
-      [state, update] = useStateProxy(c, { count: props.initialValue }),
+      getProps = useProps(c),
+      [getState, setState] = useStateProxy(c, { count: getProps().initialValue }),
+      [props, state, using] = wrapByProxies(getProps, getState),
       onIncrement = () => update({ count: state.count + 1 })
-
-    useOnMount(c, () => {
-      console.log(`Component has been rendered mounted`)
-    })
 
     useOnUpdate(c, () => {
       console.log(
         `Component has been rendered - ${props.label}: ${state.count}`)
     })
 
-    return () =>
+    return using((props, state) =>
       <div>
         <label>{props.label + ': '}</label> 
         <button onClick={onIncrement}>
           {state.count}
         </button>
       </div>
-    )
+    ))
   })
 
 mount(<Counter/>, document.getElementById('app'))

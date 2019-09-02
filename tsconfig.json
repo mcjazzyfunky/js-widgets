@@ -32,7 +32,6 @@
     "src/modules/dom/main/index.ts",
     "src/modules/html/main/index.ts",
     "src/modules/svg/main/index.ts",
-    "src/modules/handlers/main/index.ts",
     "src/modules/hooks/main/index.ts",
     "src/modules/util/main/index.ts"
   ],
