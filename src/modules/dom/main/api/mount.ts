@@ -9,15 +9,13 @@ Object.defineProperty(Fragment, '__internal_type', {
 })
 
 const
-  VirtualElementClass = h('div').constructor,
-
   SYMBOL_ITERATOR =
     typeof Symbol === 'function' && Symbol.iterator
       ? Symbol.iterator
       : '@@iterator'
 
 function isElement(it: any) {
-  return it instanceof VirtualElementClass
+  return it && typeof it === 'object' && it.constructor && it.constructor.name === 'VirtualElement'
 }
 
 function isIterableObject(it: any): boolean {

@@ -1,7 +1,7 @@
 import { h } from '../../../core/main/index'
 
 export default function isElement(it: any): boolean {
-  return it instanceof VirtualElementClass
+  return it && typeof it === 'object' && it.constructor && it.constructor.name === 'VirtualElement'
 }
 
 Object.defineProperty(isElement, 'js-spec:validate', {
@@ -11,7 +11,3 @@ Object.defineProperty(isElement, 'js-spec:validate', {
       : new Error('Must be a valid element')
   }
 })
-
-// --- locals -------------------------------------------------------
-
-const VirtualElementClass = h('div').constructor
