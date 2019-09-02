@@ -39,8 +39,8 @@ mount(content, document.getElementById('app'))
 #### Example 2 (TypeScript / using JSX)
 
 ```tsx
-import { createElement, defineComponent } from 'js-widgets'
-import { useProps, useStateObject, useOnMount } from 'js-widgets/hooks'
+import { h, component } from 'js-widgets'
+import { useProps, useStateObject, useOnUpdate } from 'js-widgets/hooks'
 import { wrapByProxies } from 'js-widgets/util'
 import { mount } from 'js-widgets/dom'
 
@@ -228,7 +228,6 @@ What are the main difference to React's API?
 * `useStateObject(...)`
 
 #### Module "_js-widgets/util_":
-* `buildDataProxy(...)`
 * `isElement(it)`
 * `isNode(it)`
 * `withData(...)`
