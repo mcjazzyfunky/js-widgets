@@ -63,16 +63,19 @@ const Counter = component({
 
   init(c) {
     const
-      getProps = useProps(c),
-      [getCount, setCount] = useState(c, getProps().initialValue),
-      using = withGetters(getProps, getCount),
-      onIncrement = () => setCount(it => it + 1),
-      onDecrement = () => setCount(it => it - 1)
+      [getState, setState] = useStateObject(c, props => ({
+        count: props.initialValue
+      })),
 
-    useOnUpdate(c, using((props, count) => {
+      getProps = useProps(c),
+      [props, state, using] = wrapByProxies(getProps, getCount),
+      onIncrement = () => setCount({ count: state.count + 1 }),
+      onDecrement = () => setCount({ count: state.count - 1 })
+
+    useOnUpdate(c, () => {
       console.log(
         `Component has been rendered - ${props.label}: ${count}`)
-    }))
+    })
 
     return using((props, count) =>
       <div className="counter">
