@@ -41,7 +41,7 @@ mount(content, document.getElementById('app'))
 ```tsx
 import { h, component } from 'js-widgets'
 import { useProps, useStateObject, useOnUpdate } from 'js-widgets/hooks'
-import { withGetters } from 'js-widgets/util'
+import { wrapByProxies } from 'js-widgets/util'
 import { mount } from 'js-widgets/dom'
 import { Spec } from 'js-spec' // third-party validation library
 
