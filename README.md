@@ -63,28 +63,25 @@ const Counter = component({
 
   init(c) {
     const
-      [getState, setState] = useStateObject(c, props => ({
-        count: props.initialValue
-      })),
-
       getProps = useProps(c),
-      using = withGetters(getProps, getState),
-      onIncrement = () => setState({ count: state.count + 1 }),
-      onDecrement = () => setState({ count: state.count - 1 })
+      [getCount, setCount] = useState(c, getProps().initialValue),
+      using = withGetters(getProps, getCount),
+      onIncrement = () => setCount(it => it + 1),
+      onDecrement = () => setCount(it => it - 1)
 
-    useOnUpdate(c, using((props, state) => {
+    useOnUpdate(c, using((props, count) => {
       console.log(
-        `Component has been rendered - ${props.label}: ${state.count}`)
+        `Component has been rendered - ${props.label}: ${count}`)
     }))
 
-    return using((props, state) =>
+    return using((props, count) =>
       <div className="counter">
         <label>{props.label + ': '}</label> 
         <button onClick={onDecrement}>
           -1
         </button>
         <span>
-          {state.count}
+          {count}
         </span>
         <button onClick={onIncrement}>
           +1
