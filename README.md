@@ -10,7 +10,7 @@ Disclaimer: This is just an initial draft of README. A lot is missing ....
 #### Example 1 (pure ECMAScript / no JSX)
 
 ```javascript
-import { component } from 'js-widgets'
+import { h, component } from 'js-widgets'
 import { mount } from 'js-widgets/dom'
 import { div } from 'js-widgets/html'
 import { Spec } from 'js-spec' // third-party validation library
@@ -41,7 +41,7 @@ mount(content, document.getElementById('app'))
 ```tsx
 import { h, component } from 'js-widgets'
 import { useProps, useStateObject, useOnUpdate } from 'js-widgets/hooks'
-import { wrapByProxies } from 'js-widgets/util'
+import { toProxies } from 'js-widgets/util'
 import { mount } from 'js-widgets/dom'
 import { Spec } from 'js-spec' // third-party validation library
 
@@ -68,7 +68,7 @@ const Counter = component({
       })),
 
       getProps = useProps(c),
-      [props, state, using] = wrapByProxies(getProps, getCount),
+      [props, state, using] = toProxies(getProps, getCount),
       onIncrement = () => setState({ count: state.count + 1 }),
       onDecrement = () => setState({ count: state.count - 1 })
 
@@ -245,7 +245,7 @@ What are the main difference to React's API?
 * `isNode(it)`
 * `withData(...)`
 * `withGetters(...)`
-* `wrapByProxies(...)`
+* `toProxies(...)`
 
 #### Module "_js-widgets/html_"
 
