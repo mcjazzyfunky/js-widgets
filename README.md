@@ -74,17 +74,17 @@ const Counter = component({
 
     useOnUpdate(c, () => {
       console.log(
-        `Component has been rendered - ${props.label}: ${count}`)
+        `Component has been rendered - ${props.label}: ${state.count}`)
     })
 
-    return using((props, count) =>
+    return using((props, state) =>
       <div className="counter">
         <label>{props.label + ': '}</label> 
         <button onClick={onDecrement}>
           -1
         </button>
         <span>
-          {count}
+          {state.count}
         </span>
         <button onClick={onIncrement}>
           +1
