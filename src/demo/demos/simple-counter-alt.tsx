@@ -1,6 +1,6 @@
 import { h, component } from '../../modules/core/main/index'
 import { useOnMount, useOnUpdate, useProps, useStateObject } from '../../modules/hooks/main/index'
-import { wrapByProxies } from '../../modules/util/main/index'
+import { toProxies } from '../../modules/util/main/index'
 
 type CounterProps = {
   label?: string,
@@ -17,7 +17,7 @@ const Counter = component<CounterProps>('Counter')
     const
       getProps = useProps(c),
       [getState, setState] = useStateObject(c, { count: getProps().initialValue }),
-      [props, state, using] = wrapByProxies(getProps, getState),
+      [props, state, using] = toProxies(getProps, getState),
       onIncrement = () => setState({ count: state.count + 1 })
 
     useOnMount(c, () => {

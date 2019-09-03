@@ -12,7 +12,11 @@ export default function useOnMount(
     const unsubscribe = c.onUpdate(() => {
       unsubscribe()
 
-      action()
+      const result = action()
+
+      if (typeof result === 'function') {
+        c.onUnmount(result)
+      }
     })
   }
 }

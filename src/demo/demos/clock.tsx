@@ -1,29 +1,12 @@
 import { h, component, Ctrl } from '../../modules/core/main/index'
-import { useOnUnmount, useState } from '../../modules/hooks/main/index'
-
-function useTimer(c: Ctrl, milliseconds: number = 1000) {
-  const [getTime, setTime] = useState(c, new Date())
-
-  let intervalId: any = null
-
-  intervalId = setInterval(() => {
-    setTime(new Date())
-  }, milliseconds)
-
-  useOnUnmount(c, () => {
-    clearInterval(intervalId)
-    intervalId = null
-  })
-
-  return getTime
-}
+import { useTime } from '../../modules/hooks/main/index'
 
 const Clock = component({
   displayName: 'Clock',
   memoize: true,
 
   init(c) {
-    const getTime = useTimer(c)
+    const getTime = useTime(c)
 
     return () => (
       <div>

@@ -1,23 +1,23 @@
 type Rec = Record<string, any>
 type Get<T> = () => T
 
-function wrapByProxies<A extends Rec, B extends Rec>(
+function toProxies<A extends Rec, B extends Rec>(
   getA: Get<A>, getB: Get<B>
 ): [A, B, (f: (a: A, b: B) => any) => () => any]
 
-function wrapByProxies<A extends Rec, B extends Rec, C extends Rec>(
+function toProxies<A extends Rec, B extends Rec, C extends Rec>(
   getA: Get<A>, getB: Get<B>, getC: Get<C>
 ): [A, B, C, (f: (a: A, b: B, c: C) => any) => () => any]
 
-function wrapByProxies<A extends Rec, B extends Rec, C extends Rec, D extends Rec>(
+function toProxies<A extends Rec, B extends Rec, C extends Rec, D extends Rec>(
   getA: Get<A>, getB: Get<B>, getC: Get<C>, GetD: Get<D>
 ): [A, B, C, D, (f: (a: A, b: B, c: C, d: D) => any) => () => any]
 
-function wrapByProxies<A extends Rec, B extends Rec, C extends Rec, D extends Rec, E extends Rec>(
+function toProxies<A extends Rec, B extends Rec, C extends Rec, D extends Rec, E extends Rec>(
   getA: Get<A>, getB: Get<B>, getC: Get<C>, getD: Get<D>
 ): [A, B, C, D, E, (f: (a: A, b: B, c: C, d: D, e: E) => any) => () => any]
 
-function wrapByProxies(...args: any[]): any {
+function toProxies(...args: any[]): any {
   const ret: any = []
 
   for (let i = 0; i < args.length; ++i) {
@@ -41,4 +41,4 @@ function wrapByProxies(...args: any[]): any {
   return ret
 }
 
-export default wrapByProxies
+export default toProxies

@@ -7,13 +7,16 @@ type CounterProps = {
   ref?: Ref<{ reset(n: number): void }>
 }
 
-const Counter = component<CounterProps>('Counter')
-  .memoize()
-  .defaultProps({
+const Counter = component<CounterProps>({
+  displayName: 'Counter',
+  memoize: true,
+
+  defaultProps: {
     label: 'Counter',
     initialValue: 0
-  })
-  .init(c => {
+  },
+
+  init(c) {
     const
       getProps = useProps(c), 
       [getCount, setCount] = useState(c, getProps().initialValue!),
@@ -34,10 +37,13 @@ const Counter = component<CounterProps>('Counter')
         <button onClick={onIncrement}>+</button>
       </div>
     )
-  })
+  }
+})
 
-const Demo = component('Demo')
-  .init(() => {
+const Demo = component({
+  displayName: 'Demo',
+
+  init(c) {
     const
       counterRef = { current: null } as any, // TODO
       onResetTo0 = () => counterRef.current.reset(0),
@@ -54,6 +60,7 @@ const Demo = component('Demo')
         </div>
       </div>
     )
-  })
+  }
+})
 
 export default <Demo/>
