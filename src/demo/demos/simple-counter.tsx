@@ -7,18 +7,21 @@ type CounterProps = {
   initialValue?: number
 }
 
-const Counter = component<CounterProps>('Counter')
-  .memoize()
-  .defaultProps({
+const Counter = component<CounterProps>({
+  displayName: 'Counter',
+  memoize: true,
+
+  defaultProps: {
     initialValue: 0,
     label: 'Counter'
-  })
-  .init(c => {
+  },
+
+  init(c) {
     const
       getProps = useProps(c),
       [getCount, setCount] = useState(c, getProps().initialValue),
       using = withGetters(getProps, getCount),
-      onIncrement = () => setCount(it => it + 1)
+      onIncrement = () => setCount(it => it! + 1)
 
     useOnMount(c, () => {
       console.log('Component has been mounted')
@@ -38,6 +41,7 @@ const Counter = component<CounterProps>('Counter')
         </div>
       )
     })
-  })
+  }
+})
 
 export default <Counter/> 
