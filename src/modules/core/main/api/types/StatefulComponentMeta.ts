@@ -7,7 +7,7 @@ type StatefulComponentMeta<P extends Props = {}> = {
   type: 'statefulComponent',
   memoize: boolean,
   validate: ((props: P) => null | Error | true | false) | null,
-  init(c: Ctrl<P>, getProps: () => P): (props: P) =>  VirtualNode,
+  init(c: Ctrl<P>): (props: P) =>  VirtualNode,
 }
 
 export default StatefulComponentMeta
