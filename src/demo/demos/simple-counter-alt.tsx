@@ -1,5 +1,5 @@
 import { h, component } from '../../modules/core/main/index'
-import { useOnMount, useOnUpdate, useProps, useStateObject } from '../../modules/hooks/main/index'
+import { useOnMount, useOnUpdate, useProps, useTime, useStateObject } from '../../modules/hooks/main/index'
 import { toProxies } from '../../modules/util/main/index'
 
 type CounterProps = {
@@ -23,7 +23,9 @@ const Counter = component<CounterProps>('Counter')({
         count: getProps().initialValue
       }),
 
-      [props, state, using] = toProxies(getProps, getState),
+      [props, state, data, using] = toProxies(getProps, getState, {
+        time: useTime(c) 
+      } as any),
 
       onIncrement = () => setState({ count: state.count + 1 })
 
@@ -32,16 +34,27 @@ const Counter = component<CounterProps>('Counter')({
     })
 
     useOnUpdate(c, () => {
-      console.log(`Component has been rendered - ${props.label}: ${state.count}`)
+      const timeString = data.time.toLocaleTimeString()
+
+      console.log(`Component has been rendered [${timeString}]- `
+          + `${props.label}: ${state.count}`)
     })
     
-    return using((props, state) => {
+    return (using as any)((props: any, state: any, data: any) => { // TODO!!!
+      const timeString = data.time.toLocaleTimeString()
+      
       return (
         <div>
-          <label>{props.label + ': '}</label> 
-          <button onClick={onIncrement}>
-            {state.count}
-          </button>
+          <div>
+            <label>{props.label + ': '}</label> 
+            <button onClick={onIncrement}>
+              {state.count}
+            </button>
+          </div>
+          <br/>
+          <div>
+            Current time: {timeString}
+          </div>
         </div>
       )
     })

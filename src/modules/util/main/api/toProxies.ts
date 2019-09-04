@@ -21,9 +21,17 @@ function toProxies(...args: any[]): any {
   const ret: any = []
 
   for (let i = 0; i < args.length; ++i) {
-    ret[i] = new Proxy({}, {
-      get: (target: any, name: string) => args[i]()[name]
-    })
+    const item: any = args[i]
+
+    if (typeof item === 'function') {
+      ret[i] = new Proxy({}, {
+        get: (target: any, name: string) => item()[name]
+      })
+    } else {
+      ret[i] = new Proxy({}, {
+        get: (target: any, name: string) => item[name](),
+      })
+    }
   }
 
   ret.push((f: Function) => {
@@ -31,7 +39,17 @@ function toProxies(...args: any[]): any {
       const values: any = []
 
       for (let i = 0; i < args.length; ++i) {
-        values[i] = args[i]()
+        if (typeof args[i] === 'function') {
+          values[i] = args[i]()
+        } else {
+          const obj: any = {}
+
+          for (const key of Object.keys(args[i])) {
+            obj[key] = args[i][key]()
+          }
+
+          values[i] = obj
+        }
       }
 
       return f.apply(null, values)
