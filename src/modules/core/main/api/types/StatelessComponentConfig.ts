@@ -1,14 +1,13 @@
 import Props from './Props'
 import VirtualNode from './VirtualNode'
-import Ctrl from './Ctrl'
 import PickOptionalProps from '../../internal/types/PickOptionalProps'
 
-type StatefulComponentConfig<P extends Props = {}> = {
-  displayName: string,
+type StatelessComponentConfig<P extends Props = {}, D extends Partial<PickOptionalProps<P>> = {}> = {
   memoize?: boolean,
-  validate?(props: P): boolean | null | Error,
-  defaultProps?: PickOptionalProps<P>, 
-  render(props: P): VirtualNode,
+  validate?: (props: P) => boolean | null | Error,
+  defaultProps?: D,
+  render: (props: P & D) => VirtualNode,
+  init?: never
 }
 
-export default StatefulComponentConfig
+export default StatelessComponentConfig
