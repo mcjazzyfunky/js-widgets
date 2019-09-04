@@ -62,8 +62,8 @@ const Counter = component('Counter')({
     const
       getProps = useProps(c),
       
-      [getState, setState] = useStateObject(c, props => ({
-        count: props.initialValue
+      [getState, setState] = useStateObject(c, {
+        count: getProps().initialValue
       }),
 
       [props, state, using] = toProxies(getProps, getState),

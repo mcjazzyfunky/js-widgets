@@ -18,8 +18,13 @@ const Counter = component<CounterProps>('Counter')({
   init(c) {
     const
       getProps = useProps(c),
-      [getState, setState] = useStateObject(c, { count: getProps().initialValue }),
+
+      [getState, setState] = useStateObject(c, {
+        count: getProps().initialValue
+      }),
+
       [props, state, using] = toProxies(getProps, getState),
+
       onIncrement = () => setState({ count: state.count + 1 })
 
     useOnMount(c, () => {
