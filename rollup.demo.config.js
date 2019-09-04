@@ -13,15 +13,12 @@ export default {
     format: 'umd',
 
     globals: {
-      'react': 'React',
-      'react-dom': 'ReactDOM',
-      'js-spec': 'jsSpec',
-      'js-stores': 'jsStores',
-      'js-stores/with-js-widgets': 'jsStores.withJsWidgets'
+      'dyo': 'dyo',
+      'js-spec': 'jsSpec'
     }
   },
 
-  external: ['react', 'react-dom', 'js-spec', 'js-stores', 'js-stores/with-js-widgets'],
+  external: ['js-spec'],
   
   plugins: [
     resolve(),

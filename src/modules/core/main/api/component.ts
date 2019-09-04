@@ -1,5 +1,3 @@
-import React, { FunctionComponent, ReactElement, ReactNode, RefAttributes } from 'react'
-
 import Props from '../internal/types/Props'
 import Component from './types/Component'
 import Ctrl from './types/Ctrl'
