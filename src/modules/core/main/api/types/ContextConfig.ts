@@ -1,7 +1,6 @@
 interface ContextConfig<T> {
-  displayName: string,
-  validate?: (value: T) => boolean | null | Error
   defaultValue: T
+  validate?: (value: T) => boolean | null | Error
 }
 
 export default ContextConfig

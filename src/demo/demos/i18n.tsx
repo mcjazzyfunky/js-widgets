@@ -14,8 +14,9 @@ const translations: Record<string, Record<string, string>> = {
   }
 }
 
-const LocaleCtx = context<string>('LocaleCtx')
-  .defaultValue('en')
+const LocaleCtx = context<string>('LocaleCtx')({
+  defaultValue: 'en'
+})
 
 type AppProps = {
   defaultLocale?: string
