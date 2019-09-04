@@ -1,6 +1,6 @@
 import h from './h'
 import VirtualElement from './types/VirtualElement'
-import StatelessComponentMeta from './types/StatelessComponentMeta'
+import FragmentMeta from './types/FragmentMeta'
 import Component from './types/Component'
 
 let createFragment: (...args: any[]) => VirtualElement = null!
@@ -19,14 +19,11 @@ function Fragment(props?: FragmentProps, ...args: any[]): VirtualElement {
 
 export default Fragment as Component<FragmentProps>
 
-
-const meta: StatelessComponentMeta<{ key?: any }> = Object.freeze({
+const meta: FragmentMeta = Object.freeze({
   displayName: 'Fragment',
-  memoize: false,
-  type: 'statelessComponent' as any,
-  defaultProps: null,
-  validate: null,
-  render: Fragment
+  variant: 'Fragment',
+  validate: () => null, // TODO
+  render: (props: FragmentProps) => h(Fragment, props) // TODO
 })
 
 Object.defineProperty(Fragment, 'meta', {

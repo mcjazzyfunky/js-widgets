@@ -183,8 +183,6 @@ export function convertContext(it: any): any {
 
 function convertStatelessComponent(it: any): Function {
   let ret: any = (props: any, ref: any = null) => {
-    props = mergeDefaultProps(props, it)
-
     if (ref) {
       props.ref = ref
     }
@@ -208,10 +206,9 @@ function convertStatelessComponent(it: any): Function {
 
 function convertStatefulComponent(it: any): Function {
   let ret = function StatefulComponent(props: any, ref: any) {
-    props = mergeDefaultProps(props, it)
-
     if (ref) {
-      props.ref = ref
+      //props.ref = ref
+      props = { ...props, ref } // TODO - optimize
     }
 
     const
@@ -330,19 +327,5 @@ function convertStatefulComponent(it: any): Function {
     value: ret
   })
 
-  return ret
-}
-
-function mergeDefaultProps(props: any, type: any) {
-  let ret: any = {} 
-  
-  if (type && type.meta) {
-    if (type.meta.defaultProps) {
-      Object.assign(ret, type.meta.defaultProps)
-    }
-  }
-
-  Object.assign(ret, props)
-  
   return ret
 }

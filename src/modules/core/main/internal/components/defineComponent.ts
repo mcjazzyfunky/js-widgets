@@ -1,9 +1,10 @@
-import Props from './types/Props'
-import ComponentMeta from './types/ComponentMeta'
-import h from './h'
-import Component from './types/Component'
-import StatelessComponentConfig from './types/StatelessComponentConfig' 
-import StatefulComponentConfig from './types/StatefulComponentConfig' 
+import Props from '../../api/types/Props'
+import ComponentMeta from '../../api/types/ComponentMeta'
+import Ctrl from '../../api/types/Ctrl'
+import h from '../../api/h'
+import Component from '../../api/types/Component'
+import StatelessComponentConfig from '../../api/types/StatelessComponentConfig' 
+import StatefulComponentConfig from '../../api/types/StatefulComponentConfig' 
 
 import { Spec } from 'js-spec'
 
@@ -116,28 +117,33 @@ function validateComponentConfig(config: any): null | Error {
 function convertConfigToMeta(config: any): any {
   const ret: any = {
     displayName: config.displayName,
-    defaultProps: config.defaultProps ? {} : null,
     validate: config.validate || null,
-    memoize: !!config.memoize
     // plus key "render" or "init"
   }
 
-  if (config.defaultProps) {
-    const keys = Object.keys(config.defaultProps)
-
-    for (let i = 0; i < keys.length; ++i) {
-      const key = keys[i]
-
-      ret.defaultProps[key] = config.defaultProps[key]
-    }
-
-    Object.freeze(ret.defaultProps)
-  }
-
   if (config.render) {
-    ret.render = config.render
-  } else {
+    if (!config.defaultProps) {
+      ret.render = config.render
+    } else {
+      ret.render = (props: any) => {
+        const defaultedProps = {...config.defaultProps, ...props}
+
+        return config.render(defaultedProps)
+      }
+    }
+  } else if (!config.defaultProps) {
     ret.init = config.init
+  } else {
+    ret.init = (c: Ctrl) => {
+      const
+        adjustedGetProps = () => {
+          return { ...config.defaultProps, ...c.getProps() } // TODO - optimize
+        },
+
+        adjustedCtrl = {...c, getProps: adjustedGetProps }
+
+      return config.init(adjustedCtrl)
+    }
   }
 
   return Object.freeze(ret)

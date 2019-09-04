@@ -4,7 +4,7 @@ import Props from '../internal/types/Props'
 import Component from './types/Component'
 import Ctrl from './types/Ctrl'
 import VirtualNode from './types/VirtualNode'
-import defineComponent from './defineComponent'
+import defineComponent from '../internal/components/defineComponent'
 import StatelessComponentConfig from './types/StatelessComponentConfig';
 import StatefulComponentConfig from './types/StatefulComponentConfig';
 
