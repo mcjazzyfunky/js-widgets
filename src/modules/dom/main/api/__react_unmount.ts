@@ -1,4 +1,4 @@
-import * as Dyo from 'dyo'
+import ReactDOM from 'react-dom'
 
 export default function unmount(container: Element | string) {
   if (!container || (typeof container !== 'string' && !container.tagName)) {
@@ -16,5 +16,5 @@ export default function unmount(container: Element | string) {
       `[unmount] Could not find container DOM element with id "${container}"`)
   }
 
-  Dyo.render(null, target)
+  ReactDOM.unmountComponentAtNode(target)
 }

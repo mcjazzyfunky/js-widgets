@@ -37,6 +37,7 @@
     "copyfiles": "^2.1.1",
     "cross-conf-env": "^1.1.2",
     "cross-env": "^5.2.1",
+    "dyo": "^1.0.0",
     "fast-memoize": "^2.5.1",
     "js-spec": "^0.1.68",
     "mocha": "^6.2.0",

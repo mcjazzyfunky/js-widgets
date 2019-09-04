@@ -1,4 +1,12 @@
-import * as Dyo from 'dyo'
+import { VirtualElement, Fragment } from '../../../core/main/index'
+import React from 'react' 
+import ReactDOM from 'react-dom'
+
+const { useState, useEffect, useRef, useContext } = React as any
+
+Object.defineProperty(Fragment, '__internal_type', {
+  value: React.Fragment
+})
 
 const
   SYMBOL_ITERATOR =
@@ -14,7 +22,7 @@ function isIterableObject(it: any): boolean {
   return typeof it === 'object' && (Array.isArray(it) || typeof it[SYMBOL_ITERATOR] === 'function')
 }
 
-export default function mount(element: any, container: Element | string) { 
+export default function mount(element: VirtualElement, container: Element | string) { 
   if (!isElement(element)) {
     throw new TypeError(
       '[mount] First argument "element" must be a virtual element')
@@ -35,18 +43,10 @@ export default function mount(element: any, container: Element | string) {
       `[mount] Could not find container DOM element with id "${container}"`)
   }
 
-  Dyo.render(convertNode(element), target)
+  ReactDOM.render(convertNode(element), target)
 }
 
 function adjustEntity(it: any): void {
-  if (it.meta && it.meta.variant === 'Fragment') {
-    Object.defineProperty(it, '__internal_type', {
-      value: Dyo.Fragment 
-    })
-
-    return
-  }
-
   const kind: string = it['js-widgets:kind'] 
 
   switch (kind) {
@@ -82,12 +82,12 @@ function convertNode(node: any) {
     children = props ? props.children || null : null,
     newChildren = children ? convertNodes(children) : null
 
-  if (type && type.__internal_type === undefined && type.meta) {
+  if (type && type['js-widgets:kind'] && !type.__internal_type) {
     adjustEntity(type)
   }
 
   const
-    newType = typeof type === 'function' && type.__internal_type !== undefined ? type.__internal_type : type
+    newType = typeof type === 'function' && type.__internal_type ? type.__internal_type : type
   
   let newProps = props ? { ...props } : null
 
@@ -121,7 +121,7 @@ function convertNode(node: any) {
   }
 
   if (!newProps || !newProps.children) {
-    ret = Dyo.createElement(newType, newProps)
+    ret = React.createElement(newType, newProps)
   } else {
     const
       children = newProps.children,
@@ -136,7 +136,7 @@ function convertNode(node: any) {
       newArgs[i + 2] = children[i]
     }
 
-    ret = Dyo.createElement.apply(null, newArgs)
+    ret = React.createElement.apply(null, newArgs)
   }
 
   return ret
@@ -162,7 +162,7 @@ export function convertContext(it: any): any {
   const ret =
     it.Provider.__internal_type && it.Provider.__internal_type._context
       || it.Consumer.__internal_type && it.Consumer.__internal_type._context
-      || createContext(it.Provider.__internal_defaultValue) // TODO !!!!!!!!!!!!
+      || React.createContext(it.Provider.__internal_defaultValue)
 
     // TODO
 
@@ -191,9 +191,10 @@ function convertStatelessComponent(it: any): Function {
   }
 
   ret.displayName = it.meta.displayName
+  ret = React.forwardRef(ret)
 
   if (it.meta.memoize) {
-    ret = Dyo.memo(ret)
+    ret = React.memo(ret)
   }
 
   Object.defineProperty(it, '__internal_type', {
@@ -211,15 +212,15 @@ function convertStatefulComponent(it: any): Function {
     }
 
     const
-      currPropsRef = Dyo.useRef(props),
-      getProps = Dyo.useRef(() => currPropsRef.current).current,
-      isMountedRef =  Dyo.useRef(false),
-      states: any[] = Dyo.useRef([]).current,
-      contexts: any[] = Dyo.useRef([]).current,
-      updateListeners: (() => void)[] = Dyo.useRef([]).current,
-      disposeListeners: (() => void)[] = Dyo.useRef([]).current,
+      currPropsRef = useRef(props),
+      getProps = useRef(() => currPropsRef.current).current,
+      isMountedRef = useRef(false),
+      states: any[] = useRef([]).current,
+      contexts: any[] = useRef([]).current,
+      updateListeners: (() => void)[] = useRef([]).current,
+      disposeListeners: (() => void)[] = useRef([]).current,
 
-      component = Dyo.useRef({
+      component = useRef({
         getProps() {
           return currPropsRef.current
         },
@@ -275,10 +276,10 @@ function convertStatefulComponent(it: any): Function {
          }
       }).current,
 
-    renderRef = Dyo.useRef(null)
+    renderRef = useRef(null)
     currPropsRef.current = props
 
-    Dyo.useEffect(() => {
+    useEffect(() => {
       isMountedRef.current = true
 
       const listeners = [...updateListeners]
@@ -287,7 +288,7 @@ function convertStatefulComponent(it: any): Function {
         listener => listener())
     })
 
-    Dyo.useEffect(() => {
+    useEffect(() => {
       const listeners = [...disposeListeners]
 
       return () => listeners.forEach(
@@ -299,7 +300,7 @@ function convertStatefulComponent(it: any): Function {
     }
 
     states.forEach(item => {
-      const [value, setValue] = Dyo.useState(item[0])
+      const [value, setValue] = useState(item[0])
 
       item[0] = value
       item[1] = setValue
@@ -316,39 +317,15 @@ function convertStatefulComponent(it: any): Function {
   
   ;(ret as any).displayName = it.meta.displayName
 
+  ret = React.forwardRef(ret)
+
   if (it.meta.memoize) {
-    ret = Dyo.memo(ret)
+    ret = React.memo(ret)
   }
   
   Object.defineProperty(it, '__internal_type', {
     value: ret
   })
-
-  return ret
-}
-
-function createContext(defaultValue: any) {
-  const Provider = ({ value, children }: any) => {
-    return Dyo.createElement(Dyo.Context, { value }, ...children)
-  }
-
-  Object.defineProperty(Provider, '__internal_defaultValue', {
-    value: defaultValue
-  })
-
-  const Consumer = ({ children }: any) => {
-    return Dyo.Children.onlyChild(children)
-  }
-
-  return { Provider, Consumer }
-}
-
-function useContext(context: any) {
-  let ret = Dyo.useContext(context)
-
-  if (ret === undefined) {
-    ret = context.Provider.__internal_defaultValue
-  }
 
   return ret
 }
