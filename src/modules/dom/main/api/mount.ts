@@ -45,6 +45,16 @@ function adjustEntity(it: any): void {
     })
 
     return
+  } else if (it.meta && it.meta.variant === 'ContextProvider') {
+    const DyoContextProvider = ({ value, children }: any) => {
+      return Dyo.h(Dyo.Context, { value }, ...children)
+    }
+
+    Object.defineProperty(it, '__internal_type', {
+      value: DyoContextProvider
+    })
+console.log(it)
+    return
   }
 
   const kind: string = it['js-widgets:kind'] 
@@ -57,14 +67,6 @@ function adjustEntity(it: any): void {
          convertStatefulComponent(it)
       }
 
-      break
-
-    case 'contextConsumer':
-      convertContext(it.context)
-      break
-    
-    case 'contextProvider':
-      convertContext(it.context)
       break
   }
 }
@@ -158,29 +160,6 @@ function convertNodes(elements: any[]) {
   return ret
 }
 
-export function convertContext(it: any): any {
-  const ret =
-    it.Provider.__internal_type && it.Provider.__internal_type._context
-      || it.Consumer.__internal_type && it.Consumer.__internal_type._context
-      || createContext(it.Provider.__internal_defaultValue) // TODO !!!!!!!!!!!!
-
-    // TODO
-
-  if (!it.Provider.__internal_type) {
-    Object.defineProperty(it.Provider, '__internal_type', {
-      value: ret.Provider
-    })
-  }
-
-  if (!it.Consumer.__internal_type) {
-    Object.defineProperty(it.Consumer, '__internal_type', {
-      value: ret.Consumer
-    })
-  }
-
-  return ret
-}
-
 function convertStatelessComponent(it: any): Function {
   let ret: any = (props: any, ref: any = null) => {
     if (ref) {
@@ -242,7 +221,7 @@ function convertStatefulComponent(it: any): Function {
           const idx = contexts.length
 
           if (!context.Provider.__internal_type) {
-            convertContext(context)
+          //  convertContext(context) // TODOO!!!
           }
 
           contexts[idx] = [context.Provider.__internal_defaultValue, context]

@@ -15,9 +15,7 @@ import { mount } from 'js-widgets/dom'
 import { div } from 'js-widgets/html'
 import { Spec } from 'js-spec' // third-party validation library
 
-const SayHello = component({
-  displayName: 'Counter',
-
+const SayHello = component('HelloWorld')({
   validate: Spec.checkProps({
     optional: {
       name: Spec.string
@@ -45,8 +43,7 @@ import { toProxies } from 'js-widgets/util'
 import { mount } from 'js-widgets/dom'
 import { Spec } from 'js-spec' // third-party validation library
 
-const Counter = component({
-  displayName: 'Counter',
+const Counter = component('Counter')({
   memoize: true,
 
   validate: Spec.checkProps({
@@ -232,12 +229,15 @@ What are the main difference to React's API?
 * `useContext(...)`
 * `useEffect(...)`
 * `useForceUpdate(...)`
+* `useInterval(...)`
+* `useMousePosition(...)`
 * `useOnMount(...)`
 * `useOnUnmount(...)`
 * `useOnUpdate(...)`
 * `usePrevious(...)`
 * `useProps(...)`
 * `useState(...)`
+* `useTime(...)`
 * `useStateObject(...)`
 
 #### Module "_js-widgets/util_":

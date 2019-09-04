@@ -21,18 +21,20 @@ type AppProps = {
   defaultLocale?: string
 }
 
-const App = component<AppProps>('App')
-  .validate(
+const App = component<AppProps>('App')({
+  validate: (
     Spec.checkProps({
       optional: {
         defaultLocale: Spec.oneOf('en', 'fr', 'de')
       }
     })
-   )
-  .defaultProps({
+  ),
+
+  defaultProps: {
     defaultLocale: 'en'
-  })
-  .init(c => {
+  },
+
+  init(c) {
     const
       getProps = useProps(c),
       [getLocale, setLocale] = useState(c, getProps().defaultLocale)
@@ -49,27 +51,28 @@ const App = component<AppProps>('App')
           <LocaleText id="salutation"/>
         </div>
       </LocaleCtx.Provider>
-  })
+  }
+})
 
 interface LocaleTextProps {
   id: string
 }
 
-const LocaleText = component<LocaleTextProps>('LocaleText')
-  .validate(
-    Spec.checkProps({
-      required: {
-        id: Spec.string
-      }
-    })
-  )
-  .init(c => {
+const LocaleText = component<LocaleTextProps>('LocaleText')({
+  validate: Spec.checkProps({
+    required: {
+      id: Spec.string
+    }
+  }),
+
+  init(c) {
     const getLocale = useContext(c, LocaleCtx)
 
     return props =>
       <p>
         { translations[getLocale()][props.id] }
       </p>
-  })
+  }
+})
 
 export default <App defaultLocale="en"/>

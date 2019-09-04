@@ -76,7 +76,7 @@ const
         then: Spec.exact({
           displayName: specOfDisplayName,
           defaultProps: Spec.optional(specOfDefaultProps),
-          validate: Spec.optional(Spec.function),
+          validate: Spec.nullableOptional(Spec.function),
           memoize: Spec.optional(Spec.boolean),
           render: Spec.function
         })
@@ -87,7 +87,7 @@ const
         then: Spec.exact({
           displayName: specOfDisplayName,
           defaultProps: Spec.optional(specOfDefaultProps),
-          validate: Spec.optional(Spec.function),
+          validate: Spec.nullableOptional(Spec.function),
           memoize: Spec.optional(Spec.boolean),
           init: Spec.function
         })

@@ -33,9 +33,7 @@ const demoContent = {
   }
 }
 
-const App: any = component({ // TODO
-  displayName:  'App',
-
+const App = component('App')({
   render() {
     return (
       <div>

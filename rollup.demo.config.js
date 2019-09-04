@@ -18,7 +18,7 @@ export default {
     }
   },
 
-  external: ['js-spec'],
+  external: ['js-spec', 'dyo'],
   
   plugins: [
     resolve(),

@@ -7,8 +7,7 @@ type CounterProps = {
   initialValue?: number
 }
 
-const Counter = component<CounterProps>({
-  displayName: 'Counter',
+const Counter = component<CounterProps>('Counter')({
   memoize: true,
 
   defaultProps: {

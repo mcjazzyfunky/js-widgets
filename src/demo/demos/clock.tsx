@@ -1,8 +1,7 @@
 import { h, component, Ctrl } from '../../modules/core/main/index'
 import { useTime } from '../../modules/hooks/main/index'
 
-const Clock = component({
-  displayName: 'Clock',
+const Clock = component('Clock')({
   memoize: true,
 
   init(c) {

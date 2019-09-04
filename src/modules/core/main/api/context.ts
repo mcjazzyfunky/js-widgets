@@ -1,6 +1,6 @@
-import { createContext } from 'react' // TODO!!!!
-
+import h from './h'
 import Context from './types/Context'
+import Key from './types/Key'
 
 export default function context<T>(displayName: string) {
   return new ContextBuilder<T>(displayName)
@@ -88,5 +88,27 @@ function buildContext<T>(defaultValue: T, attrs: BuilderAttrs<T>): Context<T> {
     }
   }
 
-  return ret
+  return ret as any // TODO!!!!
+}
+
+function createContext<T>(defaultValue: T) {
+  const Provider = (props: { value: T, key?: Key }, ...children: any[]): any => 
+     h(Provider as any, props, ...children)
+
+  Provider.meta = Object.freeze({
+    displayName: 'Context.Provider',
+    variant: 'ContextProvider',
+    render: Provider
+  })
+
+  const Consumer = (props: { key?: Key }, f: Function): any => // TODO
+     h(Consumer as any, props, f)
+
+  Consumer.meta = Object.freeze({
+    displayName: 'Context.Consumer',
+    variant: 'ContextConsumer',
+    render: Consumer
+  })
+
+  return Object.freeze({ Provider, Consumer })
 }

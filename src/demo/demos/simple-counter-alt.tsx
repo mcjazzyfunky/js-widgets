@@ -7,13 +7,15 @@ type CounterProps = {
   initialValue?: number
 }
 
-const Counter = component<CounterProps>('Counter')
-  .memoize()
-  .defaultProps({
+const Counter = component<CounterProps>('Counter')({
+  memoize: true,
+
+  defaultProps: {
     initialValue: 0,
     label: 'Counter'
-  })
-  .init(c => {
+  },
+
+  init(c) {
     const
       getProps = useProps(c),
       [getState, setState] = useStateObject(c, { count: getProps().initialValue }),
@@ -38,6 +40,7 @@ const Counter = component<CounterProps>('Counter')
         </div>
       )
     })
-  })
+  }
+})
 
 export default <Counter/>

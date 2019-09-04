@@ -2,8 +2,8 @@ import { h, component } from '../../modules/core/main/index'
 import { useOnUnmount, useStateObject } from '../../modules/hooks/main/index'
 import { withData } from '../../modules/util/main/index'
 
-const StopWatch = component('StopWatch')
-  .init(c => {
+const StopWatch = component('StopWatch')({
+  init(c) {
     const
       [getState, setState] = useStateObject(c, { time: 0, running: false}),
 
@@ -63,6 +63,7 @@ const StopWatch = component('StopWatch')
         </button>
       </div>
     )
-  })
+  }
+})
 
 export default <StopWatch/>

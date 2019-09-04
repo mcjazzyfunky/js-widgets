@@ -7,8 +7,7 @@ type CounterProps = {
   ref?: Ref<{ reset(n: number): void }>
 }
 
-const Counter = component<CounterProps>({
-  displayName: 'Counter',
+const Counter = component<CounterProps>('Counter')({
   memoize: true,
 
   defaultProps: {
@@ -40,9 +39,7 @@ const Counter = component<CounterProps>({
   }
 })
 
-const Demo = component({
-  displayName: 'Demo',
-
+const Demo = component('Demo')({
   init(c) {
     const
       counterRef = { current: null } as any, // TODO

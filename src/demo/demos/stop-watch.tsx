@@ -1,8 +1,8 @@
 import { h, component } from '../../modules/core/main/index'
 import { useOnUnmount, useState } from '../../modules/hooks/main/index'
 
-const StopWatch = component('StopWatch')
-  .init(c => {
+const StopWatch = component('StopWatch')({
+  init(c) {
     let interval = 0
 
     const
@@ -56,6 +56,7 @@ const StopWatch = component('StopWatch')
           Reset
         </button>
       </div>
-  })
+  }
+})
 
 export default <StopWatch/>

@@ -6,8 +6,7 @@ type SayHelloProps = {
   name?: string
 }
 
-const SayHello = component<SayHelloProps>({
-  displayName: 'SayHello',
+const SayHello = component<SayHelloProps>('SayHello')({
   memoize: true,
 
   validate: Spec.checkProps({
