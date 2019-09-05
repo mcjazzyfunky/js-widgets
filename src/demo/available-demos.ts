@@ -8,7 +8,7 @@ import clock from './demos/clock'
 import fragments from './demos/fragments'
 import iterators from './demos/iterators'
 import stopWatch from './demos/stop-watch'
-import stopWatchAlt2 from './demos/stop-watch-alt2'
+import stopWatchAlt from './demos/stop-watch-alt'
 import mousePosition from './demos/mouse-position'
 import i18n from './demos/i18n'
 
@@ -21,7 +21,7 @@ const demos: [string, VirtualElement][] = [
   ['Fragments', fragments],
   ['Iterators', iterators],
   ['Stop watch', stopWatch],
-  ['Stop watch - using withData', stopWatchAlt2],
+  ['Stop watch - alternative', stopWatchAlt],
   ['Mouse position', mousePosition],
   ['Internationalization', i18n],
 ]

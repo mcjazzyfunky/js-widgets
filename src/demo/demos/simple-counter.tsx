@@ -1,6 +1,6 @@
 import { h, component } from '../../modules/core/main/index'
 import { useOnMount, useOnUpdate, useProps, useState } from '../../modules/hooks/main/index'
-import { withGetters } from '../../modules/util/main/index'
+import { wrapGetters } from '../../modules/util/main/index'
 
 type CounterProps = {
   label?: string,
@@ -19,18 +19,23 @@ const Counter = component<CounterProps>('Counter')({
     const
       getProps = useProps(c),
       [getCount, setCount] = useState(c, getProps().initialValue),
-      using = withGetters(getProps, getCount),
+
+      [$, using] = wrapGetters({
+        props: getProps,
+        count: getCount
+      }),
+
       onIncrement = () => setCount(it => it! + 1)
 
     useOnMount(c, () => {
       console.log('Component has been mounted')
     })
 
-    useOnUpdate(c, using((props, count) => {
-      console.log(`Component has been rendered - ${props.label}: ${count}`)
-    }))
+    useOnUpdate(c, ()=> {
+      console.log(`Component has been rendered - ${$.props.label}: ${$.count}`)
+    })
 
-    return using((props, count) => {
+    return using(({ props, count }) => {
       return (
         <div>
           <label>{props.label + ': '}</label> 

@@ -1,6 +1,7 @@
 export { default as isElement } from './api/isElement'
 export { default as isNode } from './api/isNode'
-export { default as withData } from './api/withData'
+export { default as wrapGetters } from './api/wrapGetters'
 export { default as withGetters } from './api/withGetters'
 export { default as memoize } from './api/memoize'
+export { default as createRef } from './api/createRef'
 export { default as toProxies } from './api/toProxies'

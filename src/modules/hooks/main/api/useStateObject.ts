@@ -9,13 +9,13 @@ export default function useStateObject<T extends object>(c: Ctrl, initialValue: 
 
   function update(updater: Updater<T>) {
     if (typeof updater === 'function') {
-      set(oldState => {
-        const result = (updater as any)(oldState)
+      set(oldState2 => {
+        const result = (updater as any)(oldState2)
 
-        return {...oldState, ...result }
+        return {...oldState2, ...result }
       })
     } else if (updater !== null && typeof updater === 'object') {
-      set(oldState => ({ ...oldState, ...updater }))
+      set(oldState3 => ({ ...oldState3, ...updater }))
     }
   }
 

@@ -1,6 +1,10 @@
 type Rec = Record<string, any>
 type Get<T> = () => T
 
+function toProxies<A extends Rec>(
+  getA: Get<A>
+): [A, (f: (a: A) => any) => () => any]
+
 function toProxies<A extends Rec, B extends Rec>(
   getA: Get<A>, getB: Get<B>
 ): [A, B, (f: (a: A, b: B) => any) => () => any]
