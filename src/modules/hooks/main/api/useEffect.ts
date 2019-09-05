@@ -6,12 +6,18 @@ export default function useEffect(
   getDependencies?: () => any[] | null
 ): void {
   let oldDeps: any[] | null = null
+  let cleanup: any = null
 
   c.onUpdate(() => {
     const newDeps = getDependencies ? getDependencies() : null
 
     if (oldDeps === null || newDeps ===  null || !isEqual(oldDeps, newDeps)) {
-      action()
+      if (cleanup) {
+        cleanup()
+        cleanup = null
+      }
+
+      cleanup = action()
     }
 
     oldDeps = newDeps
