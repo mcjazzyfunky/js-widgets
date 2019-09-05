@@ -215,8 +215,8 @@ What are the main difference to React's API?
 #### Module "_js-widgets_"
 
 * `h(type, props?, ...children)`
-* `component(displayName)(componentConfig)` - curried function
-* `context(displayName)(contextConfig)` - curried function
+* `component(displayName)(componentConfig)` - curried function for TypeScript typing reasons
+* `context(displayName)(contextConfig)` - curried function to have a similar API as `component(...)`
 * `isElement(it)`
 * `isNode(it)`
 * `createRef(value)`
