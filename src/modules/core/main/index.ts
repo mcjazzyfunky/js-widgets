@@ -2,6 +2,9 @@
 export { default as component } from './api/component'
 export { default as context } from './api/context'
 export { default as h } from './api/h'
+export { default as isElement } from './api/isElement'
+export { default as isNode } from './api/isNode'
+export { default as createRef } from './api/createRef'
 export { default as Fragment } from './api/Fragment'
 
 // types

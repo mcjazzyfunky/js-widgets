@@ -1,6 +1,6 @@
-import { h, context, component } from '../../modules/core/main/index'
+import { h, context, component, createRef } from '../../modules/core/main/index'
 import { useContext, useEffect, useProps, useOnMount, useStateObject } from '../../modules/hooks/main/index'
-import { createRef, toProxies } from '../../modules/util/main/index'
+import { toProxies } from '../../modules/util/main/index'
 
 /* TODO
 const ThemeCtx = context('ThemeCtx')({

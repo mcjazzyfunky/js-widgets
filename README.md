@@ -215,8 +215,11 @@ What are the main difference to React's API?
 #### Module "_js-widgets_"
 
 * `h(type, props?, ...children)`
-* `component(componentConfig)`
-* `context(contextConfig)`
+* `component(displayName)(componentConfig)` - curried function
+* `context(displayName)(contextConfig)` - curried function
+* `isElement(it)`
+* `isNode(it)`
+* `createRef(value)`
 * `Fragment(props?, ...children)`
 
 #### Module "_js-widgets/dom_" ###
@@ -240,8 +243,6 @@ What are the main difference to React's API?
 * `useStateObject(...)`
 
 #### Module "_js-widgets/util_":
-* `isElement(it)`
-* `isNode(it)`
 * `withData(...)`
 * `withGetters(...)`
 * `toProxies(...)`
