@@ -1,5 +1,5 @@
 type Rec = Record<string, any>
-type Get<T> = () => T
+type Get<T> = (() => T) | any // TODO!!!!
 
 function toProxies<A extends Rec>(
   getA: Get<A>

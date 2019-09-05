@@ -1,48 +1,73 @@
-import { h, component } from '../../modules/core/main/index'
-import { useProps, useOnUnmount, useStateObject } from '../../modules/hooks/main/index'
+import { h, context, component } from '../../modules/core/main/index'
+import { useContext, useEffect, useProps, useOnMount, useStateObject } from '../../modules/hooks/main/index'
 import { createRef, toProxies } from '../../modules/util/main/index'
 
+/* TODO
+const ThemeCtx = context('ThemeCtx')({
+  defaultValue: 'default'
+})
+*/
+
 type StopWatchProps = {
-  label?: string
+  name?: string
 }
 
 const StopWatch = component<StopWatchProps>('StopWatch')({
   defaultProps: {
-    label: 'Stop watch'
+    name: 'Stop watch'
   },
 
   init(c) {
     const
+      getProps = useProps(c),
+      
       [getState, setState] = useStateObject(c, {
         time: 0,
         running: false
       }),
 
-      getProps = useProps(c),
-      [props, state, using] = toProxies(getProps, getState),
-      intervalIdRef = createRef(0),
+      [props, state, data, using] = toProxies(getProps, getState, {
+        theme: () => 'default' //useContext(c, ThemeCtx) // TODO
+      }),
 
-      onStartStop = () => {
-        if (state.running) {
-          stopTimer()
-        } else {
-          startTimer()
-        }
-      },
-
-      onReset = () => resetTimer()
-
-    useOnUnmount(c, () => stopTimer())
+      intervalIdRef = createRef(0)
     
+    useEffect(c, () => {
+      console.log(`Using theme "${data.theme}" for ${props.name}`)
+    }, () => [data.theme])
+
+
+    useOnMount(c, () => {
+      console.log(`${props.name} has been mounted`)
+
+      return () => {
+        stopTimer()
+
+        console.log(`${props.name} will be unmounted`)
+      }
+    })
+
+    function onStartStop() {
+      if (state.running) {
+        stopTimer()
+      } else {
+        startTimer()
+      }
+    }
+
+    function onReset() {
+      resetTimer()
+    }
+
     function startTimer() {
       if (!state.running) {
-        console.log(`[${props.label}] Started`)
+        console.log(`Started ${props.name}`)
 
         const startTime = Date.now() - state.time
 
         intervalIdRef.current = window.setInterval(() => {
           setState({ time: Date.now() - startTime })
-        }, 91) // TODO - the demo has problems if milliseconds are lower (e.g. 20)
+        }, 107)
 
         setState({ running: true })
       }
@@ -50,7 +75,7 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
 
     function stopTimer() {
       if (state.running) {
-        console.log(`[${props.label}] Stopped`)
+        console.log(`Stopped ${props.name}`)
 
         clearInterval(intervalIdRef.current)
         intervalIdRef.current = 0
@@ -63,9 +88,9 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
       setState({ time: 0 })
     }
 
-    return using((props, state) =>
-      <div>
-        <h4>{props.label}</h4>
+    return using((props, state, data) =>
+      <div className={`theme-${data.theme}`}>
+        <h4>{props.name}</h4>
         <div>Time: {state.time}</div>
         <button onClick={onStartStop}>
           { state.running ? 'Stop' : 'Start'}
@@ -80,8 +105,7 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
 
 export default (
   <div>
-    <StopWatch label="Stop watch 1"/>
-    <br/>
-    <StopWatch label="Stop watch 2"/>
+    <StopWatch name="Stop watch 1"/>
+    <StopWatch name="Stop watch 2"/>
   </div>
 )
