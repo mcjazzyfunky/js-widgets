@@ -70,7 +70,7 @@ const Counter = component('Counter')({
       onDecrement = () => setState({ count: state.count - 1 })
 
     useOnUpdate(c, () => {
-      console.log( `Component rendered - ${props.label}: ${state.count}`)
+      console.log( `Update - ${props.label}: ${state.count}`)
     })
 
     return using((props, state) =>
