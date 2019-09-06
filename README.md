@@ -10,7 +10,7 @@ Disclaimer: This is just an initial draft of README. A lot is missing ....
 #### Example 1 (pure ECMAScript / no JSX)
 
 ```javascript
-import { h, component } from 'js-widgets'
+import { component } from 'js-widgets'
 import { mount } from 'js-widgets/dom'
 import { div } from 'js-widgets/html'
 import { Spec } from 'js-spec' // third-party validation library
