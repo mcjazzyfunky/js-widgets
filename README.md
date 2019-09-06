@@ -39,7 +39,7 @@ mount(content, document.getElementById('app'))
 ```tsx
 import { h, component } from 'js-widgets'
 import { useProps, useStateObject, useOnUpdate } from 'js-widgets/hooks'
-import { toProxies } from 'js-widgets/util'
+import { proxify } from 'js-widgets/util'
 import { mount } from 'js-widgets/dom'
 import { Spec } from 'js-spec' // third-party validation library
 
@@ -64,7 +64,7 @@ const Counter = component('Counter')({
         count: props.initialValue
       }),
 
-      [props, state, using] = toProxies(useProps(c), getState),
+      [props, state, using] = proxify(useProps(c), getState),
   
       onIncrement = () => setState({ count: state.count + 1 }),
       onDecrement = () => setState({ count: state.count - 1 })
