@@ -75,7 +75,7 @@ const Counter = component('Counter')({
 
     return using((props, state) =>
       <div className="counter">
-        <label>{props.label + ': '}</label> 
+        <label>{props.label}: </label> 
         <button onClick={onDecrement}>
           -1
         </button>

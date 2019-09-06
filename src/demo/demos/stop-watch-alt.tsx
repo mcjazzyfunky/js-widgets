@@ -1,12 +1,6 @@
-import { h, context, component, createRef } from '../../modules/core/main/index'
-import { useContext, useEffect, useProps, useOnMount, useStateObject } from '../../modules/hooks/main/index'
+import { h,  component, createRef } from '../../modules/core/main/index'
+import { useEffect, useProps, useOnMount, useStateObject } from '../../modules/hooks/main/index'
 import { proxify } from '../../modules/util/main/index'
-
-/* TODO
-const ThemeCtx = context('ThemeCtx')({
-  defaultValue: 'default'
-})
-*/
 
 type StopWatchProps = {
   name?: string
@@ -19,28 +13,19 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
 
   init(c) {
     const
-      getProps = useProps(c),
-      startTimeRef = createRef(0),
-      
       [getState, setState] = useStateObject(c, {
         time: 0,
         running: false
       }),
 
-      [props, state, data, using] = proxify(getProps, getState, {
-        theme: () => 'default' //useContext(c, ThemeCtx) // TODO
-      })
-
-    useEffect(c, () => {
-      console.log(`Using theme "${data.theme}" for ${props.name}`)
-    }, () => [data.theme])
+      [props, state, using] = proxify(useProps(c), getState),
+      startTimeRef = createRef(0)
 
     useOnMount(c, () => {
       console.log(`${props.name} has been mounted`)
 
       return () => {
         reset()
-
         console.log(`${props.name} will be unmounted`)
       }
     })
@@ -70,8 +55,8 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
       }
     }, () => [state.running])
 
-    return using((props, state, data) =>
-      <div className={`theme-${data.theme}`}>
+    return using((props, state) =>
+      <div>
         <h4>{props.name}</h4>
         <div>Time: {state.time}</div>
         <button onClick={startStop}>
