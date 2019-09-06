@@ -62,7 +62,7 @@ const Counter = component('Counter')({
     const
       [getState, setState] = useStateObject(c, props => ({
         count: props.initialValue
-      }),
+      })),
 
       [props, state, using] = proxify(useProps(c), getState),
   
