@@ -1,4 +1,5 @@
 // functions
+export { default as Boundary } from './api/Boundary'
 export { default as component } from './api/component'
 export { default as context } from './api/context'
 export { default as h } from './api/h'

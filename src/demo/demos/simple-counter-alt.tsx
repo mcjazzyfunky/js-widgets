@@ -1,6 +1,6 @@
 import { h, component } from '../../modules/core/main/index'
 import { useOnMount, useOnUpdate, useProps, useTime, useStateObject } from '../../modules/hooks/main/index'
-import { toProxies } from '../../modules/util/main/index'
+import { proxify } from '../../modules/util/main/index'
 
 type CounterProps = {
   label?: string,
@@ -23,7 +23,7 @@ const Counter = component<CounterProps>('Counter')({
         count: getProps().initialValue
       }),
 
-      [props, state, data, using] = toProxies(getProps, getState, {
+      [props, state, data, using] = proxify(getProps, getState, {
         time: useTime(c) 
       } as any),
 

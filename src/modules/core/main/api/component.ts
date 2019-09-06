@@ -9,9 +9,13 @@ import StatefulComponentConfig from '../../../core/main/api/types/StatefulCompon
 import ComponentMeta from './types/ComponentMeta'
 import PickOptionalProps from '../internal/types/PickOptionalProps'
 
-function component<P extends Props = {}>(
+function component(
   displayName: string
-): <D extends Partial<PickOptionalProps<P>>>(config: StatelessComponentConfig<P> | StatefulComponentConfig<P, D>) => any
+): (config: StatelessComponentConfig<{}> | StatefulComponentConfig<{}, {}>) => Component<{}>
+
+function component<P extends Props>(
+  displayName: string
+): <D extends Partial<PickOptionalProps<P>>>(config: StatelessComponentConfig<P> | StatefulComponentConfig<P, D>) => Component<P>
 
 function component(displayName: string): any {
   return (config: StatelessComponentConfig<any> | StatefulComponentConfig<any, any>) => {
@@ -44,8 +48,7 @@ function defineComponent<P extends Props = {}>(
 function defineComponent<P extends Props = {}>(
   displayName: string, 
   config: StatefulComponentConfig<P>
-):
-  Component<P>
+): Component<P>
 
 function defineComponent<P extends Props = {}>(
   displayName: string,

@@ -1,6 +1,6 @@
 import { h, context, component, createRef } from '../../modules/core/main/index'
 import { useContext, useEffect, useProps, useOnMount, useStateObject } from '../../modules/hooks/main/index'
-import { toProxies } from '../../modules/util/main/index'
+import { proxify } from '../../modules/util/main/index'
 
 /* TODO
 const ThemeCtx = context('ThemeCtx')({
@@ -27,7 +27,7 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
         running: false
       }),
 
-      [props, state, data, using] = toProxies(getProps, getState, {
+      [props, state, data, using] = proxify(getProps, getState, {
         theme: () => 'default' //useContext(c, ThemeCtx) // TODO
       })
 

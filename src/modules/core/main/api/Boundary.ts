@@ -2,17 +2,18 @@ import h from './h'
 import component from './component'
 import Component from './types/Component'
 
-type FragmentProps = {
+type BoundaryProps = {
   key?: number | string,
+  fallback: Function, // TODO
   children?: any // TODO
 }
 
-const Fragment = component<FragmentProps>('Fragment')({
+const Boundary = component<BoundaryProps>('Boundary')({
   render(props) {
     const { children, ...props2 } = props
 
-    return h(Fragment as any, props2, ...children)
+    return h(Boundary as any, props2, ...children)
   }
-}) as Component<FragmentProps>
+}) as Component<BoundaryProps>
 
-export default Fragment
+export default Boundary

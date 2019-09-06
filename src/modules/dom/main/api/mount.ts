@@ -1,5 +1,15 @@
 import * as Dyo from 'dyo'
 
+import { Fragment, Boundary } from '../../../core/main/index'
+
+Object.defineProperty(Fragment, '__internal_type', {
+  value: Dyo.Fragment
+})
+
+Object.defineProperty(Boundary, '__internal_type', {
+  value: Dyo.Boundary
+})
+
 const
   SYMBOL_ITERATOR =
     typeof Symbol === 'function' && Symbol.iterator
@@ -39,13 +49,7 @@ export default function mount(element: any, container: Element | string) {
 }
 
 function adjustEntity(it: any): void {
-  if (it.meta && it.meta.variant === 'Fragment') {
-    Object.defineProperty(it, '__internal_type', {
-      value: Dyo.Fragment 
-    })
-
-    return
-  } else if (it.meta && it.meta.variant === 'ContextProvider') {
+  if (it.meta && it.meta.variant === 'ContextProvider') {
     const DyoContextProvider = ({ value, children }: any) => {
       return Dyo.h(Dyo.Context, { value }, ...children)
     }
@@ -53,7 +57,7 @@ function adjustEntity(it: any): void {
     Object.defineProperty(it, '__internal_type', {
       value: DyoContextProvider
     })
-console.log(it)
+
     return
   }
 

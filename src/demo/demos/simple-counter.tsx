@@ -1,6 +1,6 @@
 import { h, component } from '../../modules/core/main/index'
-import { useOnMount, useOnUpdate, useProps, useState } from '../../modules/hooks/main/index'
-import { wrapGetters } from '../../modules/util/main/index'
+import { useOnMount, useOnUpdate, useProps, useStateObject } from '../../modules/hooks/main/index'
+import { proxify } from '../../modules/util/main/index'
 
 type CounterProps = {
   label?: string,
@@ -17,30 +17,27 @@ const Counter = component<CounterProps>('Counter')({
 
   init(c) {
     const
-      getProps = useProps(c),
-      [getCount, setCount] = useState(c, getProps().initialValue),
+      [getState, setState] = useStateObject(c, props => ({
+        count: props.initialValue
+      })),
 
-      [$, using] = wrapGetters({
-        props: getProps,
-        count: getCount
-      }),
-
-      onIncrement = () => setCount(it => it! + 1)
+      [props, state, using] = proxify(useProps(c), getState),
+      onIncrement = () => setState({ count: state.count + 1 })
 
     useOnMount(c, () => {
       console.log('Component has been mounted')
     })
 
     useOnUpdate(c, ()=> {
-      console.log(`Component has been rendered - ${$.props.label}: ${$.count}`)
+      console.log(`Component has been rendered - ${props.label}: ${state.count}`)
     })
 
-    return using(({ props, count }) => {
+    return using((props, state) => {
       return (
         <div>
           <label>{props.label + ': '}</label> 
           <button onClick={onIncrement}>
-            {count}
+            {state.count}
           </button>
         </div>
       )
