@@ -12,14 +12,15 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
   },
 
   init(c) {
+    let startTime = 0
+
     const
       [getState, setState] = useStateObject(c, {
         time: 0,
         running: false
       }),
 
-      [props, state, using] = proxify(useProps(c), getState),
-      startTimeRef = createRef(0)
+      [props, state, using] = proxify(useProps(c), getState)
 
     useOnMount(c, () => {
       console.log(`${props.name} has been mounted`)
@@ -35,17 +36,17 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
     }
 
     function reset() {
-      startTimeRef.current = 0
+      startTime = 0
       setState({ running: false, time: 0 })
     }
 
     useEffect(c, () => {
       if (state.running) {
-        startTimeRef.current = Date.now()
+        startTime = Date.now()
         console.log(`Starting "${props.name}"`)
 
         const interval = setInterval(() => {
-          setState({ time: Date.now() - startTimeRef.current! }) // TODO
+          setState({ time: Date.now() - startTime })
         }, 103);
 
         return () => {
@@ -60,7 +61,7 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
         <h4>{props.name}</h4>
         <div>Time: {state.time}</div>
         <button onClick={startStop}>
-          { state.running ? 'Stop' : 'Start'}
+          { state.running ? 'Stop' : 'Start' }
         </button>
         <button onClick={reset}>
           Reset
