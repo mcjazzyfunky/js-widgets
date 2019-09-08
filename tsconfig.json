@@ -29,7 +29,6 @@
   },
   "files": [
     "src/modules/core/main/index.ts",
-    "src/modules/dom/main/index.ts",
     "src/modules/html/main/index.ts",
     "src/modules/svg/main/index.ts",
     "src/modules/hooks/main/index.ts",

@@ -21,7 +21,8 @@ const Counter = component<CounterProps>('Counter')({
         count: props.initialValue
       })),
 
-      [props, state, using] = proxify(useProps(c), getState),
+      getProps = useProps(c),
+      [props, state, using] = proxify(getProps, getState),
       onIncrement = () => setState({ count: state.count + 1 })
 
     useOnMount(c, () => {

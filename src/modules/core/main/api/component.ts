@@ -8,6 +8,7 @@ import StatelessComponentConfig from '../../../core/main/api/types/StatelessComp
 import StatefulComponentConfig from '../../../core/main/api/types/StatefulComponentConfig'
 import ComponentMeta from './types/ComponentMeta'
 import PickOptionalProps from '../internal/types/PickOptionalProps'
+import createInternalComponent from '../internal/helpers/createInternalComponent'
 
 function component(
   displayName: string
@@ -34,58 +35,21 @@ function component(displayName: string): any {
       cfg.defaultProps = config.defaultProps
     }
 
-    return defineComponent(displayName, cfg)
+    const
+      ret = defineComponent(displayName, cfg),
+      internalType = createInternalComponent(displayName, cfg)
+
+    Object.defineProperty(internalType, '__internal_original', {
+      value: ret
+    }),
+
+    Object.defineProperty(ret, '__internal_type', {
+      writable: true, // TODO
+      value: internalType
+    })
+
+    return ret
   }
-}
-
-// --- locals -------------------------------------------------------
-
-function defineComponent<P extends Props = {}>(
-  displayName: string,
-  config: StatelessComponentConfig<P>
-): Component<P>
-
-function defineComponent<P extends Props = {}>(
-  displayName: string, 
-  config: StatefulComponentConfig<P>
-): Component<P>
-
-function defineComponent<P extends Props = {}>(
-  displayName: string,
-  config: StatefulComponentConfig<P> | StatelessComponentConfig<P>
-): Component<P> {
-
-  if (process.env.NODE_ENV === 'development' as any) {
-    const error = validateComponentConfig(config)
-
-    if (error) {
-      throw new Error(
-        `[defineComponent] ${error.message}`)
-    }
-  }
-
-  let createComponentElement: Function | null = null
-
-  const ret: Component<P> =
-    Object.assign(
-      function (/* arguments */) {
-        return createComponentElement!.apply(null, arguments)
-      },
-      {
-        meta: null! as  ComponentMeta<P>
-      })
-  
-  createComponentElement = h.bind(null, ret as any)
-
-  Object.defineProperty(ret, 'js-widgets:kind', {
-    value: 'componentFactory'
-  })
-
-  Object.defineProperty(ret, 'meta', {
-    value: convertConfigToMeta(config)
-  })
-
-  return ret
 }
 
 // --- locals ---------------------------------------------------
@@ -179,6 +143,53 @@ function convertConfigToMeta(config: any): any {
   return Object.freeze(ret)
 }
 
+function defineComponent<P extends Props = {}>(
+  displayName: string,
+  config: StatelessComponentConfig<P>
+): Component<P>
+
+function defineComponent<P extends Props = {}>(
+  displayName: string, 
+  config: StatefulComponentConfig<P>
+): Component<P>
+
+function defineComponent<P extends Props = {}>(
+  displayName: string,
+  config: StatefulComponentConfig<P> | StatelessComponentConfig<P>
+): Component<P> {
+
+  if (process.env.NODE_ENV === 'development' as any) {
+    const error = validateComponentConfig(config)
+
+    if (error) {
+      throw new Error(
+        `[defineComponent] ${error.message}`)
+    }
+  }
+
+  let createComponentElement: Function | null = null
+
+  const ret: Component<P> =
+    Object.assign(
+      function (/* arguments */) {
+        return createComponentElement!.apply(null, arguments)
+      },
+      {
+        meta: null! as  ComponentMeta<P>
+      })
+  
+  createComponentElement = h.bind(null, ret as any)
+
+  Object.defineProperty(ret, 'js-widgets:kind', {
+    value: 'componentFactory'
+  })
+
+  Object.defineProperty(ret, 'meta', {
+    value: convertConfigToMeta(config)
+  })
+
+  return ret
+}
 
 // --- exports ------------------------------------------------------
 

@@ -1,6 +1,7 @@
 import h from './h'
 import component from './component'
 import Component from './types/Component'
+import FragmentEntity from '../internal/adapt/FragmentEntity'
 
 type FragmentProps = {
   key?: number | string,
@@ -9,10 +10,14 @@ type FragmentProps = {
 
 const Fragment = component<FragmentProps>('Fragment')({
   render(props) {
-    const { children, ...props2 } = props
+    const { children, ...propsWithoutChildren } = props
 
-    return h(Fragment as any, props2, ...children)
+    return h(Fragment as any, propsWithoutChildren, ...children)
   }
 }) as Component<FragmentProps>
+
+Object.defineProperty(Fragment, '__internal_type', {
+  value: FragmentEntity 
+})
 
 export default Fragment

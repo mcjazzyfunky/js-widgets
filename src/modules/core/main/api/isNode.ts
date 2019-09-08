@@ -1,7 +1,7 @@
-import isElement from './isElement'
+import isValidElement from '../internal/adapt/isValidElement' 
 
 export default function isNode(it: any): boolean {
-  let ret = it === null || it === undefined || isElement(it)
+  let ret = it === null || it === undefined || isValidElement(it)
 
   if (!ret) {
     const type = typeof it

@@ -10,8 +10,7 @@ Disclaimer: This is just an initial draft of README. A lot is missing ....
 #### Example 1 (pure ECMAScript / no JSX)
 
 ```javascript
-import { component } from 'js-widgets'
-import { mount } from 'js-widgets/dom'
+import { component, mount } from 'js-widgets'
 import { div } from 'js-widgets/html'
 import { Spec } from 'js-spec' // third-party validation library
 
@@ -37,10 +36,9 @@ mount(content, document.getElementById('app'))
 #### Example 2 (ECMAScript + JSX)
 
 ```tsx
-import { h, component } from 'js-widgets'
+import { h, component, mount } from 'js-widgets'
 import { useProps, useStateObject, useOnUpdate } from 'js-widgets/hooks'
 import { proxify } from 'js-widgets/util'
-import { mount } from 'js-widgets/dom'
 import { Spec } from 'js-spec' // third-party validation library
 
 const Counter = component('Counter')({

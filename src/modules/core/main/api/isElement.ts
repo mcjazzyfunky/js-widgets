@@ -1,7 +1,7 @@
-import { h } from '../../../core/main/index'
+import isValidElement from '../internal/adapt/isValidElement'
 
 export default function isElement(it: any): boolean {
-  return it && typeof it === 'object' && it.$kind === 'VirtualElement'
+  return isValidElement(it)
 }
 
 Object.defineProperty(isElement, 'js-spec:validate', {
