@@ -1,14 +1,22 @@
 import { h, component } from '../../modules/core/main/index'
 import { useOnMount, useOnUpdate, useProps, useStateObject } from '../../modules/hooks/main/index'
 import { proxify } from '../../modules/util/main/index'
+import { Spec } from 'js-spec'
 
 type CounterProps = {
-  label?: string,
-  initialValue?: number
+  initialValue?: number,
+  label?: string
 }
 
 const Counter = component<CounterProps>('Counter')({
   memoize: true,
+
+  validate: Spec.checkProps({
+    optional: {
+      initialValue: Spec.integer,
+      label: Spec.string
+    }
+  }),
 
   defaultProps: {
     initialValue: 0,
@@ -21,12 +29,13 @@ const Counter = component<CounterProps>('Counter')({
         count: props.initialValue
       })),
 
-      getProps = useProps(c),
-      [props, state, using] = proxify(getProps, getState),
+      [props, state, using] = proxify(useProps(c), getState),
       onIncrement = () => setState({ count: state.count + 1 })
 
     useOnMount(c, () => {
       console.log('Component has been mounted')
+
+      return () => console.log('Component will be unmounted')
     })
 
     useOnUpdate(c, ()=> {

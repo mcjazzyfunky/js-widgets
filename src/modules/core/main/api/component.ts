@@ -108,9 +108,9 @@ function validateComponentConfig(config: any): null | Error {
   return ret
 }
 
-function convertConfigToMeta(config: any): any {
+function convertConfigToMeta(displayName: string, config: any): any {
   const ret: any = {
-    displayName: config.displayName,
+    displayName,
     validate: config.validate || null,
     // plus key "render" or "init"
   }
@@ -163,7 +163,7 @@ function defineComponent<P extends Props = {}>(
 
     if (error) {
       throw new Error(
-        `[defineComponent] ${error.message}`)
+        `[component] ${error.message}`)
     }
   }
 
@@ -185,7 +185,7 @@ function defineComponent<P extends Props = {}>(
   })
 
   Object.defineProperty(ret, 'meta', {
-    value: convertConfigToMeta(config)
+    value: convertConfigToMeta(displayName, config)
   })
 
   return ret

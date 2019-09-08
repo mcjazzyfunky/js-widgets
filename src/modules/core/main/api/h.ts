@@ -15,19 +15,19 @@ function h(/* arguments */): any {
     const
       arg2 = arguments[1]
     
-    if (typeof type === 'object' && type.meta && type.meta.validate) {
+    if (typeof type === 'function' && type.meta && type.meta.validate) {
       const props =
         arg2 && typeof arg2 === 'object' && !isValidElement(arg2) && !isIterable(arg2)
           ? arg2
           : null
 
-      if (props) {
-        let error: Error | null =
-          validateComponentProps(props, type.meta.validate, type.meta.displayName)
+      let error: Error | null =
+        validateComponentProps(props || {}, type.meta.validate, type.meta.displayName)
 
-        if (error) {
-          throw error
-        }
+      if (error) {
+        throw new Error(
+          `Props validation failed for component "${type.meta.displayName}" => `
+            + error.message) 
       }
     }
   }
@@ -42,14 +42,26 @@ function h(/* arguments */): any {
 function validateComponentProps(
   props: Props,
   validate: (it: any) => boolean | null | Error,
-  displayName: string) {
-  
-  return null // TODO
+  displayName: string
+): null | Error {
+  const result = validate(props)
+
+  let errorMsg: string | null = null
+
+  if (result === false) {
+    errorMsg = 'Invalid props'
+  } else if (result instanceof Error && result.message) {
+    errorMsg = result.message
+  }
+
+  return !errorMsg
+    ? null
+    : new Error(errorMsg)
 }
 
 function isIterable(it: any) {
   return it && typeof it === 'object'
-    && (!Array.isArray(it) || typeof it[Symbol.iterator] === 'function')
+    && (Array.isArray(it) || typeof it[Symbol.iterator] === 'function')
 }
 
 export default h

@@ -1,3 +1,5 @@
+import { Spec } from 'js-spec'
+
 import h from './h'
 import component from './component'
 import Context from './types/Context'
@@ -24,25 +26,37 @@ function createContext<T>(
   validate?: (it: T) => boolean | null | Error
 ): Context<T> {
   const
-    Provider = component<ContextProviderProps<T>>('Context.Provider')({
-      render(props): VirtualNode {
+    providerConfig: any = {
+      render(props: any): VirtualNode {
         const { children, ...props2 } = props
 
         return h(Provider as any, props2, ...children)
-      },
+      }
+    },
 
-      // validate // TODO
-    }),
-
-    Consumer = component<ContextProviderProps<T>>('Context.Consumer')({
-      render(props): VirtualNode {
+    consumerConfig: any = {
+      render(props: any): VirtualNode {
         const { children, ...props2 } = props
 
         return h(Consumer as any, props2, ...children)
-      },
+      }
+    }
+    
+    if (validate && process.env.NODE_ENV === 'development' as any) {
+      providerConfig.validate = Spec.exact({
+        value: validate
+      })
 
-      // validate // TODO
-    })
+      consumerConfig.validate = Spec.exact({
+      })
+    }
+
+  const
+    Provider = component<ContextProviderProps<T>>(`ContextProvider (${displayName})`)(
+      providerConfig),
+
+    Consumer = component<ContextProviderProps<T>>(`ContextConsumer (${displayName})`)(
+      consumerConfig)
 
   const internalContext = createInternalContext(defaultValue)
 

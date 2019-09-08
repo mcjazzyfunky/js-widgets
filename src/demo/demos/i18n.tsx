@@ -15,7 +15,8 @@ const translations: Record<string, Record<string, string>> = {
 }
 
 const LocaleCtx = context<string>('LocaleCtx')({
-  defaultValue: 'en'
+  validate: Spec.string,
+  defaultValue: 'en',
 })
 
 type AppProps = {
