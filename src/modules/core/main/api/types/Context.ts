@@ -14,7 +14,9 @@ type ConsumerProps<T> = {
   children?: (value: T) => VirtualNode
 }
 
-export default interface Context<T> {
+type Context<T> = {
   Provider: Component<ProviderProps<T>>,
-  Consumer: Component<ConsumerProps<T>
+  Consumer: Component<ConsumerProps<T>>
 }
+
+export default Context

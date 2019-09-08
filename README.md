@@ -218,17 +218,25 @@ What are the main difference to React's API?
 #### Module "_js-widgets_"
 
 *Defining components and contexts*
-  * `h(type, props?, ...children)`
   * `component(displayName)(componentConfig)` - curried due to som TypeScript limitations
   * `context(displayName)(contextConfig)` - curried to have a similar API as `component(...)`
 
 *Handling virtual elements and nodes*
+  * `h(type, props?, ...children)`
   * `isElement(it)`
   * `isNode(it)`
   * `typeOf(it)`
   * `propsOf(it)`
 
-*Predefined components*
+*Handling child elements*
+  * childCount(children)
+  * forEachChild(children, callback)
+  * mapChildren(children, mapper)
+  * onlyChild(children)
+  * toChildArray(element)
+  * withChildren(f)
+
+
   * `Boundary(props?, ...children)`
   * `Fragment(props?, ...children)`
 
