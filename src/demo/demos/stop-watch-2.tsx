@@ -1,4 +1,4 @@
-import { h,  component, createRef } from '../../modules/core/main/index'
+import { h,  component } from '../../modules/core/main/index'
 import { useEffect, useProps, useOnMount, useStateObject } from '../../modules/hooks/main/index'
 import { proxify } from '../../modules/util/main/index'
 
