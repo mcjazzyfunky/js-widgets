@@ -1,9 +1,9 @@
 # js-widgets
 
 *js-widgets* is a UI library with a differnt API that you usally
-see for VDOM UI libraries.
+see for VDOM UI libraries.<br>
 It's just a R&D project to noodle around with some alternative approaches
-and APIs for UI development.
+and APIs for UI development.<br>
 Important: It is not planned that *js-widgets* will ever be used in production.
 
 Disclaimer: This is just an initial draft of README. A lot is missing ....
