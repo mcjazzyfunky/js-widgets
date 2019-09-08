@@ -1,9 +1,11 @@
 # js-widgets
 
-*js-widgets* is a UI library with a differnt API that you usally
-see for virtual DOM UI libraries.<br>
+*js-widgets* is a UI library with a different API that you may usally
+see for virtual DOM base UI libraries.<br>
 It's just a R&D project to noodle around with some alternative approaches
 and APIs for UI development.<br>
+*js-widget* uses the fabulous Dyo UI library internally (https://dyo.js.org).
+
 Important: It is not planned that *js-widgets* will ever be used in production.
 
 Disclaimer: This is just an initial draft of README. A lot is missing ....
