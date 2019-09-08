@@ -221,14 +221,14 @@ What are the main difference to React's API?
   * `component(displayName)(componentConfig)` - curried due to som TypeScript limitations
   * `context(displayName)(contextConfig)` - curried to have a similar API as `component(...)`
 
-*Handling virtual elements and nodes*
+*Handling virtual elements and nodes:*
   * `h(type, props?, ...children)`
   * `isElement(it)`
   * `isNode(it)`
   * `typeOf(it)`
   * `propsOf(it)`
 
-*Handling child elements*
+*Handling child elements:*
   * childCount(children)
   * forEachChild(children, callback)
   * mapChildren(children, mapper)
@@ -236,7 +236,7 @@ What are the main difference to React's API?
   * toChildArray(element)
   * withChildren(f)
 
-
+*Predefined Components:*
   * `Boundary(props?, ...children)`
   * `Fragment(props?, ...children)`
 
