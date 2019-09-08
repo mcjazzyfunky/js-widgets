@@ -218,16 +218,13 @@ What are the main difference to React's API?
 #### Module "_js-widgets_"
 
 * `h(type, props?, ...children)`
-* `component(displayName)(componentConfig)` - curried for TypeScript typing reasons
+* `component(displayName)(componentConfig)` - curried due to som TypeScript limitations
 * `context(displayName)(contextConfig)` - curried to have a similar API as `component(...)`
 * `isElement(it)`
 * `isNode(it)`
 * `createRef(value)`
 * `Boundary(props?, ...children)`
 * `Fragment(props?, ...children)`
-
-#### Module "_js-widgets/dom_" ###
-
 * `mount(content, container)`
 * `unmount(container)`
 
