@@ -42,12 +42,13 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
 
     useEffect(c, () => {
       if (state.running) {
-        startTime = Date.now()
+        startTime = Date.now() - state.time
+
         console.log(`Starting "${props.name}"`)
 
         const interval = setInterval(() => {
           setState({ time: Date.now() - startTime })
-        }, 103);
+        }, 103) // TODO!!!!!
 
         return () => {
           console.log(`Stopping "${props.name}"`)
