@@ -222,22 +222,22 @@ What are the main difference to React's API?
 * `component(displayName)(componentConfig)` - curried due to som TypeScript limitations
 * `context(displayName)(contextConfig)` - curried to have a similar API as `component(...)`
 
-*Handling virtual elements and nodes*
-* `isElement(it)`
-* `isNode(it)`
-* `typeOf(it)`
-* `propsOf(it)`
+- *Handling virtual elements and nodes*
+  * `isElement(it)`
+  * `isNode(it)`
+  * `typeOf(it)`
+  * `propsOf(it)`
 
-*Predefined components*
-* `Boundary(props?, ...children)`
-* `Fragment(props?, ...children)`
+- *Predefined components*
+  * `Boundary(props?, ...children)`
+  * `Fragment(props?, ...children)`
 
-*Helper functions*
-* `createRef(value)`
+- *Helper functions*
+  * `createRef(value)`
 
-*Mounting / Unmounting*
-* `mount(content, container)`
-* `unmount(container)`
+- *Mounting / Unmounting*
+  * `mount(content, container)`
+  * `unmount(container)`
 
 #### Module "_js-widgets/hooks_":
 * `useContext(...)`
