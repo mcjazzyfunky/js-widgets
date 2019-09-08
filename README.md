@@ -229,14 +229,14 @@ What are the main difference to React's API?
   * `propsOf(it)`
 
 *Handling child elements:*
-  * childCount(children)
-  * forEachChild(children, callback)
-  * mapChildren(children, mapper)
-  * onlyChild(children)
-  * toChildArray(element)
-  * withChildren(f)
+  * `childCount(children)`
+  * `forEachChild(children, callback)`
+  * `mapChildren(children, mapper)`
+  * `onlyChild(children)`
+  * `toChildArray(element)`
+  * `withChildren(f)`
 
-*Predefined Components:*
+*Predefined components:*
   * `Boundary(props?, ...children)`
   * `Fragment(props?, ...children)`
 
