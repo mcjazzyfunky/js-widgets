@@ -79,7 +79,7 @@ const Counter = component('Counter')({
       console.log( `Update - ${v.props.label}: ${v.state.count}`)
     })
 
-    return using((props, state) =>
+    return using(({ props, state }) =>
       <div className="counter">
         <label>{props.label}: </label> 
         <button onClick={onDecrement}>
