@@ -43,7 +43,7 @@ mount(content, document.getElementById('app'))
 ```tsx
 import { h, component, mount } from 'js-widgets'
 import { useProps, useStateObject, useOnUpdate } from 'js-widgets/hooks'
-import { proxify } from 'js-widgets/util'
+import { wrapGetters } from 'js-widgets/util'
 import { Spec } from 'js-spec' // third-party validation library
 
 const Counter = component('Counter')({
@@ -67,13 +67,16 @@ const Counter = component('Counter')({
         count: props.initialValue
       })),
 
-      [props, state, using] = proxify(useProps(c), getState),
+      [v, using] = wrapGetters({
+        props: useProps(c),
+        state: getState
+      }),
   
-      onIncrement = () => setState({ count: state.count + 1 }),
-      onDecrement = () => setState({ count: state.count - 1 })
+      onIncrement = () => setState({ count: v.state.count + 1 }),
+      onDecrement = () => setState({ count: v.state.count - 1 })
 
     useOnUpdate(c, () => {
-      console.log( `Update - ${props.label}: ${state.count}`)
+      console.log( `Update - ${v.props.label}: ${v.state.count}`)
     })
 
     return using((props, state) =>
