@@ -42,7 +42,7 @@ mount(content, document.getElementById('app'))
 
 ```tsx
 import { h, component, mount } from 'js-widgets'
-import { useProps, useStateObject, useOnUpdate } from 'js-widgets/hooks'
+import { useProps, useState, useOnUpdate } from 'js-widgets/hooks'
 import { wrapGetters } from 'js-widgets/util'
 import { Spec } from 'js-spec' // third-party validation library
 
@@ -63,30 +63,28 @@ const Counter = component('Counter')({
 
   init(c) {
     const
-      [getState, setState] = useStateObject(c, props => ({
-        count: props.initialValue
-      })),
+      [getCount, setCount] = useState(c, props => props.initialValue)
 
       [v, using] = wrapGetters({
         props: useProps(c),
-        state: getState
+        count: getCount
       }),
   
-      onIncrement = () => setState({ count: v.state.count + 1 }),
-      onDecrement = () => setState({ count: v.state.count - 1 })
+      onIncrement = () => setState({ count: v.count + 1 }),
+      onDecrement = () => setState({ count: v.count - 1 })
 
     useOnUpdate(c, () => {
-      console.log( `Update - ${v.props.label}: ${v.state.count}`)
+      console.log( `Update - ${v.props.label}: ${v.count}`)
     })
 
-    return using(({ props, state }) =>
+    return using(({ props, count }) =>
       <div className="counter">
         <label>{props.label}: </label> 
         <button onClick={onDecrement}>
           -1
         </button>
         <span>
-          {state.count}
+          {count}
         </span>
         <button onClick={onIncrement}>
           +1
