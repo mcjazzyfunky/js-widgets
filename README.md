@@ -63,10 +63,11 @@ const Counter = component('Counter')({
 
   init(c) {
     const
-      [getCount, setCount] = useState(c, props => props.initialValue),
+      getProps = useProps(c),
+      [getCount, setCount] = useState(c, getProps().initialValue),
 
       [v, using] = wrapGetters({
-        props: useProps(c),
+        props: getProps,
         count: getCount
       }),
   
