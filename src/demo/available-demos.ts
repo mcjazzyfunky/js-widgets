@@ -12,6 +12,8 @@ import stopWatch1 from './demos/stop-watch-1'
 import stopWatch2 from './demos/stop-watch-2'
 import mousePosition from './demos/mouse-position'
 import i18n from './demos/i18n'
+import performanceTest1 from './demos/performance-test-1'
+import performanceTest2 from './demos/performance-test-2'
 
 const demos: [string, VirtualElement][] = [
   ['Hello world', helloWorld],
@@ -26,6 +28,8 @@ const demos: [string, VirtualElement][] = [
   ['Stop watch 2', stopWatch2],
   ['Mouse position', mousePosition],
   ['Internationalization', i18n],
+  ['Performance test 1', performanceTest1],
+  ['Performance test 2', performanceTest2],
 ]
 
 export default demos

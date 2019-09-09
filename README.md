@@ -230,10 +230,10 @@ What are the main difference to React's API?
 
 *Handling child elements:*
   * `childCount(children)`
-  * `forEachChild(children, callback)`
+  * `forEachChild(children, action)`
   * `mapChildren(children, mapper)`
   * `onlyChild(children)`
-  * `toChildArray(element)`
+  * `toChildArray(children)`
   * `withChildren(f)`
 
 *Predefined components:*

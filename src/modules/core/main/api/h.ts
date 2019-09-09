@@ -16,13 +16,25 @@ function h(/* arguments */): any {
       arg2 = arguments[1]
     
     if (typeof type === 'function' && type.meta && type.meta.validate) {
-      const props =
-        arg2 && typeof arg2 === 'object' && !isValidElement(arg2) && !isIterable(arg2)
-          ? arg2
-          : null
+      let props: any = null
+
+      if (arg2 && typeof arg2 === 'object'
+        && !isValidElement(arg2) && !isIterable(arg2)) {
+        
+        props = arg2
+      }
+
+      if (!props) {
+        props = {}
+      } else if (props.__source) {
+        // Babel plugin "plugin-transform-react-jsx-source" adds additional
+        // pseudo prop "__source" - let's remove it
+        props = { ...props }
+        delete props.__source
+      }
 
       let error: Error | null =
-        validateComponentProps(props || {}, type.meta.validate, type.meta.displayName)
+        validateComponentProps(props, type.meta.validate, type.meta.displayName)
 
       if (error) {
         throw new Error(
