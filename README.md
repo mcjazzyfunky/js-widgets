@@ -264,8 +264,8 @@ What are the main difference to React's API?
 * `useStateObject(...)`
 
 #### Module "_js-widgets/util_":
-* `withData(...)`
-* `withGetters(...)`
+* `memoize(...)`
+* `wrapGetters(...)`
 
 #### Module "_js-widgets/html_"
 
