@@ -266,7 +266,6 @@ What are the main difference to React's API?
 #### Module "_js-widgets/util_":
 * `withData(...)`
 * `withGetters(...)`
-* `proxify(...)`
 
 #### Module "_js-widgets/html_"
 

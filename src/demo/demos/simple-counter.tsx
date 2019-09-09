@@ -1,6 +1,6 @@
 import { h, component } from '../../modules/core/main/index'
-import { useOnMount, useOnUpdate, useProps, useStateObject } from '../../modules/hooks/main/index'
-import { proxify } from '../../modules/util/main/index'
+import { useOnMount, useOnUpdate, useProps, useState } from '../../modules/hooks/main/index'
+import { wrapGetters } from '../../modules/util/main/index'
 import { Spec } from 'js-spec'
 
 type CounterProps = {
@@ -25,12 +25,15 @@ const Counter = component<CounterProps>('Counter')({
 
   init(c) {
     const
-      [getState, setState] = useStateObject(c, props => ({
-        count: props.initialValue
-      })),
+      getProps = useProps(c),
+      [getCount, setCount] = useState(c, getProps().initialValue),
 
-      [props, state, using] = proxify(useProps(c), getState),
-      onIncrement = () => setState({ count: state.count + 1 })
+      [v, using] = wrapGetters({
+        props: getProps,
+        count: getCount
+      }),
+
+      onIncrement = () => setCount(v.count + 1)
 
     useOnMount(c, () => {
       console.log('Component has been mounted')
@@ -39,15 +42,15 @@ const Counter = component<CounterProps>('Counter')({
     })
 
     useOnUpdate(c, ()=> {
-      console.log(`Component has been rendered - ${props.label}: ${state.count}`)
+      console.log(`Component has been rendered - ${v.props.label}: ${v.count}`)
     })
 
-    return using((props, state) => {
+    return using(({ props, count }) => {
       return (
         <div>
           <label>{props.label + ': '}</label> 
           <button onClick={onIncrement}>
-            {state.count}
+            {count}
           </button>
         </div>
       )

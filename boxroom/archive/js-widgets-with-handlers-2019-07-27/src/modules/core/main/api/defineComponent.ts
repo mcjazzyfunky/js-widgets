@@ -116,7 +116,6 @@ function validateComponentConfig(config: any): null | Error {
 function convertConfigToMeta(config: any): any {
   const ret: any = {
     displayName: config.displayName,
-    defaults: config.defaults ? {} : null,
     validate: config.validate || null,
     memoize: !!config.memoize
     // plus key "render" or "init"

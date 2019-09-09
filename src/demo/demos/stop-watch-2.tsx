@@ -1,6 +1,6 @@
 import { h,  component } from '../../modules/core/main/index'
 import { useEffect, useProps, useOnMount, useStateObject } from '../../modules/hooks/main/index'
-import { proxify } from '../../modules/util/main/index'
+import { wrapGetters } from '../../modules/util/main/index'
 
 type StopWatchProps = {
   name?: string
@@ -20,19 +20,22 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
         running: false
       }),
 
-      [props, state, using] = proxify(useProps(c), getState)
+      [v, using] = wrapGetters({
+        props: useProps(c),
+        state: getState
+      })
 
     useOnMount(c, () => {
-      console.log(`${props.name} has been mounted`)
+      console.log(`${v.props.name} has been mounted`)
 
       return () => {
         reset()
-        console.log(`${props.name} will be unmounted`)
+        console.log(`${v.props.name} will be unmounted`)
       }
     })
 
     function startStop() {
-      setState({ running: !state.running })
+      setState({ running: !v.state.running })
     }
 
     function reset() {
@@ -41,23 +44,23 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
     }
 
     useEffect(c, () => {
-      if (state.running) {
-        startTime = Date.now() - state.time
+      if (v.state.running) {
+        startTime = Date.now() - v.state.time
 
-        console.log(`Starting "${props.name}"`)
+        console.log(`Starting "${v.props.name}"`)
 
         const interval = setInterval(() => {
           setState({ time: Date.now() - startTime })
         }, 103) // TODO!!!!!
 
         return () => {
-          console.log(`Stopping "${props.name}"`)
+          console.log(`Stopping "${v.props.name}"`)
           clearInterval(interval)
         }
       }
-    }, () => [state.running])
+    }, () => [v.state.running])
 
-    return using((props, state) =>
+    return using(({ props, state }) =>
       <div>
         <h4>{props.name}</h4>
         <div>Time: {state.time}</div>

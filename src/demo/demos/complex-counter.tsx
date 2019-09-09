@@ -18,7 +18,7 @@ const Counter = component<CounterProps>('Counter')({
   init(c) {
     const
       getProps = useProps(c), 
-      [getCount, setCount] = useState(c, getProps().initialValue!),
+      [getCount, setCount] = useState(c, getProps().initialValue),
       onIncrement = () => setCount(it => it + 1),
       onDecrement = () => setCount(it => it - 1)
 
