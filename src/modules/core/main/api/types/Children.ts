@@ -1,5 +1,5 @@
-import VirtualNode from './VirtualNode'
+import OpaqueType from '../../internal/types/OpaqueType'
 
-type Children = VirtualNode[] 
+type Children = OpaqueType<'Children'>
 
 export default Children

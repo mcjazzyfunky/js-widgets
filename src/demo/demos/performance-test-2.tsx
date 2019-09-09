@@ -1,7 +1,7 @@
 import { h, component, VirtualElement }
   from '../../modules/core/main/index'
 
-  import { useEffect, useForceUpdate, useProps }
+  import { useOnMount, useForceUpdate, useProps }
   from '../../modules/hooks/main/index'
 
 const prefs = {
@@ -52,10 +52,10 @@ const TileRow = component<TypeRowProps>('TileRow')({
 
     for (let x = 0; x < columnCount; ++x) {
       const
-        colorIdx = Math.floor(Math.random() * colors.length),
+        colorIdx = Math.floor(  Math.random() * colors.length),
         color = colors[colorIdx]
 
-      tiles.push(<Tile width={tileWidth} color={color} key={x}/>)
+        tiles.push(<Tile width={tileWidth} color={color} key={x}/>)
     }
 
     return <div style={{ clear: 'both' }}>{tiles}</div>
@@ -88,14 +88,12 @@ const SpeedTest = component<SpeedTestProps>('SpeedTest')({
       getProps = useProps(c),
       forceUpdate = useForceUpdate(c),
 
-      rows: VirtualElement[] = [],
-      
       style = {
         marginTop: 40,
         marginLeft: 40
       }
 
-    useEffect(c, () => {
+    useOnMount(c, () => {
       intervalId = setInterval(() => {
         ++frameCount
         forceUpdate()
@@ -110,27 +108,32 @@ const SpeedTest = component<SpeedTestProps>('SpeedTest')({
       return () => clearInterval(intervalId)
     })
 
-    for (let y = 0; y < getProps().rowCount; ++y) {
-      rows.push(
-        <TileRow
-          tileWidth={getProps().tileWidth}
-          columnCount={getProps().columnCount}
-          key={y}
-        />)
-    }
   
-    return props => (
-      <div>
-       <div> 
-          Rows: {props.rowCount}, columns: {props.columnCount}
-          <div style={style}>{rows}</div>
+    return props => {
+      const rows: VirtualElement[] = []
+      
+      for (let y = 0; y < props.rowCount; ++y) {
+        rows.push(
+          <TileRow
+            tileWidth={props.tileWidth}
+            columnCount={props.columnCount}
+            key={y}
+          />)
+      }
+
+      return (
+        <div>
+        <div> 
+            Rows: {props.rowCount}, columns: {props.columnCount}
+            <div style={style}>{rows}</div>
+          </div>
+          <br/>
+          <div style={{ clear: 'both' }}>
+            (actual frames per second: {actualFramesPerSecond})
+          </div>
         </div>
-        <br/>
-        <div style={{ clear: 'both' }}>
-          (actual frames per second: {actualFramesPerSecond})
-        </div>
-      </div>
-    )
+      )
+    }
   }
 })
 

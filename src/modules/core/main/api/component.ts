@@ -6,9 +6,10 @@ import Ctrl from './types/Ctrl'
 import h from './h'
 import StatelessComponentConfig from '../../../core/main/api/types/StatelessComponentConfig'
 import StatefulComponentConfig from '../../../core/main/api/types/StatefulComponentConfig'
-import ComponentMeta from './types/ComponentMeta'
 import PickOptionalProps from '../internal/types/PickOptionalProps'
 import createInternalComponent from '../internal/helpers/createInternalComponent'
+import StatefulComponentMeta from '../internal/types/StatefulComponentMeta'
+import StatelessComponentMeta from '../internal/types/StatelessComponentMeta'
 
 function component(
   displayName: string
@@ -175,7 +176,7 @@ function defineComponent<P extends Props = {}>(
         return createComponentElement!.apply(null, arguments)
       },
       {
-        meta: null! as  ComponentMeta<P>
+        meta: null! as (StatefulComponentMeta<P> | StatelessComponentMeta<P>) 
       })
   
   createComponentElement = h.bind(null, ret as any)

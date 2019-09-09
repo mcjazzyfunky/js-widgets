@@ -1,5 +1,4 @@
 import VirtualElement from './VirtualElement'
-import ComponentMeta from './ComponentMeta'
 import Props from './Props'
 
 type ExtProps<P extends Props> = P & {

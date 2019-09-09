@@ -1,12 +1,5 @@
-import Component from './Component'
-import Props from './Props'
-import Key from './Key'
+import OpaqueType from '../../internal/types/OpaqueType'
 
-interface VirtualElement {
-  $kind: 'VirtualElement',
-  type: string | Component,
-  props: Props | null,
-  key: Key,
-}
+type VirtualElement = OpaqueType<'VirtualElement'>
 
 export default VirtualElement
