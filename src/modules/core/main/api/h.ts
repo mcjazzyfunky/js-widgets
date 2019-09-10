@@ -7,6 +7,24 @@ import Props from './types/Props'
 function h(type: string | Component, props?: Props | null, ...children: any[]): VirtualElement
 
 function h(/* arguments */): any {
+  // TODO - we can do better here
+  if (arguments.length >= 2) {
+    const
+      sndArg = arguments[1],
+      sndArgType = typeof sndArg
+
+    if (sndArg && sndArgType === 'object') {
+      if (isValidElement(sndArg) || Array.isArray(sndArg)
+        || typeof sndArg[Symbol.iterator] === 'function'
+        || typeof sndArg.then === 'function') {
+        
+        const [first, ...rest] = arguments
+
+        return h(first, null, ...rest)
+      }
+    }
+  }
+
   const
     type: any = arguments[0],
     internalType = type && type.__internal_type

@@ -20,7 +20,7 @@ const SayHello = component<SayHelloProps>('SayHello')({
   },
 
   render({ name }) {
-    return div(null, `Hello, ${name}`)
+    return div(`Hello, ${name}!`)
   }
 })
 

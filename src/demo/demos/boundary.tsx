@@ -37,18 +37,22 @@ const ErrorBoundary = component('ErrorBoundary')({
         setError(error)
       }
 
-    return () => (
-      <Boundary fallback={onError}>
-        {
-          getError()
-            ? <div>
-                Catched error: <i>{(getError as any)().message } </i>
-                <button onClick={onReset}>Reset</button>
-              </div>
-            : <ErrorTrigger/>
-        }
-      </Boundary>
-    )
+    return () => { 
+      const error = getError()
+
+      return (
+        <Boundary fallback={onError}>
+          {
+            error
+              ? <div>
+                  Catched error: <i>{error.message } </i>
+                  <button onClick={onReset}>Reset</button>
+                </div>
+              : <ErrorTrigger/>
+          }
+        </Boundary>
+      )
+    }
   }
 })
 
