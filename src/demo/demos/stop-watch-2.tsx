@@ -50,7 +50,9 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
         console.log(`Starting "${v.props.name}"`)
 
         const interval = setInterval(() => {
-          setState({ time: Date.now() - startTime })
+          if (v.state.running) {
+            setState({ time: Date.now() - startTime })
+          }
         }, 10)
 
         return () => {
