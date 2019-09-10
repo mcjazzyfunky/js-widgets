@@ -51,14 +51,18 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
 
         const interval = setInterval(() => {
           setState({ time: Date.now() - startTime })
-        }, 103) // TODO!!!!!
+        }, 10)
 
         return () => {
           console.log(`Stopping "${v.props.name}"`)
           clearInterval(interval)
         }
       }
-    }, () => [v.state.running])
+    }, () => {
+      console.log(1111, v.state)
+
+      return [v.state.running]
+    })
 
     return using(({ props, state }) =>
       <div>

@@ -18,8 +18,11 @@ export default function useStateObject<T extends object, P extends Props>(c: Ctr
         return {...oldState2, ...result }
       })
     } else if (updater !== null && typeof updater === 'object') {
-      set(oldState3 => ({ ...oldState3, ...updater }))
-    }
+      //set(oldState3 => ({ ...oldState3, ...updater })) // TODO - this would cause subtle problems!!!!
+      set(({ ...get(), ...updater }))
+    } else {
+      throw new Error('Illegal state updater')
+    } 
   }
 
   return [get, update]
