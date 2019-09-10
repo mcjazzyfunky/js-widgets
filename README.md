@@ -261,8 +261,8 @@ What are the main difference to React's API?
 * `usePrevious(...)`
 * `useProps(...)`
 * `useState(...)`
-* `useTime(...)`
 * `useStateObject(...)`
+* `useTime(...)`
 
 #### Module "_js-widgets/util_":
 * `memoize(...)`
