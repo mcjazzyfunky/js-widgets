@@ -70,11 +70,14 @@ function createStatefulInternalComponent(
 
           states[idx] = [initialState, null]
 
-          return [() => states[idx][0], (init: any) => {
-            states[idx][0] = init
+          return [() => states[idx][0], (updater: any) => {
+            states[idx][0] =
+              typeof updater === 'function'
+                ? updater(states[idx][0])
+                : updater
             
             if (isMountedRef.current) {
-              states[idx][1](init)
+              states[idx][1](updater)
             }
           }]
         },

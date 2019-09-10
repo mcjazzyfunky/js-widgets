@@ -58,11 +58,7 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
           clearInterval(interval)
         }
       }
-    }, () => {
-      console.log(1111, v.state)
-
-      return [v.state.running]
-    })
+    }, () => [v.state.running])
 
     return using(({ props, state }) =>
       <div>
