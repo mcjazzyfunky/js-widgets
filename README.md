@@ -71,8 +71,8 @@ const Counter = component('Counter')({
         count: getCount
       }),
   
-      onIncrement = () => setState({ count: v.count + 1 }),
-      onDecrement = () => setState({ count: v.count - 1 })
+      onIncrement = () => setCount(v.count + 1),
+      onDecrement = () => setCount(v.count - 1)
 
     useOnUpdate(c, () => {
       console.log( `Update - ${v.props.label}: ${v.count}`)
