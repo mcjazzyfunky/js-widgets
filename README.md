@@ -102,6 +102,14 @@ mount(<Counter/>, document.getElementById('app'))
 
 What are the main difference to React's API?
 
+* Implementing components with *js-wigets* is (obviously) more
+  verbose than doing the same in React.
+  Some advantages on the other hand are:
+  No magic, no special Linter support needed, only
+  decent programming techniques are use, no hook order
+  dependency (hooks are just "normal functions - there
+  is nothing special here)
+
 * React's API is quite "optimized" for the use of JSX:
 
   While the following JSX syntax is really nice...
@@ -135,7 +143,7 @@ What are the main difference to React's API?
   the `React.createElement` function. Same for context provider
   and consumers and the `Fragment` symbol.
 
-  In jsWidgets things are different: Everything that can be used as first
+  In js-widgets things are different: Everything that can be used as first
   argument of the `h` function besides strings is a factory
   function that returns the result of a corresponding `h` call.
   Besides the second argument (`props`) of the `h` function
