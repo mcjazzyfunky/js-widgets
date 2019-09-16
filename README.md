@@ -108,7 +108,8 @@ What are the main difference to React's API?
   No magic, no special Linter support needed, only
   decent programming techniques are use, no hook order
   dependency (hooks are just "normal functions - there
-  is nothing special here)
+  is nothing special here), no special challenges for the
+  garbage collector, etc.
 
 * React's API is quite "optimized" for the use of JSX:
 
