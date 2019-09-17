@@ -1,7 +1,8 @@
 import { VirtualElement } from '../modules/core/main/index'
 
 import helloWorld from './demos/hello-world'
-import simpleCounter from './demos/simple-counter'
+import simpleCounter1 from './demos/simple-counter-1'
+import simpleCounter2 from './demos/simple-counter-2'
 import complexCounter from './demos/complex-counter'
 import clock from './demos/clock'
 import iterators from './demos/iterators'
@@ -17,7 +18,8 @@ import performanceTest2 from './demos/performance-test-2'
 
 const demos: [string, VirtualElement][] = [
   ['Hello world', helloWorld],
-  ['Simple counter', simpleCounter],
+  ['Simple counter 1', simpleCounter1],
+  ['Simple counter 2', simpleCounter2],
   ['Complex counter', complexCounter],
   ['Clock', clock],
   ['Iterators', iterators],
