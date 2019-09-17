@@ -1,6 +1,6 @@
 import { h, component } from '../../modules/core/main/index'
-import { useOnMount, useOnUpdate, useProps, useState } from '../../modules/hooks/main/index'
-import { wrapGetters, defineComponentStore } from '../../modules/util/main/index'
+import { useOnMount, useOnUpdate, useProps } from '../../modules/hooks/main/index'
+import { wrapGetters, defineComponentActions } from '../../modules/util/main/index'
 import { Spec } from 'js-spec'
 
 type CounterProps = {
@@ -12,7 +12,7 @@ type CounterState = {
   count: number
 }
 
-const useCounterState = defineComponentStore({
+const useCounterActions = defineComponentActions({
   initState: (initialValue: number): CounterState => ({
     count: initialValue
   }),
@@ -46,7 +46,7 @@ const Counter = component<CounterProps>('Counter')({
   init(c) {
     const
       getProps = useProps(c),
-      [getState, actions] = useCounterState(c, getProps().initialValue),
+      [actions, getState] = useCounterActions(c, getProps().initialValue),
 
       [v, using] = wrapGetters({
         props: getProps,

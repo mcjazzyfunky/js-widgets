@@ -1,24 +1,24 @@
 import { Ctrl } from '../../../core/main/index'
 
-// --- defineComponentStore -----------------------------------------
+// --- defineComponentActions ---------------------------------------
 
-function defineComponentStore<
+function defineComponentActions<
   S extends State,
   A extends any[],
-  M extends { [k: string]: (...args: any[]) => any }
->(config: Config<S, A, M>): (c: Ctrl, ...args: A) => M {
+  M extends { [k: string]: (...args: any[]) => void }
+>(config: Config<S, A, M>): (c: Ctrl, ...args: A) => [M, () => S] {
   
   return (c: Ctrl, ...args: A) => {
     const
       [getState, setState] = c.handleState<S>(config.initState.apply(null, args)),
 
-      store = config.initStore(
+      actions = config.initActions(
         createStateProxy(getState),
         newState => setState(oldState => Object.assign({}, oldState, newState)),
         getState
       )
       
-    return store
+    return [actions, getState]
   }
 }
 
@@ -29,11 +29,11 @@ type State = { [key: string]: any }
 type Config<
   S extends State,
   A extends any[],
-  M extends { [k: string]: (...args: any[]) => any }> =
+  M extends { [k: string]: (...args: any[]) => void }> =
 {
   initState: (...args: A) => S,
   
-  initStore(
+  initActions(
     state: S,
     setState: (state: Partial<S>) => void,
     getState: () => S
