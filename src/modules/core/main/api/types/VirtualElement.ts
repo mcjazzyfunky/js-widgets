@@ -1,5 +1,5 @@
 import OpaqueType from '../../internal/types/OpaqueType'
 
-type VirtualElement = OpaqueType<'VirtualElement'>
+type VirtualElement = any // OpaqueType<'VirtualElement'> // TODO
 
 export default VirtualElement

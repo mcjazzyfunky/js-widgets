@@ -66,7 +66,7 @@ function h(/* arguments */): any {
     arguments[0] = internalType
   }
 
-  return createElement.apply(null, arguments)
+  return createElement.apply(null, arguments as any)
 }
 
 function validateComponentProps(

@@ -135,7 +135,7 @@ function createStatefulInternalComponent(
     }, [])
 
     if (!renderRef.current) {
-      renderRef.current = config.init(ctrl)
+      renderRef.current = config.init(ctrl as any) as any // TODO!!!
     }
 
     states.forEach(item => {
@@ -151,7 +151,7 @@ function createStatefulInternalComponent(
       item[0] = value
     })
 
-    return renderRef.current(props)
+    return (renderRef as any).current(props) // TODO
   }
   
   ;(ret as any).displayName = displayName

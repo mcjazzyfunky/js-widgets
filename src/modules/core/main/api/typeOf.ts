@@ -9,12 +9,14 @@ export default function typeOf(it: any) {
 
   const internalType = Elements.getType(it)
 
-  if (internalType === FragmentEntity) {
+  if (typeof internalType === 'string') {
+    ret = internalType
+  } else if (internalType === FragmentEntity) {
     ret = Fragment
   } else if (internalType === BoundaryEntity) {
     ret = Boundary
   } else if (internalType) {
-    ret = internalType.__internal_original
+    ret = (internalType as any).__internal_original
   }
 
   return ret

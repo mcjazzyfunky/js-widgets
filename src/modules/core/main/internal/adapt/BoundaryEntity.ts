@@ -13,5 +13,5 @@ export default function(props: any) {
     }
   }
 
-  return h(Boundary, props2)
+  return h(Boundary as any, props2) // TODO
 }
