@@ -1,5 +1,8 @@
-import { Ctrl, Context } from '../../../core/main/index'
+import { Ctrl } from '../../../core/main/index'
+import PickOptionalProps from '../internal/types/PickOptionalProps'
 
-export default function useProps<P>(c: Ctrl<P>): () => P {
-  return () => c.getProps()
+export default function useProps<P>(c: Ctrl<P>, defaultProps?: PickOptionalProps<P>): () => P {
+  return !defaultProps
+    ? () => c.getProps()
+    : () => Object.assign({}, defaultProps, c.getProps())
 }

@@ -1,11 +1,32 @@
 import { h, component } from '../../modules/core/main/index'
-import { useOnUpdate, usePropsProxy, useStateProxy } from '../../modules/hooks/main/index'
+import { useOnMount, useOnUpdate, useProps } from '../../modules/hooks/main/index'
+import { wrapGetters, defineComponentActions } from '../../modules/util/main/index'
 import { Spec } from 'js-spec'
 
 type CounterProps = {
   initialValue?: number,
   label?: string
 }
+
+type CounterState = {
+  count: number
+}
+
+const useCounterActions = defineComponentActions({
+  initState: (initialValue: number): CounterState => ({
+    count: initialValue
+  }),
+
+  initActions: (state: CounterState, setState) => ({
+    incrementCount() {
+      setState({ count: state.count + 1 })
+    },
+
+    decrementCount() {
+      setState({ count: state.count - 1 })
+    }
+  })
+})
 
 const Counter = component<CounterProps>('Counter')({
   memoize: true,
@@ -24,17 +45,28 @@ const Counter = component<CounterProps>('Counter')({
 
   init(c) {
     const
-      props = usePropsProxy(c),
-      [state, setState] = useStateProxy(c, { count: props.initialValue }),
+      getProps = useProps(c),
+      [actions, getState] = useCounterActions(c, getProps().initialValue),
 
-      onIncrement = () => setState({ count: state.count + 1 }),
-      onDecrement = () => setState({ count: state.count - 1 })
+      [v, using] = wrapGetters({
+        props: getProps,
+        state: getState
+      }),
 
-    useOnUpdate(c, ()=> {
-      console.log(`Component has been rendered - ${props.label}: ${state.count}`)
+      onIncrement = () => actions.incrementCount(),
+      onDecrement = () => actions.decrementCount()
+
+    useOnMount(c, () => {
+      console.log('Component has been mounted')
+
+      return () => console.log('Component will be unmounted')
     })
 
-    return () => {
+    useOnUpdate(c, ()=> {
+      console.log(`Component has been rendered - ${v.props.label}: ${v.state.count}`)
+    })
+
+    return using(({ props, state }) => {
       return (
         <div>
           <label>{props.label + ': '}</label> 
@@ -47,7 +79,7 @@ const Counter = component<CounterProps>('Counter')({
           </button>
         </div>
       )
-    }
+    })
   }
 })
 

@@ -1,79 +1,52 @@
-import { h,  component } from '../../modules/core/main/index'
-import { useEffect, useProps, useOnMount, useStateObject } from '../../modules/hooks/main/index'
-import { defineComponentActions, wrapGetters } from '../../modules/util/main/index'
+import { h, component } from '../../modules/core/main/index'
+import { useEffect, usePropsProxy,  useStateProxy } from '../../modules/hooks/main/index'
 
 type StopWatchProps = {
   name?: string
 }
 
-type StopWatchState = {
-  time: number,
-  running: boolean,
-}
-
-const useStopWatchActions = defineComponentActions({
-  initState(): StopWatchState {
-    return { time: 0, running: false }
-  },
-
-  initActions(state: StopWatchState, setState) {
-    let
-      startTime = 0,
-      intervalId = null as any
-
-    return {
-      startStop() {
-        if (state.running) {
-          stopTicker()
-        } else {
-          startTime = Date.now() - state.time
-
-          intervalId = setInterval(() => {
-            setState({ time: Date.now() - startTime })
-          })
-        }
-
-        setState({ running: !state.running })
-      },
-      
-      reset() {
-        stopTicker()
-        startTime = 0
-        setState({ running: false, time: 0 })
-      }
-    }
-
-    function stopTicker() {
-      if (intervalId) {
-        clearTimeout(intervalId)
-        intervalId = null
-      }
-    }
-  } 
-})
-
 const StopWatch = component<StopWatchProps>('StopWatch')({
-  defaultProps: {
-    name: 'Stop watch'
-  },
-
   init(c) {
     const
-      getProps = useProps(c),
-      [actions, getState] = useStopWatchActions(c),
+      props = usePropsProxy(c, { name: 'Stop Watch' }),
 
-      [, using] = wrapGetters({
-        props: getProps,
-        state: getState
+      [state, setState] = useStateProxy(c, {
+        startTime: 0,
+        duration: 0,
+        running: false
       }),
 
-      onStartStop = () => actions.startStop(),
-      onReset = () => actions.reset()
+      onStartStop = () => {
+        if (!state.running) {
+          setState({ running: true, startTime: Date.now() - state.duration })
+        } else {
+          setState({ running: false })
+        }
+      },
 
-    return using(({ props, state }) =>
+      onReset = () => setState({ running: false, duration: 0, startTime: 0 })
+
+    useEffect(c, () => {
+      if (state.running) {
+        console.log(`Starting "${props.name}"`)
+
+        const interval = setInterval(() => {
+          if (state.running) {
+            setState({ duration: Date.now() - state.startTime })
+          }
+        }, 10)
+
+        return () => {
+          console.log(`Stopping "${props.name}"`)
+          clearInterval(interval)
+        }
+      }
+    }, () => [state.running])
+
+    return () =>
       <div>
         <h4>{props.name}</h4>
-        <div>Time: {state.time}</div>
+        <div>Duration: {state.duration}</div>
         <button onClick={onStartStop}>
           { state.running ? 'Stop' : 'Start' }
         </button>
@@ -81,7 +54,6 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
           Reset
         </button>
       </div>
-    )
   }
 })
 
