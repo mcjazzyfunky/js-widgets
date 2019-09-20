@@ -42,8 +42,7 @@ mount(content, document.getElementById('app'))
 
 ```tsx
 import { h, component, mount } from 'js-widgets'
-import { useProps, useState, useOnUpdate } from 'js-widgets/hooks'
-import { wrapGetters } from 'js-widgets/util'
+import { usePropsProxy, useStateProxy, useOnUpdate } from 'js-widgets/hooks'
 import { Spec } from 'js-spec' // third-party validation library
 
 const Counter = component('Counter')({
@@ -63,29 +62,24 @@ const Counter = component('Counter')({
 
   init(c) {
     const
-      getProps = useProps(c),
-      [getCount, setCount] = useState(c, getProps().initialValue),
+      props = usePropsProxy(c),
+      [state, setState] = useStateProxy(c, { count: props.initialValue }),
 
-      [v, using] = wrapGetters({
-        props: getProps,
-        count: getCount
-      }),
-  
-      onIncrement = () => setCount(v.count + 1),
-      onDecrement = () => setCount(v.count - 1)
+      onIncrement = () => setState({ count: state.count + 1 }),
+      onDecrement = () => setCount({ count: state.count - 1 })
 
     useOnUpdate(c, () => {
-      console.log( `Update - ${v.props.label}: ${v.count}`)
+      console.log( `Update - ${props.label}: ${state.count}`)
     })
 
-    return using(({ props, count }) =>
+    return () =>
       <div className="counter">
         <label>{props.label}: </label> 
         <button onClick={onDecrement}>
           -1
         </button>
         <span>
-          {count}
+          {state.count}
         </span>
         <button onClick={onIncrement}>
           +1
@@ -270,13 +264,17 @@ What are the main difference to React's API?
 * `useOnUpdate(...)`
 * `usePrevious(...)`
 * `useProps(...)`
+* `usePropsProxy(...)`
 * `useState(...)`
+* `useStateProxy(...)`
 * `useStateObject(...)`
 * `useTime(...)`
 
 #### Module "_js-widgets/util_":
 * `defineComponentStore(...)`
 * `memoize(...)`
+* `proxify(...)`
+* `toProxy(...)`
 * `wrapGetters(...)`
 
 #### Module "_js-widgets/html_"

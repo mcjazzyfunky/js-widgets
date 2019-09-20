@@ -1,16 +1,18 @@
 import { Ctrl, Props } from '../../../core/main/index'
 
-type Updater<T extends object> = Partial<T> | ((oldState: T) => Partial<T>)
+type Updater<S extends object> = Partial<S> | ((oldState: S) => Partial<S>)
 
-export default function useStateObject<T extends object, P extends Props>(c: Ctrl<P>, init: T | ((props: P) => T)):
-  [() => T, (updater: Updater<T>) => void] {
+export default function useStateObject<S extends object, P extends Props>(
+  c: Ctrl<P>,
+  init: S | ((props: P) => S)
+): [() => S, (updater: Updater<S>) => void] {
 
   const [get, set] =
     typeof init === 'function'
       ? c.handleState((init as Function)(c.getProps()))
       : c.handleState(init)
 
-  function update(updater: Updater<T>) {
+  function update(updater: Updater<S>) {
     if (typeof updater === 'function') {
       set(oldState => {
         const result = (updater as any)(oldState)
