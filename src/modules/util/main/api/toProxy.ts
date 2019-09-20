@@ -20,7 +20,7 @@ function toProxy(what: any): any {
     getOwnPropertyDescriptor = function (_: any, name: any) {
       return Object.getOwnPropertyDescriptor(what(), name)
     }
-    
+
     ret = new Proxy({}, {
       get,
       ownKeys,
