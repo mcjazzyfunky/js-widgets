@@ -1,5 +1,5 @@
 {
-  "name": "js-widgets/html",
+  "name": "js-widgets.html",
   "typings": "../dist/types/html/main/index.d.ts",
   "main": "./index.js"
 }

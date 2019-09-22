@@ -1,4 +1,5 @@
 export * from '../../core/main/index'
+export * from '../../handlers/main/index'
 export * from '../../hooks/main/index'
 export * from '../../util/main/index'
 

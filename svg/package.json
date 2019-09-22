@@ -1,5 +1,5 @@
 {
-  "name": "js-widgets/svg",
+  "name": "js-widgets.svg",
   "typings": "../dist/types/svg/main/index.d.ts",
   "main": "./index.js"
 }

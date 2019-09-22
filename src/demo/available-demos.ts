@@ -13,6 +13,7 @@ import stopWatch1 from './demos/stop-watch-1'
 import stopWatch2 from './demos/stop-watch-2'
 import stopWatch3 from './demos/stop-watch-3'
 import stopWatch4 from './demos/stop-watch-4'
+import stopWatch5 from './demos/stop-watch-5'
 import mousePosition from './demos/mouse-position'
 import context from './demos/context'
 import i18n from './demos/i18n'
@@ -33,6 +34,7 @@ const demos: [string, VirtualElement][] = [
   ['Stop watch 2', stopWatch2],
   ['Stop watch 3', stopWatch3],
   ['Stop watch 4', stopWatch4],
+  ['Stop watch 5', stopWatch5],
   ['Mouse position', mousePosition],
   ['Context', context],
   ['Internationalization', i18n],
