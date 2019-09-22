@@ -1,8 +1,8 @@
 import { Ctrl } from '../../../core/main/index'
 
-// --- defineComponentActions ---------------------------------------
+// --- prepareActions -----------------------------------------------
 
-function defineComponentActions<
+function prepareActions<
   S extends State,
   A extends any[],
   M extends { [k: string]: (...args: any[]) => void }
@@ -54,4 +54,4 @@ function createStateProxy<S extends State>(getState: () => S): S {
 
 // --- exports ------------------------------------------------------
 
-export default defineComponentActions
+export default prepareActions

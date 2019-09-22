@@ -1,6 +1,6 @@
 import { h,  component } from '../../modules/core/main/index'
 import { useEffect, useProps, useOnMount, useStateObject } from '../../modules/hooks/main/index'
-import { defineComponentActions, wrapGetters } from '../../modules/util/main/index'
+import { prepareActions, wrapGetters } from '../../modules/util/main/index'
 
 type StopWatchProps = {
   name?: string
@@ -11,7 +11,7 @@ type StopWatchState = {
   running: boolean,
 }
 
-const useStopWatchActions = defineComponentActions({
+const useStopWatchActions = prepareActions({
   initState(): StopWatchState {
     return { time: 0, running: false }
   },
