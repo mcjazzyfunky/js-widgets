@@ -7,17 +7,17 @@ type CounterProps = {
   ref?: Ref<{ reset(n: number): void }>
 }
 
-const Counter = component<CounterProps>('Counter')({
+const Counter = component<CounterProps>({
+  displayName: 'Counter',
   memoize: true,
-
-  defaultProps: {
-    label: 'Counter',
-    initialValue: 0
-  },
 
   init(c) {
     const
-      getProps = useProps(c), 
+      getProps = useProps(c, {
+        label: 'Counter',
+        initialValue: 0
+      }),
+
       [getCount, setCount] = useState(c, getProps().initialValue),
       onIncrement = () => setCount(it => it + 1),
       onDecrement = () => setCount(it => it - 1)
@@ -28,9 +28,9 @@ const Counter = component<CounterProps>('Counter')({
       }
     })
 
-    return props => (
+    return () => (
       <div>
-        <label>{props.label}: </label>
+        <label>{getProps().label}: </label>
         <button onClick={onDecrement}>-</button>
         {` ${getCount()} `}
         <button onClick={onIncrement}>+</button>
@@ -39,7 +39,9 @@ const Counter = component<CounterProps>('Counter')({
   }
 })
 
-const Demo = component('Demo')({
+const Demo = component({
+  displayName: 'Demo',
+
   init(c) {
     const
       counterRef = { current: null } as any, // TODO

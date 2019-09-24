@@ -1,5 +1,6 @@
 interface ContextConfig<T> {
-  defaultValue: T
+  displayName: string
+  defaultValue?: T
   validate?: (value: T) => boolean | null | Error
 }
 

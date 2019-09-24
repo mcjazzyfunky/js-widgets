@@ -5,7 +5,9 @@ type StopWatchProps = {
   name?: string
 }
 
-const StopWatch = component<StopWatchProps>('StopWatch')({
+const StopWatch = component<StopWatchProps>({
+  displayName: 'StopWatch',
+
   init(c) {
     const
       [useState, setState] = handleState(c, () => ({

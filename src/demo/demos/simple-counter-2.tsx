@@ -7,7 +7,8 @@ type CounterProps = {
   label?: string
 }
 
-const Counter = component<CounterProps>('Counter')({
+const Counter = component<CounterProps>({
+  displayName: 'Counter',
   memoize: true,
 
   validate: Spec.checkProps({
@@ -17,14 +18,13 @@ const Counter = component<CounterProps>('Counter')({
     }
   }),
 
-  defaultProps: {
-    initialValue: 0,
-    label: 'Counter'
-  },
-
   init(c) {
     const
-      props = usePropsProxy(c),
+      props = usePropsProxy(c, {
+        initialValue: 0,
+        label: 'Counter'
+      }),
+
       [state, setState] = useStateProxy(c, { count: props.initialValue }),
 
       onIncrement = () => setState({ count: state.count + 1 }),

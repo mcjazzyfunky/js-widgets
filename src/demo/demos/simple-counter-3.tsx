@@ -28,7 +28,8 @@ const useCounterActions = prepareActions({
   })
 })
 
-const Counter = component<CounterProps>('Counter')({
+const Counter = component<CounterProps>({
+  displayName: 'Counter',
   memoize: true,
 
   validate: Spec.checkProps({
@@ -38,14 +39,13 @@ const Counter = component<CounterProps>('Counter')({
     }
   }),
 
-  defaultProps: {
-    initialValue: 0,
-    label: 'Counter'
-  },
-
   init(c) {
     const
-      getProps = useProps(c),
+      getProps = useProps(c, {
+        initialValue: 0,
+        label: 'Counter'
+      }),
+
       [actions, getState] = useCounterActions(c, getProps().initialValue),
 
       [v, using] = wrapGetters({

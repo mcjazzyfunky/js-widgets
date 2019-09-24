@@ -1,11 +1,14 @@
 import { h, context, component } from '../../modules/core/main/index'
 import { useState, useOnMount } from '../../modules/hooks/main/index'
 
-const CounterCtx = context('CounterCtx')({
+const CounterCtx = context({
+  displayName: 'CounterCtx',
   defaultValue: 0
 })
 
-const ContextDemo = component('ContextDemo')({
+const ContextDemo = component({
+  displayName: 'ContextDemo',
+
   init(c) {
     const [getCount, setCount] = useState(c, 0)
 
@@ -25,7 +28,8 @@ const ContextDemo = component('ContextDemo')({
   }
 })
 
-const Output = component('Output')({
+const Output = component({
+  displayName: 'Output',
   memoize: true,
 
   render() {

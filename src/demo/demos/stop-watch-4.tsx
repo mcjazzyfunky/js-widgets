@@ -52,14 +52,12 @@ const useStopWatchActions = prepareActions({
   } 
 })
 
-const StopWatch = component<StopWatchProps>('StopWatch')({
-  defaultProps: {
-    name: 'Stop watch'
-  },
+const StopWatch = component<StopWatchProps>({
+  displayName: 'StopWatch',
 
   init(c) {
     const
-      getProps = useProps(c),
+      getProps = useProps(c, { name: 'StopWatch' }),
       [actions, getState] = useStopWatchActions(c),
 
       [, using] = wrapGetters({

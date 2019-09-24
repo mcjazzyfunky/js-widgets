@@ -1,7 +1,9 @@
 import { h, component, Boundary }  from '../../modules/core/main/index'
 import { useState, useOnUpdate } from '../../modules/hooks/main/index'
 
-const ErrorTrigger = component('ErrorTrigger')({
+const ErrorTrigger = component({
+  displayName: 'ErrorTrigger',
+
   init(c) {
     const
       [getErrorMsg, setErrorMsg] = useState<string | null>(c, null),
@@ -23,7 +25,9 @@ const ErrorTrigger = component('ErrorTrigger')({
   }
 })
 
-const ErrorBoundary = component('ErrorBoundary')({
+const ErrorBoundary = component({
+  displayName: 'ErrorBoundary',
+
   init(c) {
     const
       [getError, setError] = useState<Error | null>(c, null),

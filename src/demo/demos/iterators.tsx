@@ -33,7 +33,9 @@ const demoContent = {
   }
 }
 
-const App = component('App')({
+const App = component({
+  displayName: 'App',
+
   render() {
     return (
       <div>

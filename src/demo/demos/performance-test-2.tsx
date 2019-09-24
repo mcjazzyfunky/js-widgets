@@ -17,7 +17,9 @@ type TileProps = {
   width?: number
 }
 
-const Tile = component<TileProps>('Tile')({
+const Tile = component<TileProps>({
+  displayName: 'Tile',
+
   render({
     color = 'white',
     width = 3
@@ -42,7 +44,9 @@ type TypeRowProps = {
   colors?: string[],
 }
 
-const TileRow = component<TypeRowProps>('TileRow')({
+const TileRow = component<TypeRowProps>({
+  displayName: 'TileRow',
+
   render({
     tileWidth = 3,
     columnCount = prefs.columnCount,
@@ -63,19 +67,14 @@ const TileRow = component<TypeRowProps>('TileRow')({
 })
 
 type SpeedTestProps = {
-  columnCount: number,
-  rowCount: number,
+  columnCount?: number,
+  rowCount?: number,
   tileWidth?: number,
   framesPerSecond?: number
 }
 
-const SpeedTest = component<SpeedTestProps>('SpeedTest')({
-  defaultProps: {
-    tileWidth: 3,
-    rowCount: prefs.rowCount,
-    columnCount: prefs.columnCount,
-    framesPerSecond: prefs.framesPerSecond
-  },
+const SpeedTest = component<SpeedTestProps>({
+  displayName: 'SpeedTest',
   
   init(c) {
     let 
@@ -85,7 +84,13 @@ const SpeedTest = component<SpeedTestProps>('SpeedTest')({
       actualFramesPerSecond = '0'
 
     const
-      getProps = useProps(c),
+      getProps = useProps(c, {
+        tileWidth: 3,
+        rowCount: prefs.rowCount,
+        columnCount: prefs.columnCount,
+        framesPerSecond: prefs.framesPerSecond
+      }),
+
       forceUpdate = useForceUpdate(c),
 
       style = {
@@ -109,8 +114,10 @@ const SpeedTest = component<SpeedTestProps>('SpeedTest')({
     })
 
   
-    return props => {
-      const rows: VirtualElement[] = []
+    return () => {
+      const
+        props = getProps(),
+        rows: VirtualElement[] = []
       
       for (let y = 0; y < props.rowCount; ++y) {
         rows.push(

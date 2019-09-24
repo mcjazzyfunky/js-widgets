@@ -6,64 +6,39 @@ import Ctrl from './types/Ctrl'
 import h from './h'
 import StatelessComponentConfig from '../../../core/main/api/types/StatelessComponentConfig'
 import StatefulComponentConfig from '../../../core/main/api/types/StatefulComponentConfig'
-import PickOptionalProps from '../internal/types/PickOptionalProps'
 import createInternalComponent from '../internal/helpers/createInternalComponent'
 import StatefulComponentMeta from '../internal/types/StatefulComponentMeta'
 import StatelessComponentMeta from '../internal/types/StatelessComponentMeta'
 
-function component(
-  displayName: string
-): (config: StatelessComponentConfig<{}> | StatefulComponentConfig<{}, {}>) => Component<{}>
+function component<P extends Props = {}>(
+  config: StatelessComponentConfig<P>
+): Component<P>
 
-function component<P extends Props>(
-  displayName: string
-): <D extends Partial<PickOptionalProps<P>>>(config: StatelessComponentConfig<P> | StatefulComponentConfig<P, D>) => Component<P>
+function component<P extends Props = {}>(
+  config: StatefulComponentConfig<P>
+): Component<P>
 
-function component(displayName: string): any {
-  return (config: StatelessComponentConfig<any> | StatefulComponentConfig<any, any>) => {
-    const cfg: any = {
-      memoize: !!config.memoize,
-      validate: config.validate || null,
-    }
+function component(config: any): any {
+  const
+    ret = defineComponent(config),
+    internalType = createInternalComponent(config)
 
-    if (config.init) {
-      cfg.init = config.init
-    } else {
-      cfg.render = config.render
-    }
+  Object.defineProperty(internalType, '__internal_original', {
+    value: ret
+  }),
 
-    if (config.defaultProps) {
-      cfg.defaultProps = config.defaultProps
-    }
+  Object.defineProperty(ret, '__internal_type', {
+    writable: true, // TODO
+    value: internalType
+  })
 
-    const
-      ret = defineComponent(displayName, cfg),
-      internalType = createInternalComponent(displayName, cfg)
-
-    Object.defineProperty(internalType, '__internal_original', {
-      value: ret
-    }),
-
-    Object.defineProperty(ret, '__internal_type', {
-      writable: true, // TODO
-      value: internalType
-    })
-
-    return ret
-  }
+  return ret
 }
 
 // --- locals ---------------------------------------------------
 
 const
-  REGEX_DISPLAY_NAME = /^([a-z]+:)*[A-Z][a-zA-Z0-9.]*$/,
-  REGEX_PROP_NAME = /^[a-z][a-zA-Z0-9]*$/,
-
-  specOfDefaultProps =
-    Spec.and(
-      Spec.object,
-      Spec.hasSomeKeys,
-      Spec.keysOf(Spec.match(REGEX_PROP_NAME))),
+  REGEX_DISPLAY_NAME = /^([a-z]+:)*[A-Z]/,
 
   specOfComponentConfig =
     Spec.or(
@@ -71,7 +46,7 @@ const
         when: Spec.hasOwnProp('render'),
         
         then: Spec.exact({
-          defaultProps: Spec.optional(specOfDefaultProps),
+          displayName: Spec.match(REGEX_DISPLAY_NAME),
           validate: Spec.nullableOptional(Spec.function),
           memoize: Spec.optional(Spec.boolean),
           render: Spec.function
@@ -81,7 +56,7 @@ const
         when: Spec.hasOwnProp('init'),
 
         then: Spec.exact({
-          defaultProps: Spec.optional(specOfDefaultProps),
+          displayName: Spec.match(REGEX_DISPLAY_NAME),
           validate: Spec.nullableOptional(Spec.function),
           memoize: Spec.optional(Spec.boolean),
           init: Spec.function
@@ -109,56 +84,33 @@ function validateComponentConfig(config: any): null | Error {
   return ret
 }
 
-function convertConfigToMeta(displayName: string, config: any): any {
+function convertConfigToMeta(config: any): any {
   const ret: any = {
-    displayName,
+    displayName: config.displayName,
     validate: config.validate || null,
     // plus key "render" or "init"
   }
 
   if (config.render) {
-    if (!config.defaultProps) {
-      ret.render = config.render
-    } else {
-      ret.render = (props: any) => {
-        const defaultedProps = {...config.defaultProps, ...props}
-
-        return config.render(defaultedProps)
-      }
-    }
-  } else if (!config.defaultProps) {
-    ret.init = config.init
+    ret.render = config.render
   } else {
-    ret.init = (c: Ctrl) => {
-      const
-        adjustedGetProps = () => {
-          return { ...config.defaultProps, ...c.getProps() } // TODO - optimize
-        },
-
-        adjustedCtrl = {...c, getProps: adjustedGetProps }
-
-      return config.init(adjustedCtrl)
-    }
+    ret.init = config.init
   }
 
   return Object.freeze(ret)
 }
 
 function defineComponent<P extends Props = {}>(
-  displayName: string,
   config: StatelessComponentConfig<P>
 ): Component<P>
 
 function defineComponent<P extends Props = {}>(
-  displayName: string, 
   config: StatefulComponentConfig<P>
 ): Component<P>
 
 function defineComponent<P extends Props = {}>(
-  displayName: string,
   config: StatefulComponentConfig<P> | StatelessComponentConfig<P>
 ): Component<P> {
-
   if (process.env.NODE_ENV === 'development' as any) {
     const error = validateComponentConfig(config)
 
@@ -186,7 +138,7 @@ function defineComponent<P extends Props = {}>(
   })
 
   Object.defineProperty(ret, 'meta', {
-    value: convertConfigToMeta(displayName, config)
+    value: convertConfigToMeta(config)
   })
 
   return ret

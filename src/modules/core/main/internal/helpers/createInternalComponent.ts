@@ -6,31 +6,32 @@ import useEffect from '../../internal/adapt/useEffect'
 import useRef from '../../internal/adapt/useRef'
 import useState from '../../internal/adapt/useState'
 
-export default function createInternalComponent(
-  displayName: string,
-  componentConfig: StatelessComponentConfig<any> | StatefulComponentConfig<any>
+function createInternalComponent(
+  componentConfig: StatelessComponentConfig<any>
+): any
+
+function createInternalComponent(
+  componentConfig: StatelessComponentConfig<any>
+): any
+
+function createInternalComponent(
+  componentConfig: any 
 ) {
-  return componentConfig.render
-    ? createStatelessInternalComponent(displayName, componentConfig)
-    : createStatefulInternalComponent(displayName, componentConfig)
+  return (componentConfig as any).render
+    ? createStatelessInternalComponent(componentConfig)
+    : createStatefulInternalComponent(componentConfig)
 }
 
+export default createInternalComponent
+
+// ------------------------------------------------------------------
+
 function createStatelessInternalComponent(
-  displayName: string,
   config: StatelessComponentConfig<any>
 ): Function {
-  const { render, defaultProps } = config
+  let ret: any = config.render.bind(null)
 
-  let ret: any = function (rawProps: any) {
-    const props =
-      defaultProps
-        ? Object.assign({}, defaultProps, rawProps)
-        : rawProps
-
-    return render(props)
-  } 
-
-  ret.displayName = displayName
+  ret.displayName = config.displayName
 
   if (config.memoize) {
     ret = memo(ret)
@@ -40,18 +41,11 @@ function createStatelessInternalComponent(
 }
 
 function createStatefulInternalComponent(
-  displayName:string,
   config: StatefulComponentConfig<any>
 ): Function {
-  const defaultProps = config.defaultProps
-
-  let ret = function StatefulComponent(rawProps: any) {
+  let ret = function StatefulComponent(props: any) {
 
     const
-      props = defaultProps
-        ? Object.assign({}, defaultProps, rawProps)  // TODO - optimize / cache
-        : rawProps,
-
       currPropsRef = useRef(props),
       getProps = useRef(() => currPropsRef.current).current,
       isMountedRef =  useRef(false),
@@ -154,7 +148,7 @@ function createStatefulInternalComponent(
     return (renderRef as any).current(props) // TODO
   }
   
-  ;(ret as any).displayName = displayName
+  ;(ret as any).displayName = config.displayName
 
   if (config.memoize) {
     ret = memo(ret)

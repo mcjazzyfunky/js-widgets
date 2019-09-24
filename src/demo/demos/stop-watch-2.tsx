@@ -6,11 +6,9 @@ type StopWatchProps = {
   name?: string
 }
 
-const StopWatch = component<StopWatchProps>('StopWatch')({
-  defaultProps: {
-    name: 'Stop watch'
-  },
-
+const StopWatch = component<StopWatchProps>({
+  displayName: 'StopWatch',
+  
   init(c) {
     let startTime = 0
 
@@ -21,7 +19,7 @@ const StopWatch = component<StopWatchProps>('StopWatch')({
       }),
 
       [v, using] = wrapGetters({
-        props: useProps(c),
+        props: useProps(c, { name: 'StopWatch' }),
         state: getState
       })
 

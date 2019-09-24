@@ -14,7 +14,8 @@ const translations: Record<string, Record<string, string>> = {
   }
 }
 
-const LocaleCtx = context<string>('LocaleCtx')({
+const LocaleCtx = context<string>({
+  displayName: 'LocaleCtx',
   validate: Spec.string,
   defaultValue: 'en',
 })
@@ -23,7 +24,9 @@ type AppProps = {
   defaultLocale?: string
 }
 
-const App = component<AppProps>('App')({
+const App = component<AppProps>({
+  displayName: 'App',
+
   validate: (
     Spec.checkProps({
       optional: {
@@ -32,13 +35,9 @@ const App = component<AppProps>('App')({
     })
   ),
 
-  defaultProps: {
-    defaultLocale: 'en'
-  },
-
   init(c) {
     const
-      getProps = useProps(c),
+      getProps = useProps(c, { defaultLocale: 'en' }),
       [getLocale, setLocale] = useState(c, getProps().defaultLocale)
 
     return () =>
@@ -60,7 +59,9 @@ interface LocaleTextProps {
   id: string
 }
 
-const LocaleText = component<LocaleTextProps>('LocaleText')({
+const LocaleText = component<LocaleTextProps>({
+  displayName: 'LocaleText',
+
   validate: Spec.checkProps({
     required: {
       id: Spec.string

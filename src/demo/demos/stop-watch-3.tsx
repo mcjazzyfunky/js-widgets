@@ -5,7 +5,9 @@ type StopWatchProps = {
   name?: string
 }
 
-const StopWatch = component<StopWatchProps>('StopWatch')({
+const StopWatch = component<StopWatchProps>({
+  displayName: 'StopWatch',
+
   init(c) {
     const
       props = usePropsProxy(c, { name: 'Stop Watch' }),

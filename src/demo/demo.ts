@@ -10,7 +10,9 @@ type DemoSelectorProps = {
   demos: [string, VirtualElement][]
 }
 
-const DemoSelector = component<DemoSelectorProps>('DemoSelector')({
+const DemoSelector = component<DemoSelectorProps>({
+  displayName: 'DemoSelector',
+
   init(c) {
     let demoIdx = getCurrentDemoIndex()
 
@@ -53,7 +55,9 @@ type DemoProps = {
   demos: [string, VirtualElement][]
 }
 
-const Demo = component<DemoProps>('Demo')({
+const Demo = component<DemoProps>({
+  displayName: 'Demo',
+
   render(props) {
     return (
       div(null,

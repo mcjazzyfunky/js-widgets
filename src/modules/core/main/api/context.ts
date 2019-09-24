@@ -9,11 +9,11 @@ import ContextProviderProps from './types/ContextPrividerProps'
 import ContextConsumerProps from './types/ContextConsumerProps'
 import createInternalContext from '../internal/adapt/createContext'
 
-export default function context<T>(displayName: string):
-  (config: ContextConfig<T>) => Context<T>
-{
-  return (config: ContextConfig<T>) => createContext(
-    displayName,
+export default function context<T>(
+  config: ContextConfig<T>
+): Context<T> {
+  return createContext(
+    config.displayName,
     config.defaultValue,
     config.validate)
 }
@@ -22,11 +22,13 @@ export default function context<T>(displayName: string):
 
 function createContext<T>(
   displayName: string,
-  defaultValue: T,
+  defaultValue?: T,
   validate?: (it: T) => boolean | null | Error
 ): Context<T> {
   const
     providerConfig: any = {
+      displayName: `ContextProvider (${displayName})`,
+
       render(props: any): VirtualNode {
         const { children, ...props2 } = props
 
@@ -35,6 +37,8 @@ function createContext<T>(
     },
 
     consumerConfig: any = {
+      displayName: `ContextConsumer (${displayName})`,
+
       render(props: any): VirtualNode {
         const { children, ...props2 } = props
 
@@ -52,11 +56,8 @@ function createContext<T>(
     }
 
   const
-    Provider = component<ContextProviderProps<T>>(`ContextProvider (${displayName})`)(
-      providerConfig),
-
-    Consumer = component<ContextProviderProps<T>>(`ContextConsumer (${displayName})`)(
-      consumerConfig)
+    Provider = component<ContextProviderProps<T>>(providerConfig),
+    Consumer = component<ContextProviderProps<T>>(consumerConfig)
 
   const internalContext = createInternalContext(defaultValue)
 

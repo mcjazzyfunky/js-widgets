@@ -1,7 +1,9 @@
 import { h, component } from '../../modules/core/main/index'
 import { useMousePosition } from '../../modules/hooks/main/index'
 
-const Demo = component('Demo')({
+const Demo = component({
+  displayName: 'Demo',
+
   init(c) {
     const getMousePosition = useMousePosition(c)
 

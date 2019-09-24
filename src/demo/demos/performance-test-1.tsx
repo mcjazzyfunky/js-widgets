@@ -87,7 +87,9 @@ function runTests() {
   return result
 }
 
-const PerformanceTest = component('PerformanceTest')({
+const PerformanceTest = component({
+  displayName: 'PerformanceTest',
+
   init(c) {
     const
       [getResult, setResult] = useState(c, ''),
@@ -128,7 +130,9 @@ type ReportProps = {
   result: string
 }
 
-const Report = component<ReportProps>('Report')({
+const Report = component<ReportProps>({
+  displayName: 'Report',
+
   render({ result }) {
     let ret = null
     

@@ -8,7 +8,9 @@ type FragmentProps = {
   children?: any // TODO
 }
 
-const Fragment = component<FragmentProps>('Fragment')({
+const Fragment = component<FragmentProps>({
+  displayName: 'Fragment',
+
   render(props) {
     const { children, ...propsWithoutChildren } = props
 

@@ -9,7 +9,9 @@ type BoundaryProps = {
   children?: any // TODO
 }
 
-const Boundary = component<BoundaryProps>('Boundary')({
+const Boundary = component<BoundaryProps>({
+  displayName: 'Boundary',
+
   render(props) {
     const { children, ...props2 } = props
 

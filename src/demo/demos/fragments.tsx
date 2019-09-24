@@ -1,6 +1,8 @@
 import { h, component, Fragment } from '../../modules/core/main/index'
 
-const FragmentDemo = component('FragmentDemo')({
+const FragmentDemo = component({
+  displayName: 'FragmentDemo',
+
   render() {
     return (
       <Fragment>
@@ -20,7 +22,9 @@ const FragmentDemo = component('FragmentDemo')({
   }
 })
 
-const Options = component('Options')({
+const Options = component({
+  displayName: 'Options',
+
   render() {
     return (
       <Fragment>
