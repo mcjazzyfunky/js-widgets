@@ -4,9 +4,9 @@ import toProxy from '../../../util/main/api/toProxy'
 
 type Updater<T extends object> = Partial<T> | ((oldState: T) => Partial<T>)
 
-export default function useStateProxy<S extends object, P extends Props>(
-  c: Ctrl<P>,
-  init: S | ((props: P) => S)
+export default function useStateProxy<S extends object>(
+  c: Ctrl<any>,
+  init: S
 ): [S, (updater: Updater<S>) => void] {
   const [getState, setState] = useStateObject(c, init)
 

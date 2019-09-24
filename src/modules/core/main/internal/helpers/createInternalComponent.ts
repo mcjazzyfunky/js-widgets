@@ -55,8 +55,8 @@ function createStatefulInternalComponent(
       disposeListeners: (() => void)[] = useRef([]).current,
 
       ctrl = useRef({
-        getProps() {
-          return currPropsRef.current 
+        consumeProps() {
+          return () => currPropsRef.current 
         },
 
         handleState(initialState: any) {

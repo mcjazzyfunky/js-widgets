@@ -12,6 +12,8 @@ type StopWatchState = {
 }
 
 const useStopWatchActions = prepareActions({
+  displayName: 'StopWatchActions',
+
   initState(): StopWatchState {
     return { time: 0, running: false }
   },

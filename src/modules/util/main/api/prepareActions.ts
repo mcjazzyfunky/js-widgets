@@ -6,31 +6,40 @@ function prepareActions<
   S extends State,
   A extends any[],
   M extends { [k: string]: (...args: any[]) => void }
->(config: Config<S, A, M>): (c: Ctrl, ...args: A) => [M, () => S] {
+>(config: ActionsConfig<S, A, M>): (c: Ctrl, ...args: A) => [M, () => S] {
   
-  return (c: Ctrl, ...args: A) => {
+  const useActions = (c: Ctrl, ...args: A) => {
     const
       [getState, setState] = c.handleState<S>(config.initState.apply(null, args)),
 
-      actions = config.initActions(
+      actions: M = config.initActions(
         createStateProxy(getState),
         newState => setState(oldState => Object.assign({}, oldState, newState)),
         getState
       )
-      
-    return [actions, getState]
+
+    return [actions, getState] as [M, () => S]
   }
+
+  Object.defineProperty(useActions, 'name', {
+    value: 'use'
+      + config.displayName[0].toUpperCase()
+      + config.displayName.substr(1)
+  })
+
+  return useActions
 }
 
 // --- locals -------------------------------------------------------
 
 type State = { [key: string]: any }
 
-type Config<
+type ActionsConfig<
   S extends State,
   A extends any[],
   M extends { [k: string]: (...args: any[]) => void }> =
 {
+  displayName: string,
   initState: (...args: A) => S,
   
   initActions(

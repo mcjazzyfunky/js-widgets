@@ -6,7 +6,7 @@ type Unsubscribe = () => void
 type Updater<T> = T | ((oldValue: T) => T)
 
 export default interface Ctrl<P extends Props = {}> {
-  getProps(): P,
+  consumeProps(): () => P,
   handleState<T>(initialValue: T): [() => T, (updater: Updater<T>) => void],
   consumeContext<T>(ctx: Context<T>): () => T,
   onUpdate(listener: Listener): Unsubscribe,

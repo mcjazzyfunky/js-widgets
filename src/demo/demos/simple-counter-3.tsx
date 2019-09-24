@@ -13,7 +13,9 @@ type CounterState = {
 }
 
 const useCounterActions = prepareActions({
-  initState: (initialValue: number): CounterState => ({
+  displayName: 'CounterActions',
+
+  initState: (initialValue: number) => ({
     count: initialValue
   }),
 
