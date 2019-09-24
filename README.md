@@ -19,7 +19,9 @@ import { component, mount } from 'js-widgets'
 import { div } from 'js-widgets/html'
 import { Spec } from 'js-spec' // third-party validation library
 
-const SayHello = component('HelloWorld')({
+const SayHello = component({
+  displayName: 'SayHello',
+
   validate: Spec.checkProps({
     optional: {
       name: Spec.string
@@ -45,7 +47,8 @@ import { h, component, mount } from 'js-widgets'
 import { usePropsProxy, useStateProxy, useOnUpdate } from 'js-widgets/hooks'
 import { Spec } from 'js-spec' // third-party validation library
 
-const Counter = component('Counter')({
+const Counter = component({
+  displayName: 'Counter',
   memoize: true,
 
   validate: Spec.checkProps({
@@ -225,8 +228,8 @@ What are the main difference to React's API?
 #### Module "_js-widgets_"
 
 *Defining components and contexts*
-  * `component(displayName)(componentConfig)` - curried due to som TypeScript limitations
-  * `context(displayName)(contextConfig)` - curried to have a similar API as `component(...)`
+  * `component(config)`
+  * `context(config)`
 
 *Handling virtual elements and nodes:*
   * `h(type, props?, ...children)`
