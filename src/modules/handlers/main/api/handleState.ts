@@ -1,7 +1,9 @@
 import { Ctrl } from '../../../core/main/index'
 
-export default function handleState<T, A extends any[]>(c: Ctrl, init: (...args: A) => T):
-  [(...args: A) => T, (updater: (T | ((oldState: T) => Partial<T>))) => void] {
+export default function handleState<T, A extends any[]>(
+  c: Ctrl,
+  init: (...args: A) => T,
+): [(...args: A) => T, (updater: (T | ((oldState: T) => Partial<T>))) => void] {
 
   let
     isInitialized = false,
