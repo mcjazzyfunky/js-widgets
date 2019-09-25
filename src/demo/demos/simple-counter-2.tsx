@@ -1,5 +1,6 @@
 import { h, component } from '../../modules/core/main/index'
 import { useOnUpdate, usePropsProxy, useStateProxy } from '../../modules/hooks/main/index'
+import { consuming } from '../../modules/util/main/index'
 import { Spec } from 'js-spec'
 
 type CounterProps = {
@@ -20,23 +21,25 @@ const Counter = component<CounterProps>({
 
   init(c) {
     const
-      [props] = usePropsProxy(c, {
+      [props, getProps] = usePropsProxy(c, {
         initialValue: 0,
         label: 'Counter'
       }),
 
-      [state, setState] = useStateProxy(c, {
+      [state, setState, getState] = useStateProxy(c, {
         count: props.initialValue
       }),
 
       onIncrement = () => setState({ count: state.count + 1 }),
-      onDecrement = () => setState({ count: state.count - 1 })
+      onDecrement = () => setState({ count: state.count - 1 }),
+
+      using = consuming(getProps, getState)
 
     useOnUpdate(c, () => {
       console.log(`Component has been rendered - ${props.label}: ${state.count}`)
     })
 
-    return () => {
+    return using((props, state) => {
       return (
         <div>
           <label>{props.label + ': '}</label> 
@@ -49,7 +52,7 @@ const Counter = component<CounterProps>({
           </button>
         </div>
       )
-    }
+    })
   }
 })
 

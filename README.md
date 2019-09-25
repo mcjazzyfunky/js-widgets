@@ -280,6 +280,7 @@ What are the main difference to React's API?
 * `memoize(...)`
 * `proxify(...)`
 * `toProxy(...)`
+* `consuming(...)`
 * `wrapGetters(...)`
 
 #### Module "_js-widgets/html_"

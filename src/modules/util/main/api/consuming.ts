@@ -12,7 +12,7 @@ type Values<G extends Getters> =
           ? [ReturnType<G[0]>, ReturnType<G[1]>, ReturnType<G[2]>, ReturnType<G[3]>]
           : never
 
-export default function withGetters<G extends Getters>(...getters: G):
+export default function consuming<G extends Getters>(...getters: G):
   (f: (...args: Values<G>) => any) => any {
 
   return (f: any) => () => {
