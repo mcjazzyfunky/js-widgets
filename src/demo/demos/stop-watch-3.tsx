@@ -10,7 +10,7 @@ const StopWatch = component<StopWatchProps>({
 
   init(c) {
     const
-      props = usePropsProxy(c, { name: 'Stop Watch' }),
+      [props] = usePropsProxy(c, { name: 'Stop Watch' }),
 
       [state, setState] = useStateProxy(c, {
         startTime: 0,

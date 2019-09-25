@@ -20,7 +20,7 @@ const Counter = component<CounterProps>({
 
   init(c) {
     const
-      props = usePropsProxy(c, {
+      [props] = usePropsProxy(c, {
         initialValue: 0,
         label: 'Counter'
       }),
