@@ -7,8 +7,8 @@ type Updater<T extends object> = Partial<T> | ((oldState: T) => Partial<T>)
 export default function useStateProxy<S extends object>(
   c: Ctrl<any>,
   init: S
-): [S, (updater: Updater<S>) => void] {
+): [S, (updater: Updater<S>) => void, () => S] {
   const [getState, setState] = useStateObject(c, init)
 
-  return [toProxy(getState), setState]
+  return [toProxy(getState), setState, getState]
 }
