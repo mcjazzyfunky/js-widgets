@@ -1,6 +1,6 @@
 import { h,  component } from '../../modules/core/main/index'
 import { useEffect, useProps, useOnMount, useStateObject } from '../../modules/hooks/main/index'
-import { wrapGetters } from '../../modules/util/main/index'
+import { wrap } from '../../modules/util/main/index'
 
 type StopWatchProps = {
   name?: string
@@ -18,7 +18,7 @@ const StopWatch = component<StopWatchProps>({
         running: false
       }),
 
-      [v, using] = wrapGetters({
+      [v, using] = wrap({
         props: useProps(c, { name: 'StopWatch' }),
         state: getState
       })

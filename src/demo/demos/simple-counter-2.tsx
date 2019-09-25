@@ -1,6 +1,6 @@
 import { h, component } from '../../modules/core/main/index'
 import { useOnUpdate, usePropsProxy, useStateProxy } from '../../modules/hooks/main/index'
-import { consume } from '../../modules/util/main/index'
+import { consuming } from '../../modules/util/main/index'
 import { Spec } from 'js-spec'
 
 type CounterProps = {
@@ -33,7 +33,7 @@ const Counter = component<CounterProps>({
       onIncrement = () => setState({ count: state.count + 1 }),
       onDecrement = () => setState({ count: state.count - 1 }),
 
-      using = consume(getProps, getState)
+      using = consuming(getProps, getState)
 
     useOnUpdate(c, () => {
       console.log(`Component has been rendered - ${props.label}: ${state.count}`)

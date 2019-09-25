@@ -1,6 +1,6 @@
 import { h, component } from '../../modules/core/main/index'
 import { useOnMount, useOnUpdate, useProps } from '../../modules/hooks/main/index'
-import { wrapGetters, prepareActions } from '../../modules/util/main/index'
+import { wrap, prepareActions } from '../../modules/util/main/index'
 import { Spec } from 'js-spec'
 
 type CounterProps = {
@@ -50,7 +50,7 @@ const Counter = component<CounterProps>({
 
       [actions, getState] = useCounterActions(c, getProps().initialValue),
 
-      [v, using] = wrapGetters({
+      [v, using] = wrap({
         props: getProps,
         state: getState
       }),

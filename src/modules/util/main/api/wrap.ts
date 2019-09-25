@@ -1,6 +1,6 @@
 type ObjectOfGetters = { [key: string]: () => any }
 
-export default function wrapGetters<T extends ObjectOfGetters>(
+export default function wrap<T extends ObjectOfGetters>(
     getters: T
 ): [{ [key in keyof T]: ReturnType<T[key]> }, (f: (data: { [key in keyof T]: ReturnType<T[key]> }) => any) => () => any] {
 
