@@ -259,6 +259,7 @@ What are the main difference to React's API?
 
 #### Module "_js-widgets/hooks_":
 * `useContext(...)`
+* `useDataProxy(...)`
 * `useEffect(...)`
 * `useForceUpdate(...)`
 * `useInterval(...)`

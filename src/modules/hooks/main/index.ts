@@ -1,4 +1,5 @@
 export { default as useContext } from './api/useContext'
+export { default as useDataProxy } from './api/useDataProxy'
 export { default as useEffect } from './api/useEffect'
 export { default as useForceUpdate } from './api/useForceUpdate'
 export { default as useMethods } from './api/useMethods'

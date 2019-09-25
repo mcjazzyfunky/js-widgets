@@ -25,7 +25,9 @@ const Counter = component<CounterProps>({
         label: 'Counter'
       }),
 
-      [state, setState] = useStateProxy(c, { count: props.initialValue }),
+      [state, setState] = useStateProxy(c, {
+        count: props.initialValue
+      }),
 
       onIncrement = () => setState({ count: state.count + 1 }),
       onDecrement = () => setState({ count: state.count - 1 })
