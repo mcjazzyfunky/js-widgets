@@ -4,50 +4,59 @@ import { Ctrl } from '../../../core/main/index'
 
 function prepareActions<
   S extends State,
-  A extends any[],
-  M extends { [k: string]: (...args: any[]) => void }
->(config: ActionsConfig<S, A, M>): (c: Ctrl, ...args: A) => [M, () => S] {
-  
-  const useActions = (c: Ctrl, ...args: A) => {
-    const
-      [getState, setState] = c.handleState<S>(config.initState.apply(null, args)),
+  M extends Actions, 
+>(
+  initActions: ActionsInitializer<S, M>
+): (c: Ctrl, initialState: S) => [M, () => S]
 
-      actions: M = config.initActions(
+function prepareActions<
+  S extends State,
+  M extends Actions, 
+  A extends any[],
+>(
+  initActions: ActionsInitializer<S, M>,
+  initState: StateInitializer<S, A>
+): (c: Ctrl, ...args: A) => [M, () => S] 
+
+function prepareActions(initActions: Function, initState?: Function): Function {
+  return function useActions(c: Ctrl, ...args: any[]): any {
+    const
+      [getState, setState] = c.handleState(
+        initState ? initState.apply(null, args) : args[0]),
+      
+      updater = (update: any) => {
+        if (typeof update === 'function') {
+          setState((prevState: any) =>
+            Object.assign({}, prevState, update(prevState)))
+        } else {
+          setState((prevState: any) =>
+            Object.assign({}, prevState, update))
+        }
+      },
+
+      actions = initActions(
         createStateProxy(getState),
-        newState => setState(oldState => Object.assign({}, oldState, newState)),
+        updater,
         getState
       )
 
-    return [actions, getState] as [M, () => S]
+    return [actions, getState]
   }
-
-  Object.defineProperty(useActions, 'name', {
-    value: 'use'
-      + config.displayName[0].toUpperCase()
-      + config.displayName.substr(1)
-  })
-
-  return useActions
 }
 
 // --- locals -------------------------------------------------------
 
 type State = { [key: string]: any }
+type Actions = { [k: string]: (...args: any[]) => void }
+type StateUpdate<S extends State> = Partial<S> | ((state: S) => Partial<S>)
+type StateSetter<S extends State> = (update: StateUpdate<S>) => void
+type StateGetter<S extends State> = () => S
 
-type ActionsConfig<
-  S extends State,
-  A extends any[],
-  M extends { [k: string]: (...args: any[]) => void }> =
-{
-  displayName: string,
-  initState: (...args: A) => S,
-  
-  initActions(
-    state: S,
-    setState: (state: Partial<S>) => void,
-    getState: () => S
-  ): M
-}
+type ActionsInitializer<S extends State, M extends Actions> =
+  (state: S, setState: StateSetter<S>, getState: StateGetter<S>) => M
+
+type StateInitializer<S extends State, A extends any[]> =
+  (...args: A) => S
 
 function createStateProxy<S extends State>(getState: () => S): S {
   const ret: any = {}

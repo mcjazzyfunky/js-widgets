@@ -1,6 +1,6 @@
 import { h, component } from '../../modules/core/main/index'
-import { useOnMount, useOnUpdate, useProps } from '../../modules/hooks/main/index'
-import { wrap, prepareActions } from '../../modules/util/main/index'
+import { useOnMount, useOnUpdate, usePropsProxy } from '../../modules/hooks/main/index'
+import { consuming, prepareActions, toProxy } from '../../modules/util/main/index'
 import { Spec } from 'js-spec'
 
 type CounterProps = {
@@ -12,14 +12,14 @@ type CounterState = {
   count: number
 }
 
-const useCounterActions = prepareActions({
-  displayName: 'CounterActions',
+function initCounterState(initialValue: number): CounterState {
+  return { count: initialValue }
+}
 
-  initState: (initialValue: number) => ({
-    count: initialValue
-  }),
-
-  initActions: (state: CounterState, setState) => ({
+const useCounterActions = prepareActions(
+  (state: CounterState, setState) => {
+  
+  return {
     incrementCount() {
       setState({ count: state.count + 1 })
     },
@@ -27,8 +27,8 @@ const useCounterActions = prepareActions({
     decrementCount() {
       setState({ count: state.count - 1 })
     }
-  })
-})
+  }
+}, initCounterState)
 
 const Counter = component<CounterProps>({
   displayName: 'Counter',
@@ -43,17 +43,14 @@ const Counter = component<CounterProps>({
 
   init(c) {
     const
-      getProps = useProps(c, {
+      [props, getProps] = usePropsProxy(c, {
         initialValue: 0,
         label: 'Counter'
       }),
 
-      [actions, getState] = useCounterActions(c, getProps().initialValue),
-
-      [v, using] = wrap({
-        props: getProps,
-        state: getState
-      }),
+      [actions, getState] = useCounterActions(c, props.initialValue),
+      state = toProxy(getState),
+      using = consuming(getProps, getState),
 
       onIncrement = () => actions.incrementCount(),
       onDecrement = () => actions.decrementCount()
@@ -65,10 +62,10 @@ const Counter = component<CounterProps>({
     })
 
     useOnUpdate(c, ()=> {
-      console.log(`Component has been rendered - ${v.props.label}: ${v.state.count}`)
+      console.log(`Component has been rendered - ${props.label}: ${state.count}`)
     })
 
-    return using(({ props, state }) => {
+    return using((props, state) => {
       return (
         <div>
           <label>{props.label + ': '}</label> 

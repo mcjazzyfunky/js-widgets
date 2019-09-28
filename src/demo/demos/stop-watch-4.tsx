@@ -11,48 +11,45 @@ type StopWatchState = {
   running: boolean,
 }
 
-const useStopWatchActions = prepareActions({
-  displayName: 'StopWatchActions',
+function initStopWatchState() {
+  return { time: 0, running: false }
+}
 
-  initState(): StopWatchState {
-    return { time: 0, running: false }
-  },
+const useStopWatchActions = prepareActions(
+  (state: StopWatchState, setState) => {
+  let
+    startTime = 0,
+    intervalId = null as any
 
-  initActions(state: StopWatchState, setState) {
-    let
-      startTime = 0,
-      intervalId = null as any
-
-    return {
-      startStop() {
-        if (state.running) {
-          stopTicker()
-        } else {
-          startTime = Date.now() - state.time
-
-          intervalId = setInterval(() => {
-            setState({ time: Date.now() - startTime })
-          })
-        }
-
-        setState({ running: !state.running })
-      },
-      
-      reset() {
+  return {
+    startStop() {
+      if (state.running) {
         stopTicker()
-        startTime = 0
-        setState({ running: false, time: 0 })
-      }
-    }
+      } else {
+        startTime = Date.now() - state.time
 
-    function stopTicker() {
-      if (intervalId) {
-        clearTimeout(intervalId)
-        intervalId = null
+        intervalId = setInterval(() => {
+          setState({ time: Date.now() - startTime })
+        })
       }
+
+      setState({ running: !state.running })
+    },
+    
+    reset() {
+      stopTicker()
+      startTime = 0
+      setState({ running: false, time: 0 })
     }
-  } 
-})
+  }
+
+  function stopTicker() {
+    if (intervalId) {
+      clearTimeout(intervalId)
+      intervalId = null
+    }
+  }
+}, initStopWatchState)
 
 const StopWatch = component<StopWatchProps>({
   displayName: 'StopWatch',
