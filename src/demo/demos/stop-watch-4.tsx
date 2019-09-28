@@ -1,6 +1,6 @@
 import { h,  component } from '../../modules/core/main/index'
 import { useEffect, useProps, useOnMount, useStateObject } from '../../modules/hooks/main/index'
-import { prepareActions, wrap } from '../../modules/util/main/index'
+import { componentActions, wrap } from '../../modules/util/main/index'
 
 type StopWatchProps = {
   name?: string
@@ -11,12 +11,11 @@ type StopWatchState = {
   running: boolean,
 }
 
-function initStopWatchState() {
+function initStopWatchState(): StopWatchState {
   return { time: 0, running: false }
 }
 
-const useStopWatchActions = prepareActions(
-  (state: StopWatchState, setState) => {
+const useStopWatchActions = componentActions((state, setState) => {
   let
     startTime = 0,
     intervalId = null as any

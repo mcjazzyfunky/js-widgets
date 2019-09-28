@@ -1,16 +1,16 @@
 // imports
 import { Ctrl } from '../../../core/main/index'
 
-// --- prepareActions -----------------------------------------------
+// --- componentActions -----------------------------------------------
 
-function prepareActions<
+function componentActions<
   S extends State,
   M extends Actions, 
 >(
   initActions: ActionsInitializer<S, M>
 ): (c: Ctrl, initialState: S) => [M, () => S]
 
-function prepareActions<
+function componentActions<
   S extends State,
   M extends Actions, 
   A extends any[],
@@ -19,7 +19,7 @@ function prepareActions<
   initState: StateInitializer<S, A>
 ): (c: Ctrl, ...args: A) => [M, () => S] 
 
-function prepareActions(initActions: Function, initState?: Function): Function {
+function componentActions(initActions: Function, initState?: Function): Function {
   return function useActions(c: Ctrl, ...args: any[]): any {
     const
       [getState, setState] = c.handleState(
@@ -73,4 +73,4 @@ function createStateProxy<S extends State>(getState: () => S): S {
 
 // --- exports ------------------------------------------------------
 
-export default prepareActions
+export default componentActions

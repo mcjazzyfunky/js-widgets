@@ -1,16 +1,16 @@
 // imports
 import { Ctrl } from '../../../core/main/index'
 
-// --- prepareStore -------------------------------------------------
+// --- componentStore -------------------------------------------------
 
-function prepareStore<
+function componentStore<
   S extends State,
   M extends Store 
 >(
   initStore: StoreInitializer<S, M>
 ): (c: Ctrl, initialState: S) => M
 
-function prepareStore<
+function componentStore<
   S extends State,
   M extends Store, 
   A extends any[],
@@ -19,7 +19,7 @@ function prepareStore<
   initState: StateInitializer<S, A>
 ): (c: Ctrl, ...args: A) => M 
 
-function prepareStore(initStore: Function, initState?: Function): Function {
+function componentStore(initStore: Function, initState?: Function): Function {
   return function useStore(c: Ctrl, ...args: any[]): any {
     const
       [getState, setState] = c.handleState(
@@ -73,4 +73,4 @@ function createStateProxy<S extends State>(getState: () => S): S {
 
 // --- exports ------------------------------------------------------
 
-export default prepareStore
+export default componentStore

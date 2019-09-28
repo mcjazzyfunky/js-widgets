@@ -276,8 +276,8 @@ What are the main difference to React's API?
 * `useTime(...)`
 
 #### Module "_js-widgets/util_":
-* `prepareActions(...)`
-* `prepareStore(...)`
+* `componentActions(...)`
+* `componentStore(...)`
 * `proxify(...)`
 * `toProxy(...)`
 * `consuming(...)`

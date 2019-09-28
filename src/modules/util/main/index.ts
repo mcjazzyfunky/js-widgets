@@ -1,5 +1,5 @@
-export { default as prepareActions } from './api/prepareActions'
-export { default as prepareStore } from './api/prepareStore'
+export { default as componentActions } from './api/componentActions'
+export { default as componentStore } from './api/componentStore'
 export { default as proxify } from './api/proxify'
 export { default as toProxy } from './api/toProxy'
 export { default as consuming } from './api/consuming'
