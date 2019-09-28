@@ -1,44 +1,63 @@
+// imports
 import { Ctrl } from '../../../core/main/index'
 
 // --- prepareStore -------------------------------------------------
 
 function prepareStore<
   S extends State,
-  A extends any[],
-  M extends { [k: string]: (...args: any[]) => any }
->(config: Config<S, A, M>): (c: Ctrl, ...args: A) => M {
-  
-  return (c: Ctrl, ...args: A) => {
-    const
-      [getState, setState] = c.handleState<S>(config.initState.apply(null, args)),
+  M extends Store 
+>(
+  initStore: StoreInitializer<S, M>
+): (c: Ctrl, initialState: S) => M
 
-      store = config.initStore(
+function prepareStore<
+  S extends State,
+  M extends Store, 
+  A extends any[],
+>(
+  initStore: StoreInitializer<S, M>,
+  initState: StateInitializer<S, A>
+): (c: Ctrl, ...args: A) => M 
+
+function prepareStore(initStore: Function, initState?: Function): Function {
+  return function useStore(c: Ctrl, ...args: any[]): any {
+    const
+      [getState, setState] = c.handleState(
+        initState ? initState.apply(null, args) : args[0]),
+      
+      updater = (update: any) => {
+        if (typeof update === 'function') {
+          setState((prevState: any) =>
+            Object.assign({}, prevState, update(prevState)))
+        } else {
+          setState((prevState: any) =>
+            Object.assign({}, prevState, update))
+        }
+      },
+
+      store = initStore(
         createStateProxy(getState),
-        newState => setState(oldState => Object.assign({}, oldState, newState)),
+        updater,
         getState
       )
-      
-    return store
+
+    return store 
   }
 }
 
 // --- locals -------------------------------------------------------
 
 type State = { [key: string]: any }
+type Store = { [k: string]: (...args: any[]) => any }
+type StateUpdate<S extends State> = Partial<S> | ((state: S) => Partial<S>)
+type StateSetter<S extends State> = (update: StateUpdate<S>) => void
+type StateGetter<S extends State> = () => S
 
-type Config<
-  S extends State,
-  A extends any[],
-  M extends { [k: string]: (...args: any[]) => any }> =
-{
-  initState: (...args: A) => S,
-  
-  initStore(
-    state: S,
-    setState: (state: Partial<S>) => void,
-    getState: () => S
-  ): M
-}
+type StoreInitializer<S extends State, M extends Store> =
+  (state: S, setState: StateSetter<S>, getState: StateGetter<S>) => M
+
+type StateInitializer<S extends State, A extends any[]> =
+  (...args: A) => S
 
 function createStateProxy<S extends State>(getState: () => S): S {
   const ret: any = {}
@@ -54,4 +73,4 @@ function createStateProxy<S extends State>(getState: () => S): S {
 
 // --- exports ------------------------------------------------------
 
-export default prepareActions
+export default prepareStore
