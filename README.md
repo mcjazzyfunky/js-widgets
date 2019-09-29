@@ -203,6 +203,30 @@ What are the main difference to React's API?
     { it => <SomeComponent/> }
   </SomeCtx.Consumer>
   ```
+
+  Here's another non-JSX demo example:
+
+  ````js
+  const content =
+    div({ className: 'news-list' },
+      h3('Latest news'),
+      NewsTicker(),
+      hr(),
+      ul(
+        newsFeed.forEach(news =>
+          li(
+            NewsBox({
+              date: news.date,
+              headline: news.headline,
+            },
+              news.content
+            )
+          })
+        )
+      )
+    )
+  ```
+
 * Reacts provides the possibility for a sophisticated validation of the
   components' properties, which is great.
   Normally for that purpose a add-on library called "props-types".
