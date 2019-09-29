@@ -31,8 +31,11 @@ function createConfig(pkg, moduleFormat, productive) {
         : `dist/js-widgets.${pkg}.${moduleFormat}.development.js`,
 
       format: moduleFormat,
-      name: pkg === 'core' || pkg === 'all' ? 'jsWidgets' : `jsWidgets${pkg[0].toUpperCase() + pkg.substr(1)}`,
       sourcemap: productive ? false : 'inline',
+
+      name: pkg === 'core' || pkg === 'all'
+        ? 'jsWidgets'
+        : `jsWidgets${pkg[0].toUpperCase() + pkg.substr(1)}`,
 
       globals: {
         'dyo': 'dyo',
