@@ -221,7 +221,7 @@ What are the main difference to React's API?
             },
               news.content
             )
-          })
+          )
         )
       )
     )
