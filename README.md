@@ -206,7 +206,7 @@ What are the main difference to React's API?
 
   Here's another non-JSX demo example:
 
-  ````js
+  ```js
   const content =
     div({ className: 'news-list' },
       h3('Latest news'),
