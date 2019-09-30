@@ -1,8 +1,8 @@
-import isElement from './isElement'
+import typeOf from './typeOf'
 import render from '../internal/adapt/render'
 
 export default function mount(element: any, container: Element | string) { 
-  if (!isElement(element)) {
+  if (!typeOf(element)) {
     throw new TypeError(
       '[mount] First argument "element" must be a virtual element')
   }

@@ -1,5 +1,5 @@
 import { Ctrl, Props } from '../../../core/main/index'
-import toProxy from '../../../util/main/api/toProxy'
+import toProxy from '../../../tools/main/api/toProxy'
 import PickOptionalProps from '../internal/types/PickOptionalProps'
 
 export default function useProps<P extends Props, D extends PickOptionalProps<P>>(

@@ -30,14 +30,16 @@
   },
   "files": [
     "src/modules/core/main/index.ts",
+    "src/modules/handlers/main/index.ts",
     "src/modules/html/main/index.ts",
-    "src/modules/svg/main/index.ts",
     "src/modules/hooks/main/index.ts",
+    "src/modules/svg/main/index.ts",
+    "src/modules/tools/main/index.ts",
     "src/modules/util/main/index.ts"
   ],
 
   "include": [
-		"./src/modules/*/main/**/*.ts*"
+		"./src/modules/*/main/**/*.ts*", "src/modules/tools/main/api/toProxy.ts", "src/modules/tools/main/api/wrap.ts", "src/modules/tools/main/api/proxify.ts", "src/modules/tools/main/api/consuming.ts", "src/modules/tools/main/api/componentStore.ts", "src/modules/tools/main/api/componentActions.ts"
   ],
 
   "exclude": [

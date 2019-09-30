@@ -1,6 +1,6 @@
 import { h, component } from '../../modules/core/main/index'
 import { useOnMount, useOnUpdate, useProps, useState } from '../../modules/hooks/main/index'
-import { wrap } from '../../modules/util/main/index'
+import { wrap } from '../../modules/tools/main/index'
 import { Spec } from 'js-spec'
 
 type CounterProps = {

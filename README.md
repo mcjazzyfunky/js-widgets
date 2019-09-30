@@ -250,36 +250,26 @@ What are the main difference to React's API?
 ### Current API (not complete yet)
 
 #### Module "_js-widgets_"
+* `component(config)`
+* `context(config)`
+* `h(type, props?, ...children)`
+* `typeOf(element)`
+* `propsOf(element)`
+* `Boundary(props?, ...children)`
+* `Fragment(props?, ...children)`
+* `mount(content, container)`
+* `unmount(container)`
 
-*Defining components and contexts*
-  * `component(config)`
-  * `context(config)`
-
-*Handling virtual elements and nodes:*
-  * `h(type, props?, ...children)`
-  * `isElement(it)`
-  * `isNode(it)`
-  * `typeOf(it)`
-  * `propsOf(it)`
-
-*Handling child elements:*
-  * `childCount(children)`
-  * `forEachChild(children, action)`
-  * `mapChildren(children, mapper)`
-  * `onlyChild(children)`
-  * `toChildArray(children)`
-  * `withChildren(f)`
-
-*Predefined components:*
-  * `Boundary(props?, ...children)`
-  * `Fragment(props?, ...children)`
-
-*Helper functions*
-  * `createRef(value)`
-
-*Mounting / Unmounting*
-  * `mount(content, container)`
-  * `unmount(container)`
+#### Module "_js-widgets/util_":
+* `createRef(value)`
+* `isElement(it)`
+* `isNode(it)`
+* `childCount(children)`
+* `forEachChild(children, action)`
+* `mapChildren(children, mapper)`
+* `onlyChild(children)`
+* `toChildArray(children)`
+* `withChildren(f)`
 
 #### Module "_js-widgets/hooks_":
 * `useContext(...)`
@@ -299,7 +289,7 @@ What are the main difference to React's API?
 * `useStateObject(...)`
 * `useTime(...)`
 
-#### Module "_js-widgets/util_":
+#### Module "_js-widgets/tools_"
 * `componentActions(...)`
 * `componentStore(...)`
 * `proxify(...)`

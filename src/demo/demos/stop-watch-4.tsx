@@ -1,6 +1,6 @@
 import { h,  component } from '../../modules/core/main/index'
 import { useEffect, useProps, useOnMount, useStateObject } from '../../modules/hooks/main/index'
-import { componentActions, wrap } from '../../modules/util/main/index'
+import { componentActions, wrap } from '../../modules/tools/main/index'
 
 type StopWatchProps = {
   name?: string

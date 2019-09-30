@@ -1,4 +1,4 @@
-import { createRef, Ctrl } from '../../../core/main/index'
+import { Ctrl } from '../../../core/main/index'
 import isSameArray from '../internal/isSameArray'
 
 type Callback<A extends any[], R> = (...args: A) => R 

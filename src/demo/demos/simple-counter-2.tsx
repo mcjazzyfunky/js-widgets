@@ -1,6 +1,6 @@
 import { h, component } from '../../modules/core/main/index'
 import { useOnUpdate, usePropsProxy, useStateProxy } from '../../modules/hooks/main/index'
-import { consuming } from '../../modules/util/main/index'
+import { consuming } from '../../modules/tools/main/index'
 import { Spec } from 'js-spec'
 
 type CounterProps = {

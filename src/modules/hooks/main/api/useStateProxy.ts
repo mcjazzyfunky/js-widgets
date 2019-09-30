@@ -1,6 +1,6 @@
 import { Ctrl, Props } from '../../../core/main/index'
 import useStateObject from './useStateObject'
-import toProxy from '../../../util/main/api/toProxy'
+import toProxy from '../../../tools/main/api/toProxy'
 
 type Updater<T extends object> = Partial<T> | ((oldState: T) => Partial<T>)
 
