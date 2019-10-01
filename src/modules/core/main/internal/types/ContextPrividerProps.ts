@@ -1,8 +1,8 @@
-import Children from './Children'
+import VirtualNode from '../../api/types/VirtualNode'
 
 type ContextProviderProps<T> = {
   value: T,
-  children?: Children
+  children?: VirtualNode
 }
 
 export default ContextProviderProps

@@ -1,6 +1,6 @@
 import { h, component } from '../../modules/core/main/index'
 import { useOnMount, useOnUpdate, usePropsProxy } from '../../modules/hooks/main/index'
-import { consuming, componentActions, toProxy } from '../../modules/tools/main/index'
+import { consume, componentActions, toProxy } from '../../modules/tools/main/index'
 import { Spec } from 'js-spec'
 
 type CounterProps = {
@@ -48,7 +48,7 @@ const Counter = component<CounterProps>({
 
       [actions, getState] = useCounterActions(c, props.initialValue),
       state = toProxy(getState),
-      using = consuming(getProps, getState),
+      use = consume(getProps, getState),
 
       onIncrement = () => actions.incrementCount(),
       onDecrement = () => actions.decrementCount()
@@ -63,7 +63,7 @@ const Counter = component<CounterProps>({
       console.log(`Component has been rendered - ${props.label}: ${state.count}`)
     })
 
-    return using((props, state) => {
+    return use((props, state) => {
       return (
         <div>
           <label>{props.label + ': '}</label> 

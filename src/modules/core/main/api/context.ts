@@ -2,16 +2,53 @@ import { Spec } from 'js-spec'
 
 import h from './h'
 import component from './component'
+import createInternalContext from '../internal/adapt/createContext'
 import Context from './types/Context'
 import VirtualNode from './types/VirtualNode'
-import ContextConfig from './types/ContextConfig'
-import ContextProviderProps from './types/ContextPrividerProps'
-import ContextConsumerProps from './types/ContextConsumerProps'
-import createInternalContext from '../internal/adapt/createContext'
+import ContextConfig from '../internal/types/ContextConfig'
+import ContextProviderProps from '../internal/types/ContextPrividerProps'
+import ContextConsumerProps from '../internal/types/ContextConsumerProps'
 
-export default function context<T>(
+function context<T>(
   config: ContextConfig<T>
-): Context<T> {
+): Context<T> 
+
+function context<T>(
+  displayName: string,
+  config?: Omit<ContextConfig<T>, 'displayName'>
+): Context<T> 
+
+function context(arg1: any, arg2?: any): Context<any> {
+  if (process.env.NODE_ENV === 'development' as any) {
+    let errorMsg = ''
+
+    if (typeof arg1 === 'string') {
+      if (typeof arg2 ===  undefined) {
+        // nothing wrong with undefined as second argument
+      } else if (!arg2 || typeof arg2 !== 'object') {
+        errorMsg = 'Second parameter must be an object or undefined'
+      } else if ('displayName' in arg2) {
+        errorMsg = "Second argument must not contain key 'displayName'"
+      }
+    } else if (!arg1 || typeof arg1 !== 'object') {
+      errorMsg = 'First argument must either be a string or an object'
+    } else if (arg2 !== undefined) {
+      errorMsg = 'Illegal second argument (expected undefined)'
+    }
+
+    if (errorMsg) {
+      throw new TypeError(`[context] ${errorMsg}`)
+    }
+  }
+
+  let config: any
+
+  if (typeof arg1 === 'string') {
+    config = { ...(arg2 || {}), displayName: arg1 }
+  } else {
+    config = arg1
+  }
+
   return createContext(
     config.displayName,
     config.defaultValue,
@@ -57,7 +94,7 @@ function createContext<T>(
 
   const
     Provider = component<ContextProviderProps<T>>(providerConfig),
-    Consumer = component<ContextProviderProps<T>>(consumerConfig)
+    Consumer = component<ContextConsumerProps<T>>(consumerConfig)
 
   const internalContext = createInternalContext(defaultValue)
 
@@ -75,3 +112,7 @@ function createContext<T>(
 
   return Object.freeze({ Provider, Consumer }) as any // TODO
 }
+
+// --- exports ------------------------------------------------------
+
+export default context

@@ -1,6 +1,6 @@
-import Props from './Props'
-import VirtualNode from './VirtualNode'
-import Ctrl from './Ctrl'
+import Props from '../../api/types/Props'
+import VirtualNode from '../../api/types/VirtualNode'
+import Ctrl from '../../api/types/Ctrl'
 
 type StatefulComponentConfig<P extends Props = {}> = {
   displayName: string,

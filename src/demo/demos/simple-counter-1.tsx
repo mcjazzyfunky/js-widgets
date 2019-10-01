@@ -27,7 +27,7 @@ const Counter = component('Counter', {
 
       [getCount, setCount] = useState(c, getProps().initialValue),
 
-      [v, using] = wrap({
+      [v, use] = wrap({
         props: getProps,
         count: getCount
       }),
@@ -44,7 +44,7 @@ const Counter = component('Counter', {
       console.log(`Component has been rendered - ${v.props.label}: ${v.count}`)
     })
 
-    return using(({ props, count }) => {
+    return use(({ props, count }) => {
       return (
         <div>
           <label>{props.label + ': '}</label> 

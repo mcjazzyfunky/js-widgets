@@ -39,7 +39,7 @@
   ],
 
   "include": [
-		"./src/modules/*/main/**/*.ts*", "src/modules/tools/main/api/toProxy.ts", "src/modules/tools/main/api/wrap.ts", "src/modules/tools/main/api/proxify.ts", "src/modules/tools/main/api/consuming.ts", "src/modules/tools/main/api/componentStore.ts", "src/modules/tools/main/api/componentActions.ts"
+    "./src/modules/*/main/**/*.ts*"
   ],
 
   "exclude": [

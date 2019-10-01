@@ -18,7 +18,7 @@ function runTests() {
   let result = ''
 
   tests.push({
-    name: 'Using function "createElement" from Dyo',
+    name: 'use function "createElement" from Dyo',
 
     run() {
       for (let i = 0; i < iterationCount; ++i) {
@@ -33,7 +33,7 @@ function runTests() {
   }),
 
   tests.push({
-    name: 'Using function "h" from js-widgets',
+    name: 'use function "h" from js-widgets',
 
     run() {
       for (let i = 0; i < iterationCount; ++i) {
@@ -49,7 +49,7 @@ function runTests() {
   
   
   tests.push({
-    name: 'Using HTML factories from "js-widgets/html"',
+    name: 'use HTML factories from "js-widgets/html"',
 
     run() {
       for (let i = 0; i < iterationCount; ++i) {

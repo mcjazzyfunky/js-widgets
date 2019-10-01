@@ -58,7 +58,7 @@ const StopWatch = component<StopWatchProps>({
       getProps = useProps(c, { name: 'StopWatch' }),
       [actions, getState] = useStopWatchActions(c),
 
-      [, using] = wrap({
+      [, use] = wrap({
         props: getProps,
         state: getState
       }),
@@ -66,7 +66,7 @@ const StopWatch = component<StopWatchProps>({
       onStartStop = () => actions.startStop(),
       onReset = () => actions.reset()
 
-    return using(({ props, state }) =>
+    return use(({ props, state }) =>
       <div>
         <h4>{props.name}</h4>
         <div>Time: {state.time}</div>

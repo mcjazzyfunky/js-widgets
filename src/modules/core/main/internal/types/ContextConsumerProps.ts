@@ -1,4 +1,4 @@
-import VirtualNode from './VirtualNode'
+import VirtualNode from '../../api/types/VirtualNode'
 
 type ContextConsumerProps<T> = {
   children?: (value: T) => VirtualNode

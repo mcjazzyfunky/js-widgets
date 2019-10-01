@@ -15,7 +15,7 @@ export { default as unmount } from './api/unmount'
 // types
 export { default as Ctrl } from './api/types/Ctrl'
 export { default as Context } from './api/types/Context'
-export { default as ContextConfig } from './api/types/ContextConfig'
+export { default as ContextConfig } from './internal/types/ContextConfig'
 export { default as Props } from './api/types/Props'
 export { default as Component } from './api/types/Component'
 export { default as VirtualElement } from './api/types/VirtualElement'

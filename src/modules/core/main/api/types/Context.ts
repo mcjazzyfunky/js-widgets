@@ -1,12 +1,11 @@
 import Component from './Component'
-import Children from './Children'
 import VirtualNode from './VirtualNode'
 import Key from './Key'
 
 type ProviderProps<T> = {
   value: T,
   key?: Key,
-  children?: Children
+  children?: VirtualNode
 }
 
 type ConsumerProps<T> = {

@@ -1,5 +1,5 @@
-import Props from './Props'
-import VirtualNode from './VirtualNode'
+import Props from '../../api/types/Props'
+import VirtualNode from '../../api/types/VirtualNode'
 
 type StatelessComponentConfig<P extends Props = {}> = {
   displayName: string,

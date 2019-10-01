@@ -1,5 +1,5 @@
-import StatelessComponentConfig from '../../api/types/StatelessComponentConfig'
-import StatefulComponentConfig from '../../api/types/StatefulComponentConfig'
+import StatelessComponentConfig from '../types/StatelessComponentConfig'
+import StatefulComponentConfig from '../types/StatefulComponentConfig'
 import memo from '../../internal/adapt/memo'
 import useContext from '../../internal/adapt/useContext'
 import useEffect from '../../internal/adapt/useEffect'
