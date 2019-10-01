@@ -8,8 +8,7 @@ type CounterProps = {
   label?: string
 }
 
-const Counter = component<CounterProps>({
-  displayName: 'Counter',
+const Counter = component('Counter', {
   memoize: true,
 
   validate: Spec.checkProps({

@@ -18,7 +18,44 @@ function component<P extends Props = {}>(
   config: StatefulComponentConfig<P>
 ): Component<P>
 
-function component(config: any): any {
+function component<P extends Props = {}>(
+  displayName: string,
+  config: Omit<StatelessComponentConfig<P>, 'displayName'>
+): Component<P>
+
+function component<P extends Props = {}>(
+  displayName: string,
+  config: Omit<StatefulComponentConfig<P>, 'displayName'>
+): Component<P>
+
+function component(arg1: any, arg2?: any): any {
+  if (process.env.NODE_ENV === 'development' as any) {
+    let errorMsg = ''
+
+    if (typeof arg1 === 'string') {
+      if (!arg2 || typeof arg2 !== 'object') {
+        errorMsg = 'Second parameter must be an object'
+      } else if ('displayName' in arg2) {
+        errorMsg = "Second argument must not contain key 'displayName'"
+      }
+    } else if (!arg1 || typeof arg1 !== 'object') {
+      errorMsg = 'First argument must either be a string or an object'
+    } else if (arg2 !== undefined) {
+      errorMsg = 'Illegal second argument (expected undefined)'
+    }
+
+    if (errorMsg) {
+      throw new TypeError(`[component] ${errorMsg}`)
+    }
+  }
+
+
+
+
+  const config = typeof arg1 === 'string'
+    ? {...(arg2 || {}), displayName: arg1 }
+    : arg1
+
   const
     ret = defineComponent(config),
     internalType = createInternalComponent(config)
