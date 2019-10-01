@@ -2,7 +2,7 @@ import { Spec } from 'js-spec'
 
 import Props from './types/Props'
 import Component from './types/Component'
-import Ctrl from './types/Ctrl'
+import VirtualNode from './types/VirtualNode'
 import h from './h'
 import StatelessComponentConfig from '../../../core/main/api/types/StatelessComponentConfig'
 import StatefulComponentConfig from '../../../core/main/api/types/StatefulComponentConfig'
@@ -28,13 +28,20 @@ function component<P extends Props = {}>(
   config: Omit<StatefulComponentConfig<P>, 'displayName'>
 ): Component<P>
 
+function component<P extends Props = {}>(
+  displayName: string,
+  render: (props: P) => VirtualNode
+): Component<P>
+
 function component(arg1: any, arg2?: any): any {
   if (process.env.NODE_ENV === 'development' as any) {
     let errorMsg = ''
 
     if (typeof arg1 === 'string') {
-      if (!arg2 || typeof arg2 !== 'object') {
-        errorMsg = 'Second parameter must be an object'
+      if (typeof arg2 === 'function') {
+        // nothing wrong with a function as second argument
+      } else if (!arg2 || typeof arg2 !== 'object') {
+        errorMsg = 'Second parameter must be an object or an function'
       } else if ('displayName' in arg2) {
         errorMsg = "Second argument must not contain key 'displayName'"
       }
@@ -49,12 +56,17 @@ function component(arg1: any, arg2?: any): any {
     }
   }
 
-
-
-
-  const config = typeof arg1 === 'string'
-    ? {...(arg2 || {}), displayName: arg1 }
-    : arg1
+  let config: any
+  
+  if (typeof arg1 === 'string') {
+    if (typeof arg2 === 'function') {
+      config = { displayName: arg1, render: arg2 }
+    } else { 
+      config = {...(arg2 || {}), displayName: arg1 }
+    }
+  } else {
+    config = arg1
+  }
 
   const
     ret = defineComponent(config),
