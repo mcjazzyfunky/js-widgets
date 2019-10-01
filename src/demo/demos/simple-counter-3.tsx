@@ -66,7 +66,7 @@ const Counter = component<CounterProps>({
     return use((props, state) => {
       return (
         <div>
-          <label>{props.label + ': '}</label> 
+          <label>{props.label}: </label> 
           <button onClick={onDecrement}>
             -
           </button>

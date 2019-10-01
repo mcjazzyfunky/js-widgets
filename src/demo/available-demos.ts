@@ -5,6 +5,7 @@ import simpleCounter1 from './demos/simple-counter-1'
 import simpleCounter2 from './demos/simple-counter-2'
 import simpleCounter3 from './demos/simple-counter-3'
 import simpleCounter4 from './demos/simple-counter-4'
+import simpleCounter5 from './demos/simple-counter-5'
 import complexCounter from './demos/complex-counter'
 import clock from './demos/clock'
 import iterators from './demos/iterators'
@@ -27,6 +28,7 @@ const demos: [string, VirtualElement][] = [
   ['Simple counter 2', simpleCounter2],
   ['Simple counter 3', simpleCounter3],
   ['Simple counter 4', simpleCounter4],
+  ['Simple counter 5', simpleCounter5],
   ['Complex counter', complexCounter],
   ['Clock', clock],
   ['Iterators', iterators],

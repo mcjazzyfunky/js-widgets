@@ -47,7 +47,7 @@ const Counter = component('Counter', {
     return use(({ props, count }) => {
       return (
         <div>
-          <label>{props.label + ': '}</label> 
+          <label>{props.label}: </label> 
           <button onClick={onIncrement}>
             {count}
           </button>

@@ -1,0 +1,5 @@
+{
+  "name": "js-widgets.variants",
+  "typings": "../dist/types/variants/main/index.d.ts",
+  "main": "./index.js"
+}
