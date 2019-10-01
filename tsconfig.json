@@ -10,7 +10,7 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "downlevelIteration": true,
-    "sourceMap": true,
+    "sourceMap": true, 
     "lib": ["es7", "dom"],
     "esModuleInterop": true,
     "baseUrl": ".",

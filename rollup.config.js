@@ -31,7 +31,7 @@ function createConfig(pkg, moduleFormat, productive) {
         : `dist/js-widgets.${pkg}.${moduleFormat}.development.js`,
 
       format: moduleFormat,
-      sourcemap: productive ? false : 'inline',
+      sourcemap: false, // productive ? false : 'inline', // TODO
 
       name: pkg === 'core' || pkg === 'all'
         ? 'jsWidgets'
@@ -44,7 +44,7 @@ function createConfig(pkg, moduleFormat, productive) {
       }
     },
 
-    external: pkg === 'all' ? [] : ['js-spec'],
+    external: pkg === 'all' ? ['js-widgets'] : ['js-spec', 'js-widgets'],
 
     plugins: [
       resolve(),
@@ -55,13 +55,20 @@ function createConfig(pkg, moduleFormat, productive) {
         exclude: 'node_modules/**',
         delimiters: ['', ''],
 
-        values: {
+        values: pkg === 'all' ? {
+          'process.env.NODE_ENV': productive ? "'production'" : "'development'",
+        } : {
           'process.env.NODE_ENV': productive ? "'production'" : "'development'",
           "'../core/main/index'": "'js-widgets'",
           "'../../core/main/index'": "'js-widgets'",
           "'../../../core/main/index'": "'js-widgets'",
           "'../../../../core/main/index'": "'js-widgets'",
           "'../../../../../core/main/index'": "'js-widgets'",
+          "'../util/main/index'": "'js-widgets/util'",
+          "'../../util/main/index'": "'js-widgets/util'",
+          "'../../../util/main/index'": "'js-widgets/util'",
+          "'../../../../util/main/index'": "'js-widgets/util'",
+          "'../../../../../util/main/index'": "'js-widgets/util'",
         }
       }),
       typescript({
