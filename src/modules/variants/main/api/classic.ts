@@ -1,4 +1,4 @@
-import { component, Component, Props, VirtualNode, Ctrl } from '../../../core/main/index'
+import { component, Component, Props, VirtualNode, Ctrl, Context } from '../../../core/main/index'
 import usePropsProxy from '../../../hooks/main/api/usePropsProxy'
 import useStateProxy from '../../../hooks/main/api/useStateProxy'
 
@@ -11,13 +11,13 @@ function classic<P extends Props, S extends State, D extends P>(
   config: Omit<StatelessConfig<P, S, D>, 'displayName'>
 ): Component<P>
 
-function classic<P extends Props, S extends State, D extends P>(
-  config: StatefulConfig<P, S, D>
+function classic<P extends Props, S extends State, D extends P, C extends Contexts>(
+  config: StatefulConfig<P, S, D, C>
 ): Component<P>
 
-function classic<P extends Props, S extends State, D extends P>(
+function classic<P extends Props, S extends State, D extends P, C extends Contexts>(
   displayName: string,
-  config: Omit<StatefulConfig<P, S, D>, 'displayName'>
+  config: Omit<StatefulConfig<P, S, D, C>, 'displayName'>
 ): Component<P>
 
 function classic<P extends Props>(
@@ -80,13 +80,36 @@ function classic<P extends Props>(arg1: any, arg2?: any): Component<P> {
 
         const
           [props, getProps] = usePropsProxy(c),
-          [state, setState, getState] = useStateProxy(c, initState(getProps()))
+          [state, setState, getState] = useStateProxy(c, initState(getProps())),
+          contexts = {}, // TODO!!!
 
-        return options.main({ c, props, state, getProps, getState, setState })
+          update = setState, // TODO!!
+          render = options.main(c, props, state, contexts, update, getProps, getState)
+
+        if (options.contexts) {
+          const keys = Object.keys(options.contexts)
+
+          for (let i = 0; i < keys.length; ++i) {
+            const key = keys[i]
+
+            if (typeof options.contexts[key] === 'function') {
+              Object.defineProperty(contexts, key, {
+                get: options.contexts[key](c)
+              })
+            } else {
+              Object.defineProperty(contexts, key, {
+                get: c.consumeContext(options.contexts[key]) 
+              })
+            }
+          }
+        }
+
+        return () => render(props, state, contexts)
       }
 
     config = { ...options, init }
     delete config.defaultProps
+    delete config.contexts
     delete config.initState
     delete config.main
   }
@@ -98,30 +121,43 @@ function classic<P extends Props>(arg1: any, arg2?: any): Component<P> {
 
 type State = Record<string, any>
 
+type Contexts =
+  Record<string, Context<any> | ((c: Ctrl) => () => any)>
+
+type ContextValues<C extends Contexts> = {
+  [K in keyof C]: C[K] extends Context<infer T>
+    ? T
+    : C[K] extends ((c: Ctrl) => () => infer T)
+    ? T
+    : never
+} 
+
 type StatelessConfig<P extends Props, S extends State, D extends P>  = {
   displayName: 'string',
   memoize?: boolean,
   validate?(props: P): boolean | null | Error,
-  defaultProps?: D
+  defaultProps?: D,
   initState?(props: P & D): S,
   render(props: P & D): VirtualNode
 }
 
-type StatefulConfig<P extends Props, S extends State, D extends P>  = {
+type StatefulConfig<P extends Props, S extends State, D extends P, C extends Contexts>  = {
   displayName: 'string',
   memoize?: boolean,
   validate?(props: P): boolean | null | Error,
   defaultProps?: D
+  contexts?: C,
   initState?(props: P & D): S,
   
-  main(params: {
+  main(
     c: Ctrl<P & D>,
     props: P & D,
-    getProps: () => P & D,
     state: S,
+    contexts: ContextValues<C>,
+    update: (updater: Partial<S> | ((s: S) => Partial<S>)) => void,
+    getProps: () => P & D,
     getState: () => S,
-    setState: (s: Partial<S>) => void
-  }): VirtualNode
+  ): VirtualNode
 }
 
 // --- exports ------------------------------------------------------

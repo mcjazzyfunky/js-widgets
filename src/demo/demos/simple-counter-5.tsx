@@ -1,6 +1,14 @@
-import { h, Component } from '../../modules/core/main/index'
+import { h, Component, context, Ctrl } from '../../modules/core/main/index'
 import { useEffect } from '../../modules/hooks/main/index'
 import { classic as component } from '../../modules/variants/main/index'
+
+const LocaleCtx = context({
+  displayName: 'LocaleCtx',
+  defaultValue: 'en'
+})
+
+const useDummy = (c: Ctrl) => () => 'Juhu'
+
 
 type CounterProps = {
   initialValue?: number,
@@ -13,14 +21,19 @@ const Counter: Component<CounterProps> = component('Counter', {
     label: 'Counter'
   },
 
+  contexts: {
+    locale: LocaleCtx,
+    dummy: useDummy
+  },
+
   initState: props => ({
     count: props.initialValue
   }),
 
-  main({ c, props, state, setState }) {
+  main(c, props, state, contexts, update) {
     const
-      onIncrement = () => setState({ count: state.count + 1 }),
-      onDecrement = () => setState({ count: state.count - 1 })
+      onIncrement = () => update({ count: state.count + 1 }),
+      onDecrement = () => update({ count: state.count - 1 })
 
     useEffect(c, () => {
       console.log('Updated - count:', state.count)
@@ -28,6 +41,7 @@ const Counter: Component<CounterProps> = component('Counter', {
 
     return () => (
       <div>
+        {contexts.dummy}
         <label>{props.label}: </label>
         <button onClick={onDecrement}>-</button>
         <span> {state.count} </span>

@@ -106,6 +106,10 @@ function createContext<T>(
     value: internalContext.Provider
   })
   
+  Object.defineProperty(Provider, '__internal_defaultValue', {
+    value: defaultValue
+  })
+  
   Object.defineProperty(Consumer, '__internal_type', {
     value: internalContext.Consumer
   })

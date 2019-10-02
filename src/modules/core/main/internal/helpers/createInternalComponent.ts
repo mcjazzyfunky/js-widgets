@@ -140,9 +140,11 @@ function createStatefulInternalComponent(
     })
 
     contexts.forEach(item => {
-      const value = useContext(item[1])
-    
-      item[0] = value
+      try {
+        item[0] = useContext(item[1])
+      } catch {
+        // TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      }
     })
 
     return (renderRef as any).current(props) // TODO
