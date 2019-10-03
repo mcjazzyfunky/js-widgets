@@ -78,46 +78,59 @@ function classic<P extends Props>(arg1: any, arg2?: any): Component<P> {
           }
         }
 
-        const
-          [props, getProps] = usePropsProxy(c),
-          context = {} // TODO!!!
+        let getContext: () => any 
         
-          if (options.context) {
-          const keys = Object.keys(options.context)
+        if (!options.context) {
+          getContext = () => ({}) // TODO
+        } else {
+          const
+            ctxArr: any = [],
+            keys = Object.keys(options.context)
 
           for (let i = 0; i < keys.length; ++i) {
             const key = keys[i]
+            let getter: Function
 
             if (typeof options.context[key] === 'function') {
-              Object.defineProperty(context, key, {
-                get: options.context[key](c)
-              })
+              getter = options.context[key](c)
             } else {
-              Object.defineProperty(context, key, {
-                get: c.consumeContext(options.context[key]) 
-              })
+              getter = c.consumeContext(options.context[key])
             }
+
+            ctxArr.push([key, getter])
+          }
+
+          getContext = () => {
+            const context: any = {}
+
+
+            for (let i = 0; i < ctxArr.length; ++i) {
+              const [key, getter] = ctxArr[i]
+
+              context[key] = getter()
+            }
+
+            return context
           }
         }
         
         // TODO !!!!!
         const
-          [getState, setState] = c.handleState(initState(getProps(), context)),
-          currState = getState(),
-          keys = Object.keys(currState),
-          state: any = {}
-
-        for (let i = 0; i < keys.length; ++i) {
-          Object.defineProperty(state, keys[i], {
-            get: () => getState()[keys[i]] // TODO
-          })
-        }
+          initialContext = getContext(), // TODO clear
+          getProps = c.consumeProps(),
+          [getState, setState] = c.handleState(initState(getProps(), initialContext))
 
         const 
-          update = setState, // TODO!!
-          render = options.main(c, props, state, context, update, getProps, getState)
+          update = setState, // TODO!! - force upate!
+          self: any = { props: getProps(), state: getState(), context: initialContext }, 
+          render = options.main(c,  self, update)
 
-        return () => render(props, state, context)
+        return () => {
+          self.props = getProps()
+          self.state = getState()
+          self.context = getContext()
+          return render(self.props, self.state, self.context)
+        }
       }
 
     config = { ...options, init }
@@ -164,13 +177,18 @@ type StatefulConfig<P extends Props, S extends State, D extends P, C extends Con
   
   main(
     c: Ctrl<P & D>,
-    props: P & D,
-    state: S,
-    context: ContextValues<C>,
-    update: (updater: Partial<S> | ((s: S) => Partial<S>)) => void,
-    getProps: () => P & D,
-    getState: () => S,
+
+    self: {
+      props: P & D,
+      state: S,
+      context: ContextValues<C>
+    },
+
+    update: (updater: Partial<S> | ((s: S) => Partial<S>)) => void
   ): (props: P, state: S, ctx: ContextValues<C>) => VirtualNode
+}
+
+function noOp() {
 }
 
 // --- exports ------------------------------------------------------

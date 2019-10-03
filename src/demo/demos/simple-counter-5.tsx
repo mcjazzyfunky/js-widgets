@@ -21,23 +21,24 @@ const Counter: Component<CounterProps> = component({
   },
 
   context: {
-    locale: LocaleCtx
+    locale: LocaleCtx,
+    some: (c: any) => () => 'thing'
   },
 
   initState: props => ({
     count: props.initialValue
   }),
 
-  main(c, props, state, ctx, update) {
+  main(c, self, update) {
     const
-      onIncrement = () => update({ count: state.count + 1 }),
-      onDecrement = () => update({ count: state.count - 1 })
+      onIncrement = () => update({ count: self.state.count + 1 }),
+      onDecrement = () => update({ count: self.state.count - 1 })
 
     useEffect(c, () => {
-      console.log('Updated - count:', state.count)
+      console.log('Updated - count:', self.state.count)
     })
 
-    return () => (
+    return (props, state, ctx) => (
       <div>
         <div>Locale: {ctx.locale}</div>
         <br/>
