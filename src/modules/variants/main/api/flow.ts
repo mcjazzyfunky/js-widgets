@@ -5,8 +5,9 @@ function flow<
   S extends State,
   D extends Partial<PickOptionalProps<P>>,
   A extends { [key: string]: (...args: any[]) => any },
-  E extends { [k: string]: <T>(ev: T, props: P, state: S) => ActionTypes<A>}
->(flow: FlowConfig<P, D, S, A, E>): Component<P> {
+  E extends { [k: string]: <T>(ev: T, props: P, state: S) => ActionTypes<A>},
+  X extends object
+>(flow: FlowConfig<P, D, S, A, E, X>): Component<P> {
   // TODO!!!
   return null as any
 }
@@ -18,7 +19,8 @@ type FlowConfig<
   D extends Partial<PickOptionalProps<P>>,
   S extends State,
   A extends { [key: string]: (...args: any[]) => any },
-  E extends { [k: string]: <T>(ev: T, props: P, state: S) => ActionTypes<A>}
+  E extends { [k: string]: <T>(ev: T, props: P, state: S, data: X) => ActionTypes<A>},
+  X extends object
 > = {
   displayName: string,
   defaultProps?: Partial<P>,
@@ -27,18 +29,19 @@ type FlowConfig<
   reduceState?(state: S, action: ActionTypes<A>): Partial<S> | undefined,
   
   events?: {
-    [k: string]: <T>(ev: T, props: P, state: S) => ActionTypes<A>
+    [k: string]: <T>(ev: T, props: P, state: S, data: X) => ActionTypes<A>
   },
   
   lifecycle?: {
-    onMount?(props: P, state: S): ActionTypes<A>
-    onMount?(props: P, state: S): ActionTypes<A>
-    onUnmount?(props: P, state: S): ActionTypes<A>
+    onMount?(props: P, state: S, data: X): ActionTypes<A>
+    onMount?(props: P, state: S, data: X): ActionTypes<A>
+    onUnmount?(props: P, state: S, data: X): ActionTypes<A>
   },
 
   render(
     props: P,
     state: S,
+    data: X,
     events: { [K in keyof E]: ((e: FirstArgument<E[K]>) => void) }
   ): VirtualNode
 }
