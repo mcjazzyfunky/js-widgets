@@ -1,6 +1,6 @@
 import { h, Component, context, Ctrl } from '../../modules/core/main/index'
 import { useEffect, useTime } from '../../modules/hooks/main/index'
-import { classic as component } from '../../modules/variants/main/index'
+import { classic as component } from '../../modules/patterns/main/index'
 
 const LocaleCtx = context({
   displayName: 'LocaleCtx',

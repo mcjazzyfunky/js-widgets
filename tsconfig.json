@@ -36,7 +36,7 @@
     "src/modules/svg/main/index.ts",
     "src/modules/tools/main/index.ts",
     "src/modules/util/main/index.ts",
-    "src/modules/variants/main/index.ts"
+    "src/modules/patterns/main/index.ts"
   ],
 
   "include": [
