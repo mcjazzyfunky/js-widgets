@@ -1,4 +1,4 @@
-import { h, component, context, useEffect, Component }
+import { h, component, context, useEffect }
   from '../../modules/common/main/index'
 
 const LocaleCtx = context({
@@ -15,19 +15,7 @@ function initCounterState(props: CounterProps) {
   return { count: props.initialValue! }
 }
 
-const HelloWorld = component({
-  displayName: 'HelloWorld',
-
-  context: {
-    locale: LocaleCtx
-  },
-
-  render(props, ctx) {
-    return <div>Hello world (locale: {ctx.locale})</div>
-  }
-})
-
-const Counter: Component<CounterProps> = component({
+const Counter = component({
   displayName: 'Counter',
 
   defaultProps: {
@@ -52,8 +40,6 @@ const Counter: Component<CounterProps> = component({
 
     return () => (
       <div>
-        <div><HelloWorld/></div>
-        <br/>
         <div>Locale: {ctx.locale}</div>
         <br/>
         <label>{props.label}: </label>
