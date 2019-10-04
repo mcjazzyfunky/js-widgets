@@ -12,6 +12,18 @@ type CounterProps = {
   label?: string
 }
 
+const HelloWorld = component({
+  displayName: 'HelloWorld',
+
+  context: {
+    locale: LocaleCtx
+  },
+
+  render(props, ctx) {
+    return <div>Hello world (locale: {ctx.locale})</div>
+  }
+})
+
 const Counter: Component<CounterProps> = component({
   displayName: 'Counter',
 
@@ -39,6 +51,8 @@ const Counter: Component<CounterProps> = component({
 
     return (props, state, ctx) => (
       <div>
+        <div><HelloWorld/></div>
+        <br/>
         <div>Locale: {ctx.locale}</div>
         <br/>
         <label>{props.label}: </label>

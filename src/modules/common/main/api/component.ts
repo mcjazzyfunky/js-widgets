@@ -54,6 +54,23 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
       displayName: arg1,
       render: arg2
     }
+  } else if (arg1.render) {
+    config = Object.assign({}, arg1)
+    
+    if (config.context) {
+      const
+        render = config.render,
+        ctxCfg = config.context
+
+      config.init = (c: Ctrl) => {
+        const getContext = handleContext(ctxCfg, c)
+        // TODO - default props
+        return (props: P) => render(props, getContext())
+      }
+
+      delete config.render
+      delete config.context
+    }
   } else {
     const
       options =
@@ -61,6 +78,7 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
 
       defaultProps = options.defaultProps || {},
       initState = options.initState || (() => ({})),
+      ctxCfg = options.context,
 
       init = (rawC: Ctrl<any>) => {
         let c = rawC
@@ -77,44 +95,11 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
           }
         }
 
-        let getContext: () => any 
-        
-        if (!options.context) {
-          getContext = () => ({}) // TODO
-        } else {
-          const
-            ctxArr: any = [],
-            keys = Object.keys(options.context)
-
-          for (let i = 0; i < keys.length; ++i) {
-            const key = keys[i]
-            let getter: Function
-
-            if (typeof options.context[key] === 'function') {
-              getter = options.context[key](c)
-            } else {
-              getter = c.consumeContext(options.context[key])
-            }
-
-            ctxArr.push([key, getter])
-          }
-
-          getContext = () => {
-            const context: any = {}
-
-            for (let i = 0; i < ctxArr.length; ++i) {
-              const [key, getter] = ctxArr[i]
-
-              context[key] = getter()
-            }
-
-            return context
-          }
-        }
+        const getContext = handleContext(ctxCfg, c)
         
         // TODO !!!!!
         const
-          initialContext = getContext(), // TODO clear
+          initialContext = getContext(),
           getProps = c.consumeProps(),
           [getState, setState] = c.handleState(initState(getProps(), initialContext))
 
@@ -123,7 +108,6 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
           $state = copyProperties({}, getState()),
           $ctx = copyProperties({}, getContext()),
           update = setState, // TODO!! - force upate!
-          self: any = { props: getProps(), state: getState(), context: initialContext }, 
           render = options.main(c, $props, $state, $ctx, update)
 
         return () => {
@@ -134,7 +118,7 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
 
           copyProperties($props, props, true)
           copyProperties($state, state, true)
-          copyProperties($ctx, ctx, true)
+          copyProperties($ctx, ctx)
 
           return render(props, state, ctx)
         }
@@ -175,7 +159,7 @@ type StatelessConfig<
   validate?(props: P): boolean | null | Error,
   defaultProps?: D,
   context?: C,
-  render(props: P & D): VirtualNode
+  render(props: P & D, ctx: C): VirtualNode
 }
 
 type StatefulConfig<
@@ -204,6 +188,43 @@ function noOp() {
 }
 
 const emptyObject = Object.freeze({})
+
+const getEmptyObject = () => emptyObject
+
+function handleContext(ctxCfg: any, c: Ctrl) {
+  if (!ctxCfg) {
+    return getEmptyObject
+  }
+
+  const
+    ctxArr: any = [],
+    keys = Object.keys(ctxCfg)
+
+  for (let i = 0; i < keys.length; ++i) {
+    const key = keys[i]
+    let getter: Function
+
+    if (typeof ctxCfg[key] === 'function') {
+      getter = ctxCfg[key](c)
+    } else {
+      getter = c.consumeContext(ctxCfg[key])
+    }
+
+    ctxArr.push([key, getter])
+  }
+
+  return () => {
+    const ctx: any = {}
+
+    for (let i = 0; i < ctxArr.length; ++i) {
+      const [key, getter] = ctxArr[i]
+
+      ctx[key] = getter()
+    }
+
+    return ctx
+  }
+}
 
 function copyProperties<T extends object>(
   target: T,
