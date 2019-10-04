@@ -1,3 +1,4 @@
+export * from '../../common/main/index'
 export * from '../../core/main/index'
 export * from '../../handlers/main/index'
 export * from '../../hooks/main/index'

@@ -29,6 +29,7 @@
     ]
   },
   "files": [
+    "src/modules/common/main/index.ts",
     "src/modules/core/main/index.ts",
     "src/modules/handlers/main/index.ts",
     "src/modules/html/main/index.ts",
