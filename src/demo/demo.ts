@@ -1,5 +1,4 @@
-import { component, mount, VirtualElement } from '../modules/core/main/index'
-import { useForceUpdate } from '../modules/hooks/main/index'
+import { component, mount, useForceUpdate, Component, VirtualElement } from '../modules/common/main/index'
 import { div, h4, label, option, select } from '../modules/html/main/index'
 
 import availableDemos from './available-demos'
@@ -10,10 +9,10 @@ type DemoSelectorProps = {
   demos: [string, VirtualElement][]
 }
 
-const DemoSelector = component<DemoSelectorProps>({
+const DemoSelector: Component<DemoSelectorProps> = component({
   displayName: 'DemoSelector',
 
-  init(c) {
+  main(c) {
     let demoIdx = getCurrentDemoIndex()
 
     const forceUpdate = useForceUpdate(c)
@@ -55,7 +54,7 @@ type DemoProps = {
   demos: [string, VirtualElement][]
 }
 
-const Demo = component<DemoProps>({
+const Demo: Component<DemoProps> = component({
   displayName: 'Demo',
 
   render(props) {

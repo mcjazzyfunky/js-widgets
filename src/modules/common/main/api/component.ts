@@ -1,22 +1,40 @@
 import { component as baseComponent, Component, Props, VirtualNode, Ctrl, Context }
   from '../../../core/main/index'
 
-function component<P extends Props, S extends State, D extends P>(
-  config: StatelessConfig<P, S, D>
+function component<
+  P extends Props,
+  D extends Defaults<P>,
+  C extends ContextFields
+>(
+  config: StatelessConfig<P, D, C>
 ): Component<P>
 
-function component<P extends Props, S extends State, D extends P>(
+function component<
+  P extends Props,
+  D extends Defaults<P>,
+  C extends ContextFields
+>(
   displayName: string,
-  config: Omit<StatelessConfig<P, S, D>, 'displayName'>
+  config: Omit<StatelessConfig<P, D, C>, 'displayName'>
 ): Component<P>
 
-function component<P extends Props, S extends State, D extends P, C extends ContextFields>(
-  config: StatefulConfig<P, S, D, C>
+function component<
+  S extends State,
+  P extends Props,
+  D extends Defaults<P>,
+  C extends ContextFields 
+>(
+  config: StatefulConfig<S, P, D, C>
 ): Component<P>
 
-function component<P extends Props, S extends State, D extends P, C extends ContextFields>(
+function component<
+  S extends State,
+  P extends Props,
+  D extends Defaults<P>,
+  C extends ContextFields
+>(
   displayName: string,
-  config: Omit<StatefulConfig<P, S, D, C>, 'displayName'>
+  config: Omit<StatefulConfig<S, P, D, C>, 'displayName'>
 ): Component<P>
 
 function component<P extends Props>(
@@ -151,7 +169,7 @@ type ContextValues<C extends ContextFields> = {
 
 type StatelessConfig<
   P extends Props,
-  D extends Partial<PickOptionalProps<P>>,
+  D extends Defaults<P>,
   C extends ContextFields
  >  = {
   displayName: string,
@@ -163,9 +181,9 @@ type StatelessConfig<
 }
 
 type StatefulConfig<
-  P extends Props,
   S extends State,
-  D extends Partial<PickOptionalProps<P>>,
+  P extends Props,
+  D extends Defaults<P>,
   C extends ContextFields
 >  = {
   displayName: string,
@@ -251,6 +269,8 @@ function copyProperties<T extends object>(
 type PickOptionalProps<T> = Pick<T, {
    [K in keyof T]: T extends Record<K, T[K]> ? never : K
 }[keyof T]>
+
+type Defaults<P extends Props> = Partial<PickOptionalProps<P>>
 
 // --- exports ------------------------------------------------------
 

@@ -1,10 +1,9 @@
-import { h, component, Boundary }  from '../../modules/core/main/index'
-import { useState, useOnUpdate } from '../../modules/hooks/main/index'
+import { h, component, Boundary, useState, useOnUpdate }  from '../../modules/common/main/index'
 
 const ErrorTrigger = component({
   displayName: 'ErrorTrigger',
 
-  init(c) {
+  main(c) {
     const
       [getErrorMsg, setErrorMsg] = useState<string | null>(c, null),
       onButtonClick = () => setErrorMsg('Simulated error!')
@@ -28,7 +27,7 @@ const ErrorTrigger = component({
 const ErrorBoundary = component({
   displayName: 'ErrorBoundary',
 
-  init(c) {
+  main(c, props) {props.x
     const
       [getError, setError] = useState<Error | null>(c, null),
       

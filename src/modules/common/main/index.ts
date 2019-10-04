@@ -14,6 +14,7 @@ export {
 
 export { default as useContext } from './api/useContext'
 export { default as useEffect } from './api/useEffect'
+export { default as useForceUpdate } from './api/useForceUpdate'
 export { default as useInterval } from './api/useInterval'
 export { default as useImperativeHandle } from './api/useImperativeHandle'
 export { default as useMousePosition } from './api/useMousePosition'
