@@ -1,6 +1,5 @@
-import { h, Component, context, Ctrl } from '../../modules/core/main/index'
-import { useEffect, useTime } from '../../modules/hooks/main/index'
-import { component } from '../../modules/common/main/index'
+import { h, component, context, useEffect, Component }
+  from '../../modules/common/main/index'
 
 const LocaleCtx = context({
   displayName: 'LocaleCtx',
@@ -40,16 +39,16 @@ const Counter: Component<CounterProps> = component({
     count: props.initialValue
   }),
 
-  main(c, $props, $state, $ctx, update) {
+  main(c, props, state, ctx, update) {
     const
-      onIncrement = () => update({ count: $state.count + 1 }),
-      onDecrement = () => update({ count: $state.count - 1 })
+      onIncrement = () => update({ count: state.count + 1 }),
+      onDecrement = () => update({ count: state.count - 1 })
 
     useEffect(c, () => {
-      console.log('Updated - count:', $state.count)
+      console.log('Updated - count:', state.count)
     })
 
-    return (props, state, ctx) => (
+    return () => (
       <div>
         <div><HelloWorld/></div>
         <br/>
