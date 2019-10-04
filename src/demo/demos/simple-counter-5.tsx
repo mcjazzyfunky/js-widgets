@@ -11,6 +11,10 @@ type CounterProps = {
   label?: string
 }
 
+function initCounterState(props: CounterProps): CounterState {
+  return { count: props.initialValue! }
+}
+
 type CounterState = {
   count: number
 }
@@ -48,11 +52,10 @@ const Counter: Component<CounterProps> = component({
     locale: LocaleCtx
   },
 
-  initState(props): CounterState {
-    return {
-      count: props.initialValue
-    }
-  },
+  //initState: initCounterState,
+  initState: (props => {
+    return { count: props.initialValue } as CounterState
+  }) as (props: CounterProps) => CounterState,
 
   main(c, props, state, ctx, update) {
     const
