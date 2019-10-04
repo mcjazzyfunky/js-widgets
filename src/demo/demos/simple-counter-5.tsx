@@ -1,4 +1,4 @@
-import { h, component, context, useEffect }
+import { h, component, context, useEffect, Component }
   from '../../modules/common/main/index'
 
 const LocaleCtx = context({
@@ -15,7 +15,7 @@ function initCounterState(props: CounterProps) {
   return { count: props.initialValue! }
 }
 
-const Counter = component({
+const Counter: Component<CounterProps> = component({
   displayName: 'Counter',
 
   defaultProps: {
