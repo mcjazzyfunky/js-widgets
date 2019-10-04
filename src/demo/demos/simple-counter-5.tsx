@@ -11,21 +11,8 @@ type CounterProps = {
   label?: string
 }
 
-function initCounterState(props: CounterProps): CounterState {
+function initCounterState(props: CounterProps) {
   return { count: props.initialValue! }
-}
-
-type CounterState = {
-  count: number
-}
-
-type CounterDefaults = {
-  initialValue: number,
-  label: string
-}
-
-type CounterContext = {
-  locale: typeof LocaleCtx
 }
 
 const HelloWorld = component({
