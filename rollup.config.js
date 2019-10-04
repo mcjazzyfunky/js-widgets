@@ -64,11 +64,14 @@ function createConfig(pkg, moduleFormat, productive) {
           "'../../../core/main/index'": "'js-widgets'",
           "'../../../../core/main/index'": "'js-widgets'",
           "'../../../../../core/main/index'": "'js-widgets'",
+
+          /*
           "'../util/main/index'": "'js-widgets/util'",
           "'../../util/main/index'": "'js-widgets/util'",
           "'../../../util/main/index'": "'js-widgets/util'",
           "'../../../../util/main/index'": "'js-widgets/util'",
           "'../../../../../util/main/index'": "'js-widgets/util'",
+          */
         }
       }),
       typescript({

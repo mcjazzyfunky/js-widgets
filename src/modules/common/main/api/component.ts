@@ -130,7 +130,17 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
           $props = copyProperties({}, getProps()),
           $state = copyProperties({}, getState()),
           $ctx = copyProperties({}, getContext()),
-          update = setState, // TODO!! - force upate!
+          
+          update = (updater: any) => {
+            if (updater === undefined) {
+              setState((state: any) => ({ ...state }))
+            } else if (typeof updater === 'function') {
+              setState((s: any) => Object.assign({}, s, updater(s)))
+            } else {
+              setState((s: any) => Object.assign({}, s, updater))
+            }
+          },
+          
           render = options.main(c, $props, $state, $ctx, update)
 
         return () => {
