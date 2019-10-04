@@ -2,39 +2,39 @@ import { component as baseComponent, Component, Props, VirtualNode, Ctrl, Contex
   from '../../../core/main/index'
 
 function component<
-  P extends Props,
-  D extends Defaults<P>,
-  C extends ContextFields
+  P extends Props = {},
+  D extends Defaults<P> = {},
+  C extends ContextFields = {}
 >(
   config: StatelessConfig<P, D, C>
 ): Component<P>
 
 function component<
-  P extends Props,
-  D extends Defaults<P>,
-  C extends ContextFields
+  P extends Props = {},
+  D extends Defaults<P> = {},
+  C extends ContextFields = {}
 >(
   displayName: string,
   config: Omit<StatelessConfig<P, D, C>, 'displayName'>
 ): Component<P>
 
 function component<
-  S extends State,
-  P extends Props,
-  D extends Defaults<P>,
-  C extends ContextFields 
+  P extends Props = {},
+  D extends Defaults<P> = {},
+  S extends State = {},
+  C extends ContextFields = {} 
 >(
-  config: StatefulConfig<S, P, D, C>
+  config: StatefulConfig<P, D, S, C>
 ): Component<P>
 
 function component<
-  S extends State,
-  P extends Props,
-  D extends Defaults<P>,
-  C extends ContextFields
+  P extends Props = {},
+  D extends Defaults<P> = {},
+  S extends State = {},
+  C extends ContextFields = {}
 >(
   displayName: string,
-  config: Omit<StatefulConfig<S, P, D, C>, 'displayName'>
+  config: Omit<StatefulConfig<P, D, S, C>, 'displayName'>
 ): Component<P>
 
 function component<P extends Props>(
@@ -119,7 +119,12 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
         const
           initialContext = getContext(),
           getProps = c.consumeProps(),
-          [getState, setState] = c.handleState(initState(getProps(), initialContext))
+
+          initialState = typeof initState === 'function'
+            ? initState(getProps(), initialContext)
+            : initState,
+
+          [getState, setState] = c.handleState(initialState)
 
         const 
           $props = copyProperties({}, getProps()),
@@ -181,9 +186,9 @@ type StatelessConfig<
 }
 
 type StatefulConfig<
-  S extends State,
   P extends Props,
   D extends Defaults<P>,
+  S extends State,
   C extends ContextFields
 >  = {
   displayName: string,
@@ -191,7 +196,7 @@ type StatefulConfig<
   validate?(props: P): boolean | null | Error,
   defaultProps?: D
   context?: C,
-  initState?(props: P & D, context: ContextValues<C>): S,
+  initState?: S | ((props: P & D, context: ContextValues<C>) => S),
   
   main(
     c: Ctrl<P & D>,

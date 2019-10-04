@@ -27,7 +27,7 @@ const ErrorTrigger = component({
 const ErrorBoundary = component({
   displayName: 'ErrorBoundary',
 
-  main(c, props) {props.x
+  main(c) {
     const
       [getError, setError] = useState<Error | null>(c, null),
       

@@ -52,10 +52,7 @@ const Counter: Component<CounterProps> = component({
     locale: LocaleCtx
   },
 
-  //initState: initCounterState,
-  initState: (props => {
-    return { count: props.initialValue } as CounterState
-  }) as (props: CounterProps) => CounterState,
+  initState: initCounterState,
 
   main(c, props, state, ctx, update) {
     const
