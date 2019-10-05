@@ -4,7 +4,7 @@ import { h, component }
   from '../../modules/core/main/index'
 
 import { useEffect, useState }
-  from '../../modules/hooks/main/index'
+  from '../../modules/root/main/index'
 
 const
   d = createElement,

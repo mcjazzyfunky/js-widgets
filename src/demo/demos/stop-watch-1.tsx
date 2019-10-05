@@ -1,5 +1,5 @@
 import { h, component } from '../../modules/core/main/index'
-import { useOnUnmount, useState } from '../../modules/hooks/main/index'
+import { useOnUnmount, useState } from '../../modules/root/main/index'
 
 const StopWatch = component({
   displayName: 'StopWatch',

@@ -1,5 +1,5 @@
 import { h, component, Ctrl } from '../../modules/core/main/index'
-import { useTime } from '../../modules/hooks/main/index'
+import { useTime } from '../../modules/root/main/index'
 
 const Clock = component({
   displayName: 'Clock',

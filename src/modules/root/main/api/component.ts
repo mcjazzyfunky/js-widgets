@@ -4,7 +4,7 @@ import { component as baseComponent, Component, Props, VirtualNode, Ctrl, Contex
 function component<
   P extends Props = {},
   D extends Defaults<P> = {},
-  C extends ContextFields = {}
+  C extends CtxFields = {}
 >(
   config: StatelessConfig<P, D, C>
 ): Component<P>
@@ -12,7 +12,7 @@ function component<
 function component<
   P extends Props = {},
   D extends Defaults<P> = {},
-  C extends ContextFields = {}
+  C extends CtxFields = {}
 >(
   displayName: string,
   config: Omit<StatelessConfig<P, D, C>, 'displayName'>
@@ -22,7 +22,7 @@ function component<
   P extends Props = {},
   D extends Defaults<P> = {},
   S extends State = {},
-  C extends ContextFields = {} 
+  C extends CtxFields = {} 
 >(
   config: StatefulConfig<P, D, S, C>
 ): Component<P>
@@ -31,7 +31,7 @@ function component<
   P extends Props = {},
   D extends Defaults<P> = {},
   S extends State = {},
-  C extends ContextFields = {}
+  C extends CtxFields = {}
 >(
   displayName: string,
   config: Omit<StatefulConfig<P, D, S, C>, 'displayName'>
@@ -75,19 +75,19 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
   } else if (arg1.render) {
     config = Object.assign({}, arg1)
     
-    if (config.context) {
+    if (config.ctx) {
       const
         render = config.render,
-        ctxCfg = config.context
+        ctxCfg = config.ctx
 
       config.init = (c: Ctrl) => {
-        const getContext = handleContext(ctxCfg, c)
+        const getContext = handleCtx(ctxCfg, c)
         // TODO - default props
         return (props: P) => render(props, getContext())
       }
 
       delete config.render
-      delete config.context
+      delete config.ctx
     }
   } else {
     const
@@ -96,7 +96,7 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
 
       defaultProps = options.defaultProps || {},
       initState = options.initState || (() => ({})),
-      ctxCfg = options.context,
+      ctxCfg = options.ctx,
 
       init = (rawC: Ctrl<any>) => {
         let c = rawC
@@ -113,15 +113,15 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
           }
         }
 
-        const getContext = handleContext(ctxCfg, c)
+        const getCtx = handleCtx(ctxCfg, c)
         
         // TODO !!!!!
         const
-          initialContext = getContext(),
+          initialCtx = getCtx(),
           getProps = c.consumeProps(),
 
           initialState = typeof initState === 'function'
-            ? initState(getProps(), initialContext)
+            ? initState(getProps(), initialCtx)
             : initState,
 
           [getState, setState] = c.handleState(initialState)
@@ -129,7 +129,7 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
         const 
           $props = copyProperties({}, getProps()),
           $state = copyProperties({}, getState()),
-          $ctx = copyProperties({}, getContext()),
+          $ctx = copyProperties({}, getCtx()),
           
           update = (updater: any) => {
             if (updater === undefined) {
@@ -141,13 +141,19 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
             }
           },
           
-          render = options.main(c, $props, $state, $ctx, update)
+          render = options.main({
+            c,
+            props: $props,
+            state: $state,
+            ctx: $ctx,
+            update
+          })
 
         return () => {
           const
             props = getProps(),
             state = getState(),
-            ctx = getContext()
+            ctx = getCtx()
 
           copyProperties($props, props, true)
           copyProperties($state, state, true)
@@ -159,7 +165,7 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
 
     config = { ...options, init }
     delete config.defaultProps
-    delete config.context
+    delete config.ctx
     delete config.initState
     delete config.main
   }
@@ -171,10 +177,10 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
 
 type State = Record<string, any>
 
-type ContextFields =
+type CtxFields =
   Record<string, Context<any> | ((c: Ctrl) => () => any)>
 
-type ContextValues<C extends ContextFields> = {
+type CtxValues<C extends CtxFields> = {
   [K in keyof C]: C[K] extends Context<infer T>
     ? T
     : C[K] extends ((c: Ctrl) => () => infer T)
@@ -185,13 +191,13 @@ type ContextValues<C extends ContextFields> = {
 type StatelessConfig<
   P extends Props,
   D extends Defaults<P>,
-  C extends ContextFields
+  C extends CtxFields
  >  = {
   displayName: string,
   memoize?: boolean,
   validate?(props: P): boolean | null | Error,
   defaultProps?: D,
-  context?: C,
+  ctx?: C,
   render(props: P & D, ctx: C): VirtualNode
 }
 
@@ -199,22 +205,22 @@ type StatefulConfig<
   P extends Props,
   D extends Defaults<P>,
   S extends State,
-  C extends ContextFields
+  C extends CtxFields
 >  = {
   displayName: string,
   memoize?: boolean,
   validate?(props: P): boolean | null | Error,
   defaultProps?: D
-  context?: C,
-  initState?: S | ((props: P & D, context: ContextValues<C>) => S),
+  ctx?: C,
+  initState?: S | ((props: P & D, ctx: CtxValues<C>) => S),
   
-  main(
+  main(params: {
     c: Ctrl<P & D>,
     props: P & D,
     state: S,
-    context: ContextValues<C>,
-    update: (updater: Partial<S> | ((s: S) => Partial<S>)) => void
-  ): (props: P, state: S, ctx: ContextValues<C>) => VirtualNode
+    ctx: CtxValues<C>,
+    update: (updater?: Partial<S> | ((s: S) => Partial<S>)) => void
+  }): (props: P, state: S, ctx: CtxValues<C>) => VirtualNode
 }
 
 function noOp() {
@@ -224,7 +230,7 @@ const emptyObject = Object.freeze({})
 
 const getEmptyObject = () => emptyObject
 
-function handleContext(ctxCfg: any, c: Ctrl) {
+function handleCtx(ctxCfg: any, c: Ctrl) {
   if (!ctxCfg) {
     return getEmptyObject
   }

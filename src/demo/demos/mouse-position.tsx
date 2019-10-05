@@ -1,5 +1,5 @@
 import { h, component } from '../../modules/core/main/index'
-import { useMousePosition } from '../../modules/hooks/main/index'
+import { useMousePosition } from '../../modules/root/main/index'
 
 const Demo = component({
   displayName: 'Demo',

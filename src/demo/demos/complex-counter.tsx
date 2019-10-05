@@ -1,5 +1,5 @@
-import { h, component, Ref } from '../../modules/core/main/index'
-import { useMethods, useProps, useState } from '../../modules/hooks/main/index'
+import { h, component, useImperativeHandle, Component, Ref }
+  from '../../modules/root/main/index'
 
 type CounterProps = {
   label?: string,
@@ -7,32 +7,34 @@ type CounterProps = {
   ref?: Ref<{ reset(n: number): void }>
 }
 
-const Counter = component<CounterProps>({
+const Counter: Component<CounterProps> = component({
   displayName: 'Counter',
   memoize: true,
 
-  init(c) {
+  defaultProps: {
+    label: 'Counter'
+  },
+
+  initState: {
+    count: 0
+  },
+
+  main({ c, props, state, update }) {
     const
-      getProps = useProps(c, {
-        label: 'Counter',
-        initialValue: 0
-      }),
+      onIncrement = () => update({ count: state.count + 1 }),
+      onDecrement = () => update({ count: state.count - 1})
 
-      [getCount, setCount] = useState(c, getProps().initialValue),
-      onIncrement = () => setCount(it => it + 1),
-      onDecrement = () => setCount(it => it - 1)
-
-    useMethods(c, getProps().ref, {
-      reset(n: number) {
-        setCount(n)
+    useImperativeHandle(c, props.ref, {
+      reset(n: number = 0) {
+        update({ count: n })
       }
     })
 
     return () => (
       <div>
-        <label>{getProps().label}: </label>
+        <label>{props.label}: </label>
         <button onClick={onDecrement}>-</button>
-        {` ${getCount()} `}
+        {` ${state.count} `}
         <button onClick={onIncrement}>+</button>
       </div>
     )
@@ -42,7 +44,7 @@ const Counter = component<CounterProps>({
 const Demo = component({
   displayName: 'Demo',
 
-  init(c) {
+  main() {
     const
       counterRef = { current: null } as any, // TODO
       onResetTo0 = () => counterRef.current.reset(0),

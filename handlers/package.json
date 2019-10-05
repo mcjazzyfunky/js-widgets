@@ -1,5 +1,0 @@
-{
-  "name": "js-widgets.handlers",
-  "typings": "../dist/types/handlers/main/index.d.ts",
-  "main": "./index.js"
-}

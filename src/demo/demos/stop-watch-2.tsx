@@ -1,77 +1,62 @@
-import { h,  component } from '../../modules/core/main/index'
-import { useEffect, useProps, useOnMount, useStateObject } from '../../modules/hooks/main/index'
-import { wrap } from '../../modules/tools/main/index'
+import { h, component, useEffect, Component } from '../../modules/root/main/index'
 
 type StopWatchProps = {
   name?: string
 }
 
-const StopWatch = component<StopWatchProps>({
+const StopWatch: Component<StopWatchProps> = component({
   displayName: 'StopWatch',
-  
-  init(c) {
-    let startTime = 0
 
+  defaultProps: {
+    name: 'Stop Watch'
+  },
+
+  initState: {
+    startTime: 0,
+    duration: 0,
+    running: false
+  },
+
+  main({ c, props, state, update }) {
     const
-      [getState, setState] = useStateObject(c, {
-        time: 0,
-        running: false
-      }),
+      onStartStop = () => {
+        if (!state.running) {
+          update({ running: true, startTime: Date.now() - state.duration })
+        } else {
+          update({ running: false })
+        }
+      },
 
-      [v, use] = wrap({
-        props: useProps(c, { name: 'StopWatch' }),
-        state: getState
-      })
-
-    useOnMount(c, () => {
-      console.log(`${v.props.name} has been mounted`)
-
-      return () => {
-        reset()
-        console.log(`${v.props.name} will be unmounted`)
-      }
-    })
-
-    function startStop() {
-      setState({ running: !v.state.running })
-    }
-
-    function reset() {
-      startTime = 0
-      setState({ running: false, time: 0 })
-    }
+      onReset = () => update({ running: false, duration: 0, startTime: 0 })
 
     useEffect(c, () => {
-      if (v.state.running) {
-        startTime = Date.now() - v.state.time
-
-        console.log(`Starting "${v.props.name}"`)
+      if (state.running) {
+        console.log(`Starting "${props.name}"`)
 
         const interval = setInterval(() => {
-          if (v.state.running) {
-            setState({ time: Date.now() - startTime })
+          if (state.running) {
+            update({ duration: Date.now() - state.startTime })
           }
         }, 10)
 
         return () => {
-          console.log(`Stopping "${v.props.name}"`)
+          console.log(`Stopping "${props.name}"`)
           clearInterval(interval)
         }
       }
-    }, () => [v.state.running])
+    }, () => [state.running])
 
-    return use(({ props, state }) =>
+    return () =>
       <div>
         <h4>{props.name}</h4>
-        <div>Time: {state.time}</div>
-        <button onClick={startStop}>
+        <div>Duration: {state.duration}</div>
+        <button onClick={onStartStop}>
           { state.running ? 'Stop' : 'Start' }
         </button>
-        <button onClick={reset}>
+        <button onClick={onReset}>
           Reset
         </button>
       </div>
-    )
   }
 })
 

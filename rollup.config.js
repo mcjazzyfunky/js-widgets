@@ -9,7 +9,7 @@ import gzip from 'rollup-plugin-gzip'
 
 const configs = []
 
-for (const pkg of ['all', 'common', 'core', 'handlers', 'html', 'hooks', 'svg', 'tools', 'util', 'patterns']) {
+for (const pkg of [/*'all', */'root', 'core', 'html', 'svg', 'util']) {
   for (const format of ['umd', 'cjs', 'amd', 'esm']) {
     for (const productive of [false, true]) {
       configs.push(createConfig(pkg, format, productive))
@@ -33,18 +33,23 @@ function createConfig(pkg, moduleFormat, productive) {
       format: moduleFormat,
       sourcemap: false, // productive ? false : 'inline', // TODO
 
-      name: pkg === 'core' || pkg === 'all'
+      name: pkg === 'root' || pkg === 'all'
         ? 'jsWidgets'
-        : `jsWidgets${pkg[0].toUpperCase() + pkg.substr(1)}`,
+        : `jsWidgets.${pkg}`,
 
       globals: {
         'dyo': 'dyo',
         'js-spec': 'jsSpec',
-        'js-widgets': 'jsWidgets'
+        'js-widgets': 'jsWidgets',
+        'js-widgets/core': 'jsWidgets.core',
+        'js-widgets/util': 'jsWidgets.util',
       }
     },
 
-    external: pkg === 'all' ? ['js-widgets'] : ['js-spec', 'js-widgets'],
+    external:
+       pkg === 'all'
+         ? ['js-widgets']
+         : ['js-spec', 'js-widgets', 'js-widgets/core', 'js-widgets/util'],
 
     plugins: [
       resolve(),
@@ -59,19 +64,17 @@ function createConfig(pkg, moduleFormat, productive) {
           'process.env.NODE_ENV': productive ? "'production'" : "'development'",
         } : {
           'process.env.NODE_ENV': productive ? "'production'" : "'development'",
-          "'../core/main/index'": "'js-widgets'",
-          "'../../core/main/index'": "'js-widgets'",
-          "'../../../core/main/index'": "'js-widgets'",
-          "'../../../../core/main/index'": "'js-widgets'",
-          "'../../../../../core/main/index'": "'js-widgets'",
+          "'../core/main/index'": "'js-widgets/core'",
+          "'../../core/main/index'": "'js-widgets/core'",
+          "'../../../core/main/index'": "'js-widgets/core'",
+          "'../../../../core/main/index'": "'js-widgets/core'",
+          "'../../../../../core/main/index'": "'js-widgets/core'",
 
-          /*
           "'../util/main/index'": "'js-widgets/util'",
           "'../../util/main/index'": "'js-widgets/util'",
           "'../../../util/main/index'": "'js-widgets/util'",
           "'../../../../util/main/index'": "'js-widgets/util'",
           "'../../../../../util/main/index'": "'js-widgets/util'",
-          */
         }
       }),
       typescript({

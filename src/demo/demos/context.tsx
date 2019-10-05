@@ -1,5 +1,5 @@
 import { h, context, component } from '../../modules/core/main/index'
-import { useState, useOnMount } from '../../modules/hooks/main/index'
+import { useState, useOnMount } from '../../modules/root/main/index'
 
 const CounterCtx = context({
   displayName: 'CounterCtx',

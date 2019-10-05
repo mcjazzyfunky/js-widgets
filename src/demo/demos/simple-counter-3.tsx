@@ -1,83 +1,54 @@
-import { h, component } from '../../modules/core/main/index'
-import { useOnMount, useOnUpdate, usePropsProxy } from '../../modules/hooks/main/index'
-import { consume, componentActions, toProxy } from '../../modules/tools/main/index'
-import { Spec } from 'js-spec'
+import { h, component, context, useEffect, Component }
+  from '../../modules/root/main/index'
+
+const LocaleCtx = context({
+  displayName: 'LocaleCtx',
+  defaultValue: 'en'
+})
 
 type CounterProps = {
   initialValue?: number,
   label?: string
 }
 
-type CounterState = {
-  count: number
+function initCounterState(props: CounterProps) {
+  return { count: props.initialValue! }
 }
 
-function initCounterState(initialValue: number): CounterState {
-  return { count: initialValue }
-}
-
-const useCounterActions = componentActions((state, setState) => {
-  return {
-    incrementCount() {
-      setState({ count: state.count + 1 })
-    },
-
-    decrementCount() {
-      setState({ count: state.count - 1 })
-    }
-  }
-}, initCounterState)
-
-const Counter = component<CounterProps>({
+const Counter: Component<CounterProps> = component({
   displayName: 'Counter',
-  memoize: true,
 
-  validate: Spec.checkProps({
-    optional: {
-      initialValue: Spec.integer,
-      label: Spec.string
-    }
-  }),
+  defaultProps: {
+    initialValue: 0,
+    label: 'Counter'
+  },
 
-  init(c) {
+  ctx: {
+    locale: LocaleCtx
+  },
+
+  initState: initCounterState,
+
+  main({ c, props, state, ctx, update }) {
     const
-      [props, getProps] = usePropsProxy(c, {
-        initialValue: 0,
-        label: 'Counter'
-      }),
+      onIncrement = () => update({ count: state.count + 1 }),
+      onDecrement = () => update({ count: state.count - 1 })
 
-      [actions, getState] = useCounterActions(c, props.initialValue),
-      state = toProxy(getState),
-      use = consume(getProps, getState),
-
-      onIncrement = () => actions.incrementCount(),
-      onDecrement = () => actions.decrementCount()
-
-    useOnMount(c, () => {
-      console.log('Component has been mounted')
-
-      return () => console.log('Component will be unmounted')
+    useEffect(c, () => {
+      console.log('Updated - count:', state.count)
     })
 
-    useOnUpdate(c, ()=> {
-      console.log(`Component has been rendered - ${props.label}: ${state.count}`)
-    })
-
-    return use((props, state) => {
-      return (
-        <div>
-          <label>{props.label}: </label> 
-          <button onClick={onDecrement}>
-            -
-          </button>
-          <span> {state.count} </span>
-          <button onClick={onIncrement}>
-            +
-          </button>
-        </div>
-      )
-    })
+    return () => (
+      <div>
+        <div>Locale: {ctx.locale}</div>
+        <br/>
+        <label>{props.label}: </label>
+        <button onClick={onDecrement}>-</button>
+        <span> {state.count} </span>
+        <button onClick={onIncrement}>+</button>
+      </div>
+    )
   }
 })
 
-export default <Counter/> 
+export default <Counter/>

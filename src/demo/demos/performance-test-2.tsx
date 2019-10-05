@@ -1,8 +1,5 @@
-import { h, component, VirtualElement }
-  from '../../modules/core/main/index'
-
-  import { useOnMount, useForceUpdate, useProps }
-  from '../../modules/hooks/main/index'
+import { h, component, useOnMount, Component, VirtualElement }
+  from '../../modules/root/main/index'
 
 const prefs = {
   framesPerSecond: 240,
@@ -44,7 +41,7 @@ type TypeRowProps = {
   colors?: string[],
 }
 
-const TileRow = component<TypeRowProps>({
+const TileRow: Component<TypeRowProps> = component({
   displayName: 'TileRow',
 
   render({
@@ -73,10 +70,17 @@ type SpeedTestProps = {
   framesPerSecond?: number
 }
 
-const SpeedTest = component<SpeedTestProps>({
+const SpeedTest: Component<SpeedTestProps> = component({
   displayName: 'SpeedTest',
   
-  init(c) {
+  defaultProps: {
+    tileWidth: 3,
+    rowCount: prefs.rowCount,
+    columnCount: prefs.columnCount,
+    framesPerSecond: prefs.framesPerSecond
+  },
+
+  main({ c, props, update }) {
     let 
       intervalId = null as any,
       startTime = Date.now(),
@@ -84,15 +88,6 @@ const SpeedTest = component<SpeedTestProps>({
       actualFramesPerSecond = '0'
 
     const
-      getProps = useProps(c, {
-        tileWidth: 3,
-        rowCount: prefs.rowCount,
-        columnCount: prefs.columnCount,
-        framesPerSecond: prefs.framesPerSecond
-      }),
-
-      forceUpdate = useForceUpdate(c),
-
       style = {
         marginTop: 40,
         marginLeft: 40
@@ -101,14 +96,15 @@ const SpeedTest = component<SpeedTestProps>({
     useOnMount(c, () => {
       intervalId = setInterval(() => {
         ++frameCount
-        forceUpdate()
 
         if (frameCount % 10 === 0) {
           actualFramesPerSecond =
             (frameCount * 1000.0 /
               (Date.now() - startTime)).toFixed(2)
         }
-      }, 1000 / getProps().framesPerSecond)
+
+        update()
+      }, 1000 / props.framesPerSecond)
 
       return () => clearInterval(intervalId)
     })
@@ -116,7 +112,6 @@ const SpeedTest = component<SpeedTestProps>({
   
     return () => {
       const
-        props = getProps(),
         rows: VirtualElement[] = []
       
       for (let y = 0; y < props.rowCount; ++y) {

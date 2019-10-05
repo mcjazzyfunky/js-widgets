@@ -1,5 +1,0 @@
-{
-  "name": "js-widgets.patterns",
-  "typings": "../dist/types/patterns/main/index.d.ts",
-  "main": "./index.js"
-}
