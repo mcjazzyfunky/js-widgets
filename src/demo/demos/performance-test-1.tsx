@@ -1,9 +1,6 @@
 import { createElement } from 'dyo'
 
-import { h, component }
-  from '../../modules/core/main/index'
-
-import { useEffect, useState }
+import { h, component, useEffect, useState }
   from '../../modules/root/main/index'
 
 const
@@ -90,22 +87,27 @@ function runTests() {
 const PerformanceTest = component({
   displayName: 'PerformanceTest',
 
-  init(c) {
+  initState: {
+    running: false,
+    result: ''
+  },
+
+  main({ c, state, update }) {
     const
-      [getResult, setResult] = useState(c, ''),
-      [getRunning, setRunning] = useState(c, false),
       onStart = () => startTest()
 
     function startTest() {
-      setRunning(true)
+      update({ running: true })
     }
 
     useEffect(c, () => {
-      if (getRunning()) {
+      if (state.running) {
         const result = runTests()
-        
-        setRunning(false)
-        setResult(result)
+       
+        update({
+          running: false,
+          result
+        })
       }
     })
 
@@ -113,11 +115,11 @@ const PerformanceTest = component({
       <div> 
         <h4>Measuring time to build virtual dom trees</h4>
         { 
-          !getRunning()
+          !state.running
             ? <div>
-                <Report result={getResult()}/> 
+                <Report result={state.result}/> 
                 <button onClick={onStart}>
-                  { getResult() === '' ? 'Start tests' : 'Restart tests' }
+                  { state.result === '' ? 'Start tests' : 'Restart tests' }
                 </button>
               </div>
             : <div>Running performance test - please wait...</div>

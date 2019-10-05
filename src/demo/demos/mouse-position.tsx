@@ -1,10 +1,9 @@
-import { h, component } from '../../modules/core/main/index'
-import { useMousePosition } from '../../modules/root/main/index'
+import { h, component, useMousePosition } from '../../modules/root/main/index'
 
 const Demo = component({
   displayName: 'Demo',
 
-  init(c) {
+  main({ c }) {
     const getMousePosition = useMousePosition(c)
 
     return () => {

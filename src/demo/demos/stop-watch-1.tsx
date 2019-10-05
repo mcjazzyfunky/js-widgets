@@ -1,18 +1,17 @@
-import { h, component } from '../../modules/core/main/index'
-import { useOnUnmount, useState } from '../../modules/root/main/index'
+import { h, component, useOnUnmount } from '../../modules/root/main/index'
 
-const StopWatch = component({
-  displayName: 'StopWatch',
+const StopWatch = component('Stop watch', {
+  initState: {
+    time: 0,
+    running: false
+  },
 
-  init(c) {
+  main({ c, state, update }) {
     let interval = 0
 
     const
-      [getTime, setTime] = useState(c, 0),
-      [isRunning, setRunning] = useState(c, false),
-
       onStartStop = () => {
-        if (isRunning()) {
+        if (state.running) {
           stopTimer()
         } else {
           startTimer()
@@ -24,35 +23,35 @@ const StopWatch = component({
     useOnUnmount(c, () => stopTimer())
     
     function startTimer() {
-      if (!isRunning()) {
-        const startTime = Date.now() - getTime() 
+      if (!state.running) {
+        const startTime = Date.now() - state.time
 
         interval = window.setInterval(() => {
-          setTime(Date.now() - startTime)
+          update({ time: Date.now() - startTime })
         }, 10)
 
-        setRunning(true)
+        update({ running: true })
       }
     }
 
     function stopTimer() {
-      if (isRunning()) {
+      if (state.running) {
         clearInterval(interval)
         interval = 0
-        setRunning(false)
+        update({ running: false })
       }
     }
 
     function resetTimer() {
       stopTimer()
-      setTime(0)
+      update({ time: 0 })
     }
 
     return () =>
       <div>
-        <div>Time: {getTime()}</div>
+        <div>Time: {state.time}</div>
         <button onClick={onStartStop}>
-          { isRunning() ? 'Stop' : 'Start'}
+          { state.running ? 'Stop' : 'Start'}
         </button>
         <button onClick={onReset}>
           Reset

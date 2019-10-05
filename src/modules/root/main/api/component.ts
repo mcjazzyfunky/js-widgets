@@ -42,7 +42,23 @@ function component<P extends Props>(
   render: (props: P) => VirtualNode
 ): Component<P>
 
+function component<P extends Props = {}>(
+  config: BaseStatefulComponentConfig<P>
+): Component<P>
+
+function component<P extends Props = {}>(
+  displayName: string,
+  config: Omit<BaseStatefulComponentConfig<P>, 'displayName'>
+): Component<P>
+
+
 function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
+  if (arg1 && typeof arg1 === 'object' && arg1.init
+    || typeof arg1 === 'string' && arg2 && arg2.init) {
+
+    return baseComponent(arg1, arg2)
+  }
+
   if (process.env.NODE_ENV === 'development' as any) {
     let errorMsg = ''
 
@@ -221,6 +237,13 @@ type StatefulConfig<
     ctx: CtxValues<C>,
     update: (updater?: Partial<S> | ((s: S) => Partial<S>)) => void
   }): (props: P, state: S, ctx: CtxValues<C>) => VirtualNode
+}
+
+type BaseStatefulComponentConfig<P extends Props = {}> = {
+  displayName: string,
+  memoize?: boolean,
+  validate?: ((props: P) => boolean | null | Error) | null,
+  init: (c: Ctrl<P>) => (props: P) => VirtualNode,
 }
 
 function noOp() {
