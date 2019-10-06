@@ -66,6 +66,18 @@ function h(/* arguments */): any {
     arguments[0] = internalType
   }
 
+  // TODO - aweful and not fully working and hoepefully not needed any longer
+  // soon
+  for (let i = 2; i < arguments.length; ++i) {
+    const arg = arguments[i]
+
+    if (arg && typeof arg === 'object' && arg.valueOf
+      && !Array.isArray(arg) && !arg[SymbolIterator]) {
+
+        arguments[i] = arg.valueOf()
+    }
+  }
+
   return createElement.apply(null, arguments as any)
 }
 
@@ -93,5 +105,7 @@ function isIterable(it: any) {
   return it && typeof it === 'object'
     && (Array.isArray(it) || typeof it[Symbol.iterator] === 'function')
 }
+
+const SymbolIterator = typeof Symbol === 'function' ? Symbol.iterator : '@@iterator'
 
 export default h

@@ -19,8 +19,8 @@ const Demo = component('Demo', {
 
     return () => 
       <div>
-        <h1>Counter: {$count.value}</h1>
-        <h4>Delay: {$delay.value}</h4>
+        <h1>Counter: {$count}</h1>
+        <h4>Delay: {$delay}</h4>
         <button onClick={onReset}>
           Reset delay
         </button>
