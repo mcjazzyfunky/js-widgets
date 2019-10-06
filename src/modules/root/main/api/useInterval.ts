@@ -1,30 +1,24 @@
 import { Ctrl } from '../../../core/main/index'
 
-import useOnMount from './useOnMount'
 import useEffect from './useEffect'
+import px from './px'
+import Var from './types/Var'
 
-function useInterval(c: Ctrl, action: () => void, delay: number | (() => number) = 1000) {
-  if (typeof delay === 'number') {
-    useOnMount(c, () => {
-      const id = setInterval(() => {
-        action()
-      }, delay)
-      
-      return () => clearInterval(id)
-    })
-  } else if (typeof delay === 'function') {   
-    useEffect(c, () => {
-      const
-        id = setInterval(() => {
-          action()
-        }, delay())
-      
-      return () => clearInterval(id)
-    }, () => [delay()])
-  } else {
-    throw new TypeError(
-      '[useTime] Third argument must either be a number or a function')
-  }
+function useInterval(
+  c: Ctrl,
+  _callback: Var<() => void>,
+  _delay: Var<number>
+) {
+  const
+    $callback = px.toValue(_callback),
+    $delay = px.toValue(_delay)
+  
+  useEffect(c, () => {
+    let id = setInterval($callback.value, $delay.value)
+
+    return () => clearInterval(id)
+  }, () => [$callback.value, $delay.value])
 }
+
 
 export default useInterval

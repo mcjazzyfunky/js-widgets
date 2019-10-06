@@ -4,15 +4,13 @@ const Demo = component({
   displayName: 'Demo',
 
   main({ c }) {
-    const getMousePosition = useMousePosition(c)
+    const [$mouseX, $mouseY] = useMousePosition(c)
 
     return () => {
-      const mousePosition = getMousePosition()
-
-      return !mousePosition
+      return $mouseX.value === -1
         ? <div>Please move mouse ...</div>
         : <div>
-            Current mouse position: {mousePosition.x}x{mousePosition.y}
+            Current mouse position: {$mouseX.value}x{$mouseY.value}
           </div>
     }
   }

@@ -1,4 +1,5 @@
 import { Ctrl } from '../../../core/main/index'
+import px from './px'
 import useEffect from './useEffect'
 
 export default function usePrevious<T>(c: Ctrl, getCurrent: () => T | undefined) {
@@ -11,5 +12,5 @@ export default function usePrevious<T>(c: Ctrl, getCurrent: () => T | undefined)
     current = getCurrent()
   })
 
-  return () => previous
+  return px.bindValue(() => previous) 
 }

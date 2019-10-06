@@ -1,11 +1,14 @@
 import { Ctrl, Props } from '../../../core/main/index'
+import px from './px'
 
-type Updater<T> = T | ((oldState: T) => T)
+type Updater<T> = T | ((oldValue: T) => T)
 
 function useState<T>(c: Ctrl, initialValue: T):
-  [() => T, (updater: Updater<T>) => void] {
+  [{ value: T }, (updater: Updater<T>) => void, () => T] {
 
-  return c.handleState(initialValue)
+  const [get, set] = c.handleState(initialValue)
+  
+  return [px.bindValue(get), set, get]
 }
 
 export default useState

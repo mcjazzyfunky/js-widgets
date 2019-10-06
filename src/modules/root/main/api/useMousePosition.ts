@@ -9,15 +9,14 @@ type MousePosition = {
 } | null
 
 export default function useMousePosition(c: Ctrl) {
-  const [getMousePos, setMousePos] = useState(c, null as MousePosition)
+  const
+    [$mouseX, setMouseX] = useState(c, -1),
+    [$mouseY, setMouseY] = useState(c, -1)
 
   useOnMount(c, () => {
     const listener = (ev: any) => {
-      const
-        x = ev.pageX,
-        y = ev.pageY
-
-      setMousePos({ x, y })
+      setMouseX(ev.pageX)
+      setMouseY(ev.pageY)
     }
 
     window.addEventListener('mousemove', listener)
@@ -27,5 +26,5 @@ export default function useMousePosition(c: Ctrl) {
     }
   })
 
-  return getMousePos
+  return [$mouseX, $mouseY]
 }
