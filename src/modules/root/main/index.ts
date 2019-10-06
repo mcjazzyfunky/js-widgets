@@ -13,6 +13,9 @@ export {
   Component, Context, Ctrl, Key, Props, Ref, VirtualElement, VirtualNode
 } from '../../core/main/index'
 
+// tools
+export { default as getterOf } from './api/getterOf'
+export { default as toGetter } from './api/toGetter'
 
 export { default as useContext } from './api/useContext'
 export { default as useEffect } from './api/useEffect'
@@ -26,3 +29,6 @@ export { default as useOnUpdate } from './api/useOnUpdate'
 export { default as usePrevious } from './api/usePrevious'
 export { default as useState } from './api/useState'
 export { default as useTime } from './api/useTime'
+
+// types
+export { default as Var } from './api/types/Var'

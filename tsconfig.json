@@ -17,7 +17,8 @@
     "skipLibCheck": true,
     
     "paths": {
-      "js-widgets": ["src/modules/core/main/index.ts"]
+      "js-widgets/core": ["src/modules/core/main/index.ts"],
+      "js-widgets/util": ["src/modules/util/main/index.ts"]
     },
     
     "typeRoots": [
