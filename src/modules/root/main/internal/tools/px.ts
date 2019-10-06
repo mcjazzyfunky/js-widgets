@@ -1,10 +1,24 @@
 const px = Object.freeze({
   value<T>(value: T) {
-    const target = new Value()
+    const
+      target = new Value(),
+      valueOf = () => target.value
 
     target.value = value
 
-    return new Proxy(target, {})
+
+    const ret = new Proxy(target, {
+
+      get(target, name) {
+        return name === 'value'
+          ? target.value
+          : name === 'valueOf'
+          ? valueOf
+          : undefined
+      }
+    })
+
+    return ret
   },
 
   bindValue<T>(getValue: () => T): { value: T } {
@@ -30,12 +44,18 @@ const px = Object.freeze({
   },
 
   toValue<T>(it: T | { value: T }): { value: T } {
-    return px.isValue(it) ? it : px.value(it)
+    return px.isValue(it) ? it as Value : px.value(it)
   }
 })
 
-const Value = class {} as any
 
+class Value {
+  value: any
+
+  valueOf() {
+    return (this as any).value
+  }
+}
 
 type Proxifiable =
   () => { [key: string]: any}

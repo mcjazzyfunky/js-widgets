@@ -1,5 +1,5 @@
 import { Ctrl, Props } from '../../../core/main/index'
-import px from './px'
+import useBoundValue from './useBoundValue'
 
 type Updater<T> = T | ((oldValue: T) => T)
 
@@ -8,7 +8,7 @@ function useState<T>(c: Ctrl, initialValue: T):
 
   const [get, set] = c.handleState(initialValue)
   
-  return [px.bindValue(get), set, get]
+  return [useBoundValue(c, get), set, get]
 }
 
 export default useState

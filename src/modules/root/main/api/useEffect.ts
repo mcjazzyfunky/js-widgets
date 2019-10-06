@@ -3,13 +3,21 @@ import { Ctrl } from '../../../core/main/index'
 export default function useEffect(
   c: Ctrl,
   action: () => void,
-  getDependencies?: () => any[] | null
+  dependencies?:
+    null
+    | ((() => any) | { value: any })[] 
+    | (() => any[])
 ): void {
   let oldDeps: any[] | null = null
   let cleanup: any = null
 
   c.onUpdate(() => {
-    const newDeps = getDependencies ? getDependencies() : null
+    const newDeps =
+      typeof dependencies === 'function'
+        ? dependencies()
+        : Array.isArray(dependencies)
+        ? dependencies.map(it => typeof it === 'function' ? it() : it.value)
+        : null
 
     if (oldDeps === null || newDeps ===  null || !isEqual(oldDeps, newDeps)) {
       if (cleanup) {

@@ -1,29 +1,26 @@
-import { h, component, useInterval, px, Ctrl, Component } from '../../modules/root/main/index'
+import { h, component, useInterval, useState } from '../../modules/root/main/index'
 
 const Demo = component('Demo', {
-  initState: {
-    delay: 1000,
-    count: 0
-  },
-
-  main({ c, state, update }) {
+  init(c) {
     const
-      onReset = () => update({ delay: 1000 })
+      [$count, setCount] = useState(c, 0),
+      [$delay, setDelay] = useState(c, 1000),
+      onReset = () => setDelay(1000)
 
     useInterval(c, () => {
-      update({ count: state.count + 1 })
-    }, px.bindValue(() => state.delay))
+      setCount(it => it + 1)
+    }, $delay)
 
     useInterval(c, () => {
-      if (state.delay > 10) {
-        update({ delay: state.delay / 2 })
+      if ($delay.value > 10) {
+        setDelay(i => i / 2)
       }
     }, 1000)
 
     return () => 
       <div>
-        <h1>Counter: {state.count}</h1>
-        <h4>Delay: {state.delay}</h4>
+        <h1>Counter: {$count.value}</h1>
+        <h4>Delay: {$delay.value}</h4>
         <button onClick={onReset}>
           Reset delay
         </button>

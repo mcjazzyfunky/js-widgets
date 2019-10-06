@@ -1,6 +1,6 @@
 import { Ctrl, Context } from '../../../core/main/index'
-import px from './px'
+import useBoundValue from './useBoundValue'
 
 export default function useContext<T>(c: Ctrl, ctx: Context<T>) {
-  px.bindValue(c.consumeContext(ctx))
+  return useBoundValue(c, c.consumeContext(ctx))
 }

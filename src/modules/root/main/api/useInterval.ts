@@ -1,23 +1,23 @@
 import { Ctrl } from '../../../core/main/index'
 
 import useEffect from './useEffect'
-import px from './px'
-import Var from './types/Var'
+import useAsValue from './useAsValue'
+import Varia from './types/Varia'
 
 function useInterval(
   c: Ctrl,
-  _callback: Var<() => void>,
-  _delay: Var<number>
+  variCallback: Varia<() => void>,
+  variDelay: Varia<number>
 ) {
   const
-    $callback = px.toValue(_callback),
-    $delay = px.toValue(_delay)
+    $callback = useAsValue(c, variCallback),
+    $delay = useAsValue(c, variDelay)
   
   useEffect(c, () => {
-    let id = setInterval($callback.value, $delay.value)
+    const id = setInterval($callback.value, $delay.value)
 
     return () => clearInterval(id)
-  }, () => [$callback.value, $delay.value])
+  }, [$callback, $delay])
 }
 
 
