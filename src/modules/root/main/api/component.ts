@@ -147,13 +147,19 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
           $state = copyProperties({}, getState()),
           $ctx = copyProperties({}, getCtx()),
           
-          update = (updater: any) => {
-            if (updater === undefined) {
-              setState((state: any) => ({ ...state }))
-            } else if (typeof updater === 'function') {
-              setState((s: any) => Object.assign({}, s, updater(s)))
+          update = function (arg1?: any, arg2?: any) {
+            if (arguments.length === 0) {
+              setState((state: any) => ({ ...state })) // Todo
+            } else if (typeof arg1 === 'string') {
+              if (typeof arg2 !== 'function') {
+                setState({ [arg1]: arg2 })
+              } else {
+                setState((state: any) => ({ [arg1]: arg2(state[arg1]) }))
+              }
+            } else if (typeof arg1 === 'function') {
+              setState((s: any) => Object.assign({}, s, arg1(s)))
             } else {
-              setState((s: any) => Object.assign({}, s, updater))
+              setState((s: any) => Object.assign({}, s, arg1))
             }
           },
           
