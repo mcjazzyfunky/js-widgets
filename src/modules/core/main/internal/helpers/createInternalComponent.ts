@@ -47,85 +47,72 @@ function createStatefulInternalComponent(
 
     const
       currPropsRef = useRef(props),
-      getProps = useRef(() => currPropsRef.current).current,
       isMountedRef =  useRef(false),
       states: any[] = useRef([]).current,
       contexts: any[] = useRef([]).current,
-      updateListeners: (() => void)[] = useRef([]).current,
-      disposeListeners: (() => void)[] = useRef([]).current,
+      [didUpdateNotifier] = useState(createNotifier),
+      [willUnmountNotifier] = useState(createNotifier),
 
-      ctrl = useRef({
-        consumeProps() {
-          return () => currPropsRef.current 
-        },
+      [ctrl] = useState(() => {
+        const
+          getProps = () => currPropsRef.current
 
-        handleState(initialState: any) {
-          const idx = states.length
+        return {
+          consumeProps() {
+            return getProps
+          },
 
-          states[idx] = [initialState, null]
+          handleState(initialState: any) {
+            const idx = states.length
 
-          return [() => states[idx][0], (updater: any) => {
-            states[idx][0] =
-              typeof updater === 'function'
-                ? updater(states[idx][0])
-                : updater
-            
-            if (isMountedRef.current) {
-              states[idx][1](updater)
+            states[idx] = [initialState, null]
+
+            return [() => states[idx][0], (updater: any) => {
+              states[idx][0] =
+                typeof updater === 'function'
+                  ? updater(states[idx][0])
+                  : updater
+              
+              if (isMountedRef.current) {
+                states[idx][1](updater)
+              }
+            }]
+          },
+
+          consumeContext(context: any) {
+            const idx = contexts.length
+
+            contexts[idx] = [context.Provider.__internal_defaultValue, context.Provider.__internal_context]
+
+            return () => {
+              return contexts[idx][0]
             }
-          }]
-        },
+          },
 
-        consumeContext(context: any) {
-          const idx = contexts.length
+          onUpdate(subscriber: () => void): () => void {
+            return didUpdateNotifier.subscribe(subscriber)
+          },
 
-          contexts[idx] = [context.Provider.__internal_defaultValue, context.Provider.__internal_context]
-
-          return () => {
-            return contexts[idx][0]
+          onUnmount(subscriber: () => void): () => void {
+            return willUnmountNotifier.subscribe(subscriber)
           }
-        },
-
-         onUpdate(listener: () => void): () => void {
-           const subscriber = () => listener()
-
-           updateListeners.push(subscriber)
-
-           return () => {
-              const idx = updateListeners.indexOf(subscriber)
-              updateListeners.splice(idx, 1)
-           }
-         },
-
-         onUnmount(listener: () => void): () => void {
-           const subscriber = () => listener()
-
-           disposeListeners.push(subscriber)
-
-           return () => {
-              const idx = disposeListeners.indexOf(subscriber)
-              disposeListeners.splice(idx, 1)
-           }
-         }
-      }).current,
+        }
+      }),
 
     renderRef = useRef(null)
     currPropsRef.current = props
 
     useEffect(() => {
       isMountedRef.current = true
-
-      const listeners = [...updateListeners]
-
-      listeners.forEach(
-        listener => listener())
+      didUpdateNotifier.notify()
     })
 
     useEffect(() => {
-      const listeners = [...disposeListeners]
-
-      return () => listeners.forEach(
-        listener => listener()) 
+      return () => {
+        didUpdateNotifier.clear()
+        willUnmountNotifier.notify()
+        willUnmountNotifier.clear()
+      }
     }, [])
 
     if (!renderRef.current) {
@@ -159,3 +146,66 @@ function createStatefulInternalComponent(
   return ret
 }
 
+type Notifier = {
+  notify(): void,
+  subscribe(subscriber: () => void): () => void,
+  clear(): void
+}
+
+type Subscriber = (() => void) | (() => Unsubscribe)
+type Unsubscribe = () => void
+
+function createNotifier(): Notifier {
+  let
+    subscriptions: ([Subscriber, Unsubscribe] | null)[] = [],
+    isNotifying = false,
+    changedWhileNotifying = false
+    
+  return {
+    notify: () => {
+      isNotifying = true
+
+      try {
+        subscriptions.forEach(([listener]) => listener && listener())
+      } finally {
+        isNotifying = false
+
+        if (changedWhileNotifying) {
+          changedWhileNotifying = false
+          subscriptions = subscriptions.filter(it => it !== null)
+        }
+      }
+    },
+
+    subscribe(subscriber: Subscriber) {
+      let listener: (Subscriber | null) = subscriber.bind(null)
+
+
+      const unsubscribe = () => {
+        if (listener !== null) {
+          const index = subscriptions.findIndex(it => it && it[0] === listener)
+          
+          listener = null
+
+          if (isNotifying) {
+            subscriptions[index] = null
+            changedWhileNotifying = true
+          } else {
+            subscriptions.splice(index, 1)
+          }
+        }
+      }
+
+      subscriptions.push([listener, unsubscribe])
+      return unsubscribe
+    },
+
+    clear() {
+      try {
+        subscriptions.forEach(it => it && it[1]())
+      } finally {
+        subscriptions = []
+      }
+    }
+  }
+}
