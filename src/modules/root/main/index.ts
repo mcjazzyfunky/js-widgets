@@ -31,4 +31,4 @@ export { default as useTime } from './api/useTime'
 export { default as useMutable } from './api/useMutable'
 export { default as useMutableData } from './api/useMutableData'
 
-export { default as Varia } from './api/types/Varia'
+export { default as ValueOrMutable } from './api/types/ValueOrMutable'
