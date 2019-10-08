@@ -4,9 +4,9 @@ import ValueOrMutable from './types/ValueOrMutable'
 
 export default function useAsMutable<T>(
   c: Ctrl,
-  variaValue: ValueOrMutable<T>
+  varValue: ValueOrMutable<T>
 ): { value: T } {
-  return isMutable(variaValue) 
-    ? variaValue as any
-    : createMutable(variaValue)
+  return isMutable(varValue) 
+    ? varValue as any
+    : createMutable(varValue)
 }

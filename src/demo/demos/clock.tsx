@@ -5,11 +5,11 @@ const Clock = component({
   memoize: true,
 
   init(c) {
-    const $time = useTime(c)
+    const $time = useTime(c, 1000, (date: Date) => date.toLocaleTimeString())
 
     return () => (
       <div>
-        Current time: {$time.value.toLocaleTimeString()}
+        Current time: {$time}
       </div>
     )
   }

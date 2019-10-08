@@ -4,13 +4,36 @@ import useState from './useState'
 import useInterval from './useInterval'
 import ValueOrMutable from './types/ValueOrMutable'
 
-export default function useTime(
+function useTime(
   c: Ctrl,
-  interval: ValueOrMutable<number> = 1000
-): { value: Date } {
-  const [$time, setTime] = useState(c, new Date())
+  varDelay?: ValueOrMutable<number>
+): { value: Date } 
 
-  useInterval(c, () => setTime(new Date()), interval)
+function useTime<R>(
+  c: Ctrl,
+  varDelay?: ValueOrMutable<number>,
+  mapper?: (date: Date) => R
+): { value: R }
+
+function useTime(c: Ctrl, varDelay: any = 1000, mapper?: any): any {
+  const [$time, setTime] =
+    useState(c, mapper ? mapper(new Date()) : new Date())
+
+  useInterval(c, () => {
+    let value = new Date()
+
+    if (mapper) {
+      value = mapper(value)
+    }
+
+    setTime(value)
+  }, varDelay)
 
   return $time
 }
+
+function identity<T>(value: T) {
+  return value
+}
+
+export default useTime

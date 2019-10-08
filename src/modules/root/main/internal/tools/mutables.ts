@@ -9,4 +9,8 @@ export function isMutable(it: any) {
 class Mutable<T> {
   constructor(public value: T) {
   }
+
+  valueOf(): T {
+    return this.value
+  }
 }
