@@ -1,7 +1,7 @@
 import { Ctrl } from '../../../core/main/index'
 
 import useEffect from './useEffect'
-import useAsValue from './useAsValue'
+import useAsMutable from './useAsMutable'
 import Varia from './types/Varia'
 
 function useInterval(
@@ -10,8 +10,8 @@ function useInterval(
   variDelay: Varia<number>
 ) {
   const
-    $callback = useAsValue(c, variCallback),
-    $delay = useAsValue(c, variDelay)
+    $callback = useAsMutable(c, variCallback),
+    $delay = useAsMutable(c, variDelay)
   
   useEffect(c, () => {
     const id = setInterval($callback.value, $delay.value)

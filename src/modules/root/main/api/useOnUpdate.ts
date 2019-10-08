@@ -6,7 +6,7 @@ export default function useOnUpdate(
 ): void {
   let cleanup: (() => void) | null = null
 
-  c.onUpdate(() => {
+  c.onDidUpdate(() => {
     if (cleanup) {
       cleanup()
     }

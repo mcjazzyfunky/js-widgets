@@ -9,7 +9,8 @@ export default interface Ctrl<P extends Props = {}> {
   consumeProps(): () => P,
   handleState<T>(initialValue: T): [() => T, (updater: Updater<T>) => void],
   consumeContext<T>(ctx: Context<T>): () => T,
-  onUpdate(listener: Listener): Unsubscribe,
-  onUnmount(listener: Listener): Unsubscribe,
+  onWillRender(listener: Listener): Unsubscribe,
+  onDidUpdate(listener: Listener): Unsubscribe,
+  onWillUnmount(listener: Listener): Unsubscribe,
   // plus some more methods (mostly for lifecycle)
 }

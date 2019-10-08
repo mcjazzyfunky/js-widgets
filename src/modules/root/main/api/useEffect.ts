@@ -11,7 +11,7 @@ export default function useEffect(
   let oldDeps: any[] | null = null
   let cleanup: any = null
 
-  c.onUpdate(() => {
+  c.onDidUpdate(() => {
     const newDeps =
       typeof dependencies === 'function'
         ? dependencies()

@@ -1,5 +1,5 @@
 import { Ctrl, Props } from '../../../core/main/index'
-import useBoundValue from './useBoundValue'
+import useMutable from './useMutable'
 
 type Updater<T> = T | ((oldValue: T) => T)
 
@@ -8,7 +8,7 @@ function useState<T>(c: Ctrl, initialValue: T):
 
   const [get, set] = c.handleState(initialValue)
   
-  return [useBoundValue(c, get), set, get]
+  return [useMutable(c, get), set, get]
 }
 
 export default useState

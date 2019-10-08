@@ -11,10 +11,10 @@ export default function useImperativeHandle<M extends Methods>(
 ) {
   let isMounted = false
 
-  c.onUpdate(() => true)
+  c.onDidUpdate(() => true)
 
   if (!isMounted) {
-    const unsubscribe = c.onUpdate(() => {
+    const unsubscribe = c.onDidUpdate(() => {
       unsubscribe()
 
       if (typeof ref === 'function') {

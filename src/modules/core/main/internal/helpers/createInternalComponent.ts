@@ -5,31 +5,23 @@ import useContext from '../../internal/adapt/useContext'
 import useEffect from '../../internal/adapt/useEffect'
 import useRef from '../../internal/adapt/useRef'
 import useState from '../../internal/adapt/useState'
+import Props from '../../api/types/Props'
+import VirtualNode from '../../api/types/VirtualNode'
 
-function createInternalComponent(
-  componentConfig: StatelessComponentConfig<any>
-): any
-
-function createInternalComponent(
-  componentConfig: StatelessComponentConfig<any>
-): any
-
-function createInternalComponent(
-  componentConfig: any 
+export default function createInternalComponent<P extends Props>(
+  config: StatelessComponentConfig<P> | StatefulComponentConfig<P> 
 ) {
-  return (componentConfig as any).render
-    ? createStatelessInternalComponent(componentConfig)
-    : createStatefulInternalComponent(componentConfig)
+  return config.hasOwnProperty('render')
+    ? createStatelessInternalComponent(config as StatelessComponentConfig<P>)
+    : createStatefulInternalComponent(config as StatefulComponentConfig<P>)
 }
-
-export default createInternalComponent
 
 // ------------------------------------------------------------------
 
-function createStatelessInternalComponent(
-  config: StatelessComponentConfig<any>
-): Function {
-  let ret: any = config.render.bind(null)
+function createStatelessInternalComponent<P extends Props>(
+  config: StatelessComponentConfig<P>
+): InternalComponent<P> {
+  let ret: InternalComponent<P> = config.render.bind(null)
 
   ret.displayName = config.displayName
 
@@ -40,16 +32,16 @@ function createStatelessInternalComponent(
   return ret
 }
 
-function createStatefulInternalComponent(
-  config: StatefulComponentConfig<any>
-): Function {
-  let ret = function StatefulComponent(props: any) {
-
+function createStatefulInternalComponent<P>(
+  config: StatefulComponentConfig<P>
+): InternalComponent<P> {
+  let ret = function StatefulComponent(props: P) {
     const
       currPropsRef = useRef(props),
       isMountedRef =  useRef(false),
       states: any[] = useRef([]).current,
       contexts: any[] = useRef([]).current,
+      [willUpdateNotifier] = useState(createNotifier),
       [didUpdateNotifier] = useState(createNotifier),
       [willUnmountNotifier] = useState(createNotifier),
 
@@ -89,11 +81,15 @@ function createStatefulInternalComponent(
             }
           },
 
-          onUpdate(subscriber: () => void): () => void {
+          onWillRender(subscriber: Subscriber): Unsubscribe {
+            return willUpdateNotifier.subscribe(subscriber)
+          },
+  
+          onDidUpdate(subscriber: Subscriber): Unsubscribe {
             return didUpdateNotifier.subscribe(subscriber)
           },
 
-          onUnmount(subscriber: () => void): () => void {
+          onWillUnmount(subscriber: Subscriber): Unsubscribe {
             return willUnmountNotifier.subscribe(subscriber)
           }
         }
@@ -109,6 +105,7 @@ function createStatefulInternalComponent(
 
     useEffect(() => {
       return () => {
+        willUpdateNotifier.clear()
         didUpdateNotifier.clear()
         willUnmountNotifier.notify()
         willUnmountNotifier.clear()
@@ -134,6 +131,7 @@ function createStatefulInternalComponent(
       }
     })
 
+    willUpdateNotifier.notify()
     return (renderRef as any).current(props) // TODO
   }
   
@@ -144,6 +142,11 @@ function createStatefulInternalComponent(
   }
 
   return ret
+}
+
+type InternalComponent<P extends Props> = {
+  (props: P): VirtualNode
+  displayName?: string
 }
 
 type Notifier = {
@@ -179,7 +182,6 @@ function createNotifier(): Notifier {
 
     subscribe(subscriber: Subscriber) {
       let listener: (Subscriber | null) = subscriber.bind(null)
-
 
       const unsubscribe = () => {
         if (listener !== null) {

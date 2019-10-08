@@ -6,16 +6,16 @@ export default function useOnMount(
 ): void {
   let isMounted = false
 
-  c.onUpdate(() => isMounted = true)
+  c.onDidUpdate(() => isMounted = true)
 
   if (!isMounted) {
-    const unsubscribe = c.onUpdate(() => {
+    const unsubscribe = c.onDidUpdate(() => {
       unsubscribe()
 
       const result = action()
 
       if (typeof result === 'function') {
-        c.onUnmount(result)
+        c.onWillUnmount(result)
       }
     })
   }

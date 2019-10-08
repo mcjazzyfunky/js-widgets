@@ -4,7 +4,7 @@ export default function useOnUnount(
   c: Ctrl,
   action: () => void,
 ): void {
-  const unsubscribe = c.onUnmount(() => {
+  const unsubscribe = c.onWillUnmount(() => {
     unsubscribe()
 
     action()

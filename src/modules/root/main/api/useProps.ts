@@ -1,5 +1,5 @@
 import { Ctrl, Props } from '../../../core/main/index'
-import useBoundData from './useBoundData'
+import useMutableData from './useMutableData'
 import PickOptionalProps from '../internal/types/PickOptionalProps'
 
 export default function useProps<P extends Props>(
@@ -13,5 +13,5 @@ export default function useProps<P extends Props>(
       ? () => Object.assign({}, defaultProps, getProps())
       : getProps
 
-  return [useBoundData(c, getDefaultedProps), getDefaultedProps]
+  return [useMutableData(c, getDefaultedProps), getDefaultedProps]
 }

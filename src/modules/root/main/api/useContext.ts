@@ -1,6 +1,6 @@
 import { Ctrl, Context } from '../../../core/main/index'
-import useBoundValue from './useBoundValue'
+import useMutable from './useMutable'
 
 export default function useContext<T>(c: Ctrl, ctx: Context<T>) {
-  return useBoundValue(c, c.consumeContext(ctx))
+  return useMutable(c, c.consumeContext(ctx))
 }

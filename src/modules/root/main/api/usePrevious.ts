@@ -1,6 +1,6 @@
 import { Ctrl } from '../../../core/main/index'
 import useEffect from './useEffect'
-import useBoundValue from './useBoundValue'
+import useMutable from './useMutable'
 
 export default function usePrevious<T>(c: Ctrl, getCurrent: () => T | undefined) {
   let
@@ -12,5 +12,5 @@ export default function usePrevious<T>(c: Ctrl, getCurrent: () => T | undefined)
     current = getCurrent()
   })
 
-  return useBoundValue(c, () => previous) 
+  return useMutable(c, () => previous) 
 }
