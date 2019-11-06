@@ -1,15 +1,15 @@
-import { h, component, useOnUnmount } from '../../modules/root/main/index'
+import { h, component, useOnUnmount, useState } from '../../modules/root/main/index'
 
 const StopWatch = component('Stop watch', {
-  initState: {
-    time: 0,
-    running: false
-  },
-
-  main({ c, state, update }) {
+  main(c) {
     let interval = 0
 
     const
+      [state, setState] = useState(c, {
+        time: 0,
+        running: false
+      }),
+
       onStartStop = () => {
         if (state.running) {
           stopTimer()
@@ -27,10 +27,10 @@ const StopWatch = component('Stop watch', {
         const startTime = Date.now() - state.time
 
         interval = window.setInterval(() => {
-          update({ time: Date.now() - startTime })
+          setState({ time: Date.now() - startTime })
         }, 10)
 
-        update({ running: true })
+        setState({ running: true })
       }
     }
 
@@ -38,13 +38,13 @@ const StopWatch = component('Stop watch', {
       if (state.running) {
         clearInterval(interval)
         interval = 0
-        update({ running: false })
+        setState({ running: false })
       }
     }
 
     function resetTimer() {
       stopTimer()
-      update({ time: 0 })
+      setState({ time: 0 })
     }
 
     return () =>

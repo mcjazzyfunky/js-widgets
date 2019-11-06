@@ -1,4 +1,4 @@
-import { h, component, useImperativeHandle, Component, Ref }
+import { h, component, useImperativeHandle, useState, Component, Ref }
   from '../../modules/root/main/index'
 
 type CounterProps = {
@@ -12,21 +12,19 @@ const Counter: Component<CounterProps> = component({
   memoize: true,
 
   defaultProps: {
+    initialValue: 0,
     label: 'Counter'
   },
 
-  initState: {
-    count: 0
-  },
-
-  main({ c, props, state, update }) {
+  main(c, props) {
     const
-      onIncrement = () => update({ count: state.count + 1 }),
-      onDecrement = () => update({ count: state.count - 1})
+      [state, setState] = useState(c, { count: props.initialValue }),
+      onIncrement = () => setState({ count: state.count + 1 }),
+      onDecrement = () => setState({ count: state.count - 1})
 
     useImperativeHandle(c, props.ref, {
       reset(n: number = 0) {
-        update({ count: n })
+        setState({ count: n })
       }
     })
 

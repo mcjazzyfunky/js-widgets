@@ -10,14 +10,14 @@ function useInterval(
   varDelay: ValueOrMutable<number>
 ) {
   const
-    $callback = useAsMutable(c, varCallback),
-    $delay = useAsMutable(c, varDelay)
+    callback = useAsMutable(c, varCallback),
+    delay = useAsMutable(c, varDelay)
   
   useEffect(c, () => {
-    const id = setInterval($callback.value, $delay.value)
+    const id = setInterval(callback.value, delay.value)
 
     return () => clearInterval(id)
-  }, [$callback, $delay])
+  }, () => [callback.value, delay.value])
 }
 
 

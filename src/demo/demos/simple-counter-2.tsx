@@ -1,4 +1,4 @@
-import { h, component, useOnUpdate, Component } from '../../modules/root/main/index'
+import { h, component, useOnUpdate, useState, Component } from '../../modules/root/main/index'
 import { Spec } from 'js-spec'
 
 type CounterProps = {
@@ -22,12 +22,9 @@ const Counter: Component<CounterProps> = component({
     label: 'Counter'
   },
 
-  initState: {
-    count: 0
-  },
-
-  main({ c, props, state, update }) {
+  main(c, props) {
     const
+      [state, update] = useState(c, { count: props.initialValue }),
       onIncrement = () => update({ count: state.count + 1 }),
       onDecrement = () => update({ count: state.count - 1 })
 

@@ -1,4 +1,4 @@
-import { h, component, useOnMount, Component, VirtualElement }
+import { h, component, useOnMount, useForceUpdate, Component, VirtualElement }
   from '../../modules/root/main/index'
 
 const prefs = {
@@ -80,7 +80,7 @@ const SpeedTest: Component<SpeedTestProps> = component({
     framesPerSecond: prefs.framesPerSecond
   },
 
-  main({ c, props, update }) {
+  main(c, props) {
     let 
       intervalId = null as any,
       startTime = Date.now(),
@@ -88,6 +88,8 @@ const SpeedTest: Component<SpeedTestProps> = component({
       actualFramesPerSecond = '0'
 
     const
+      forceUpdate = useForceUpdate(c),
+
       style = {
         marginTop: 40,
         marginLeft: 40
@@ -103,7 +105,7 @@ const SpeedTest: Component<SpeedTestProps> = component({
               (Date.now() - startTime)).toFixed(2)
         }
 
-        update()
+        forceUpdate()
       }, 1000 / props.framesPerSecond)
 
       return () => clearInterval(intervalId)

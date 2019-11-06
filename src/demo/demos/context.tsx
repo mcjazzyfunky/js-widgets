@@ -1,4 +1,4 @@
-import { h, context, component, useOnMount } from '../../modules/root/main/index'
+import { h, context, component, useState, useOnMount } from '../../modules/root/main/index'
 
 const CounterCtx = context({
   displayName: 'CounterCtx',
@@ -8,14 +8,12 @@ const CounterCtx = context({
 const ContextDemo = component({
   displayName: 'ContextDemo',
 
-  initState: {
-    count: 0
-  },
+  main(c)  {
+    const [state, setState] = useState(c, { count: 0 })
 
-  main({ c, state, update }) {
     useOnMount(c, () => {
       const interval = setInterval(() => {
-        update({ count: state.count + 1 })
+        setState({ count: state.count + 1 })
       }, 1000)
 
       return () => clearInterval(interval)

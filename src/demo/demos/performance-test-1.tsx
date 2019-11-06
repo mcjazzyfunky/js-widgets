@@ -87,24 +87,24 @@ function runTests() {
 const PerformanceTest = component({
   displayName: 'PerformanceTest',
 
-  initState: {
-    running: false,
-    result: ''
-  },
-
-  main({ c, state, update }) {
+  main(c) {
     const
+      [state, setState] = useState(c, {
+        running: false,
+        result: ''
+      }),
+
       onStart = () => startTest()
 
     function startTest() {
-      update({ running: true })
+      setState({ running: true })
     }
 
     useEffect(c, () => {
       if (state.running) {
         const result = runTests()
        
-        update({
+        setState({
           running: false,
           result
         })

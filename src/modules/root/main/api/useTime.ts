@@ -1,6 +1,6 @@
 import { Ctrl } from '../../../core/main/index'
 
-import useState from './useState'
+import useState from './useValue'
 import useInterval from './useInterval'
 import ValueOrMutable from './types/ValueOrMutable'
 

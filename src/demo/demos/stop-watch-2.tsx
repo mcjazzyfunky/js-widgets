@@ -1,4 +1,4 @@
-import { h, component, useEffect, Component } from '../../modules/root/main/index'
+import { h, component, useEffect, useState, Component } from '../../modules/root/main/index'
 
 type StopWatchProps = {
   name?: string
@@ -11,23 +11,23 @@ const StopWatch: Component<StopWatchProps> = component({
     name: 'Stop Watch'
   },
 
-  initState: {
-    startTime: 0,
-    duration: 0,
-    running: false
-  },
-
-  main({ c, props, state, update }) {
+  main(c, props) {
     const
+      [state, setState] = useState(c, {
+        startTime: 0,
+        duration: 0,
+        running: false
+      }),
+
       onStartStop = () => {
         if (!state.running) {
-          update({ running: true, startTime: Date.now() - state.duration })
+          setState({ running: true, startTime: Date.now() - state.duration })
         } else {
-          update({ running: false })
+          setState({ running: false })
         }
       },
 
-      onReset = () => update({ running: false, duration: 0, startTime: 0 })
+      onReset = () => setState({ running: false, duration: 0, startTime: 0 })
 
     useEffect(c, () => {
       if (state.running) {
@@ -35,7 +35,7 @@ const StopWatch: Component<StopWatchProps> = component({
 
         const interval = setInterval(() => {
           if (state.running) {
-            update({ duration: Date.now() - state.startTime })
+            setState({ duration: Date.now() - state.startTime })
           }
         }, 10)
 

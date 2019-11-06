@@ -1,10 +1,10 @@
-import { h, component, useInterval, useState } from '../../modules/root/main/index'
+import { h, component, useInterval, useValue } from '../../modules/root/main/index'
 
 const Demo = component('Demo', {
   init(c) {
     const
-      [$count, setCount] = useState(c, 0),
-      [$delay, setDelay] = useState(c, 1000),
+      [$count, setCount] = useValue(c, 0),
+      [$delay, setDelay] = useValue(c, 1000),
       onReset = () => setDelay(1000)
 
     useInterval(c, () => {

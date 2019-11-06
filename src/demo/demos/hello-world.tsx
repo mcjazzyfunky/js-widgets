@@ -1,4 +1,4 @@
-import { component } from '../../modules/core/main/index'
+import { component, Component } from '../../modules/core/main/index'
 import { div } from '../../modules/html/main/index'
 import { Spec } from 'js-spec'
 

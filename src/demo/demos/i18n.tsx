@@ -1,4 +1,4 @@
-import { h, component, context, Component } from '../../modules/root/main/index'
+import { h, component, context, useContext, useState, Component } from '../../modules/root/main/index'
 import { Spec } from 'js-spec'
 
 const translations: Record<string, Record<string, string>> = {
@@ -23,10 +23,6 @@ type AppProps = {
   defaultLocale?: string
 }
 
-function initAppState(props: { defaultLocale: string }) {
-  return { locale: props.defaultLocale }
-}
-
 const App: Component<AppProps> = component({
   displayName: 'App',
 
@@ -42,10 +38,10 @@ const App: Component<AppProps> = component({
     defaultLocale: 'en'
   },
 
-  initState: initAppState,
-
-  main({ state, update }) {
-    const onChange = (ev: any) => update({ locale: ev.target.value })
+  main(c, props) {
+    const
+      [state, setState] = useState(c, { locale: props.defaultLocale }),
+      onChange = (ev: any) => setState({ locale: ev.target.value })
 
     return () =>
       <LocaleCtx.Provider value={state.locale}>
@@ -75,14 +71,12 @@ const LocaleText: Component<LocaleTextProps> = component({
     }
   }),
 
-  ctx: {
-    locale: LocaleCtx
-  },
+  main(c) {
+    const locale = useContext(c, LocaleCtx)
 
-  main({ ctx }) {
     return props =>
       <p>
-        { translations[ctx.locale][props.id] }
+        { translations[locale.value][props.id] }
       </p>
   }
 })

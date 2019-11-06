@@ -43,8 +43,7 @@ mount(content, document.getElementById('app'))
 #### Example 2 (ECMAScript + JSX)
 
 ```tsx
-import { h, component, mount } from 'js-widgets'
-import { usePropsProxy, useStateProxy, useOnUpdate } from 'js-widgets/hooks'
+import { h, component, mount, useState, useOnUpdate } from 'js-widgets'
 import { Spec } from 'js-spec' // third-party validation library
 
 const Counter = component({
@@ -58,14 +57,14 @@ const Counter = component({
     }
   }),
 
-  init(c) {
-    const
-      [props] = usePropsProxy(c, {
-        initialValue: 0,
-        label: 'Counter'
-      }),
+  defaultProps: {
+    initialValue: 0,
+    label: 'Counter'
+  },
 
-      [state, setState] = useStateProxy(c, {
+  main(c, props) {
+    const
+      [state, setState] = useState(c, {
         count: props.initialValue
       }),
 

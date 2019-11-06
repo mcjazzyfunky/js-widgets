@@ -12,16 +12,18 @@ type DemoSelectorProps = {
 const DemoSelector: Component<DemoSelectorProps> = component({
   displayName: 'DemoSelector',
 
-  main({ update }) {
+  main(c, props) {
     let demoIdx = getCurrentDemoIndex()
+    
+    const forceUpdate = useForceUpdate(c)
 
     function startDemo(idx: number) {
       demoIdx = idx
       document.location.href = document.location.href.replace(/#.*$/, '') + '#idx=' + idx
-      update()
+      forceUpdate()
     }
 
-    return props => {
+    return () => {
       const options: VirtualElement[] = []
 
       for (let i = 0; i < props.demos.length; ++i) {

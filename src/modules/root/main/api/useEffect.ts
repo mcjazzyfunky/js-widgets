@@ -3,10 +3,7 @@ import { Ctrl } from '../../../core/main/index'
 export default function useEffect(
   c: Ctrl,
   action: () => void,
-  dependencies?:
-    null
-    | ((() => any) | { value: any })[] 
-    | (() => any[])
+  dependencies?: null | (() => any[])
 ): void {
   let oldDeps: any[] | null = null
   let cleanup: any = null
@@ -15,8 +12,6 @@ export default function useEffect(
     const newDeps =
       typeof dependencies === 'function'
         ? dependencies()
-        : Array.isArray(dependencies)
-        ? dependencies.map(it => typeof it === 'function' ? it() : it.value)
         : null
 
     if (oldDeps === null || newDeps ===  null || !isEqual(oldDeps, newDeps)) {
