@@ -281,12 +281,9 @@ What are the main difference to React's API?
 * `useOnUnmount(...)`
 * `useOnUpdate(...)`
 * `usePrevious(...)`
-* `useProps(...)`
-* `usePropsProxy(...)`
 * `useState(...)`
-* `useStateProxy(...)`
-* `useStateObject(...)`
 * `useTime(...)`
+* `useValue(...)`
 
 #### Module "_js-widgets/tools_"
 * `componentActions(...)`
