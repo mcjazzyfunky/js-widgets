@@ -4,7 +4,7 @@ import VirtualNode from '../../api/types/VirtualNode'
 
 type StatefulComponentMeta<P extends Props = {}> = {
   displayName: string,
-  init(c: Ctrl<P>): (props: P) =>  VirtualNode,
+  init(c: Ctrl, getProps: () => P): (props: P) =>  VirtualNode,
 }
 
 export default StatefulComponentMeta

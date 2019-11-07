@@ -90,33 +90,21 @@ function component<P extends Props>(arg1: any, arg2?: any): Component<P> {
 
       defaultProps = options.defaultProps || {},
 
-      init = (rawC: Ctrl<any>) => {
-        let c = rawC
-
-        if (options.defaultProps) {
-          c = { ...rawC }
-
-          c.consumeProps = () => {
-            const
-               getRawProps = rawC.consumeProps(),
-               getProps = () => Object.assign({}, defaultProps, getRawProps())
-
-            return getProps
-          }
-        }
-
-        // TODO !!!!!
+      init = (c: Ctrl, getProps: () => P) => {
         const
-          getProps = c.consumeProps(),
-          $props = copyProperties({}, getProps()),
+          getDefaultedProps = () => {
+            // TODO - optimize
+            return Object.assign({}, defaultProps, getProps())
+          },
+
+          $props = copyProperties({} as any, getDefaultedProps()),
           render = options.main(c, $props)
 
         return () => {
-          const props = getProps()
-
-          copyProperties($props, props, true)
-
-          return render(props)
+          const currentProps = getDefaultedProps()
+  
+          copyProperties($props, currentProps, true)
+          return render(currentProps)
         }
       }
 
@@ -150,14 +138,14 @@ type StatefulConfig<
   validate?(props: P): boolean | null | Error,
   defaultProps?: D,
   
-  main(c: Ctrl<P>, props: P & D): (props: P) => VirtualNode
+  main(c: Ctrl, props: P & D): (props: P) => VirtualNode
 }
 
 type BaseStatefulComponentConfig<P extends Props = {}> = {
   displayName: string,
   memoize?: boolean,
   validate?: ((props: P) => boolean | null | Error) | null,
-  init: (c: Ctrl<P>) => (props: P) => VirtualNode,
+  init: (c: Ctrl, getProps: () => P) => (props: P) => VirtualNode,
 }
 
 function noOp() {

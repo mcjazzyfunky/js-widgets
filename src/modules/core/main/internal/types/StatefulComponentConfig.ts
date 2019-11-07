@@ -6,7 +6,7 @@ type StatefulComponentConfig<P extends Props = {}> = {
   displayName: string,
   memoize?: boolean,
   validate?: ((props: P) => boolean | null | Error) | null,
-  init: (c: Ctrl<P>) => (props: P) => VirtualNode,
+  init: (c: Ctrl, getProps: () => P) => (props: P) => VirtualNode,
 }
 
 export default StatefulComponentConfig 

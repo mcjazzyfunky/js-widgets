@@ -24,7 +24,7 @@ const Counter: Component<CounterProps> = component({
     label: 'Counter'
   },
 
-  main(c, props) {
+  main(c, props) {console.log(3, props, props.initialValue)
     const
       [count, setCount] = useValue(c, props.initialValue),
       onIncrement = () => setCount(count.value + 1)

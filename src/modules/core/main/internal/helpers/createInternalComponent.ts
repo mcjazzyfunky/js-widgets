@@ -38,6 +38,7 @@ function createStatefulInternalComponent<P>(
   let ret = function StatefulComponent(props: P) {
     const
       currPropsRef = useRef(props),
+      getProps = () => currPropsRef.current,
       isMountedRef =  useRef(false),
       states: any[] = useRef([]).current,
       contexts: any[] = useRef([]).current,
@@ -46,9 +47,6 @@ function createStatefulInternalComponent<P>(
       [willUnmountNotifier] = useState(createNotifier),
 
       [ctrl] = useState(() => {
-        const
-          getProps = () => currPropsRef.current
-
         return {
           consumeProps() {
             return getProps
@@ -113,7 +111,7 @@ function createStatefulInternalComponent<P>(
     }, [])
 
     if (!renderRef.current) {
-      renderRef.current = config.init(ctrl as any) as any // TODO!!!
+      renderRef.current = config.init(ctrl as any, getProps) as any // TODO!!!
     }
 
     states.forEach(item => {
