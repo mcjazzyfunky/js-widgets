@@ -1,5 +1,4 @@
-import { Spec } from 'js-spec'
-
+import * as Spec from 'js-spec/validators'
 import Props from './types/Props'
 import Component from './types/Component'
 import VirtualNode from './types/VirtualNode'
@@ -96,9 +95,9 @@ const
         
         then: Spec.exact({
           displayName: Spec.match(REGEX_DISPLAY_NAME),
-          validate: Spec.nullableOptional(Spec.function),
+          validate: Spec.nullableOptional(Spec.func),
           memoize: Spec.optional(Spec.boolean),
-          render: Spec.function
+          render: Spec.func
         })
       }, 
       {
@@ -106,9 +105,9 @@ const
 
         then: Spec.exact({
           displayName: Spec.match(REGEX_DISPLAY_NAME),
-          validate: Spec.nullableOptional(Spec.function),
+          validate: Spec.nullableOptional(Spec.func),
           memoize: Spec.optional(Spec.boolean),
-          init: Spec.function
+          init: Spec.func
         })
       })
 

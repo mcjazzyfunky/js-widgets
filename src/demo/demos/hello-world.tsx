@@ -1,6 +1,6 @@
 import { component, Component } from '../../modules/core/main/index'
 import { div } from '../../modules/html/main/index'
-import { Spec } from 'js-spec'
+import * as Spec from 'js-spec/validators'
 
 type SayHelloProps = {
   name?: string

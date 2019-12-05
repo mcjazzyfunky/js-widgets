@@ -1,7 +1,7 @@
 import { h, component, useOnMount, useOnUpdate, useValue, Component }
   from '../../modules/root/main/index'
 
-import { Spec } from 'js-spec'
+import * as Spec from 'js-spec/validators'
 
 type CounterProps = {
   initialValue?: number,

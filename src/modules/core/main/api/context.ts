@@ -1,4 +1,4 @@
-import { Spec } from 'js-spec'
+import * as Spec from 'js-spec/validators'
 
 import h from './h'
 import component from './component'
