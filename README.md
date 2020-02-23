@@ -28,7 +28,7 @@ const SayHello = component({
     }
   }),
 
-  render({ name: 'World' }) {
+  render({ name = 'world' }) {
     return div(`Hello, ${name}!`)
   }
 })
