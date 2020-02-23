@@ -180,15 +180,15 @@ What are the main difference to React's API?
   ```
 
   ```jsx
-  SomeCtx.Provider({ value: someValue },
+  SomeContextProvider({ value: someValue },
     SomeComponent(),
     SomeOtherComponent())
   
   // or when using jsWidgets with JSX
-  <SomeCtx.Provider value={someValue}>
+  <SomeContextProvider value={someValue}>
     <SomeComponent/>
     <SomeOtherComponent/>
-  </SomeCtx.Provider>
+  </SomeContextProvider>
   ```
 
   ```jsx
