@@ -176,7 +176,7 @@ What are the main difference to React's API?
   <Fragment key={someKey}>
     <SomeComponent/>
     <SomeOtherComponent/>
-  </>
+  </Fragement>
   ```
 
   ```jsx
