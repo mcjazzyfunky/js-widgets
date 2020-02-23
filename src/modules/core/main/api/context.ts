@@ -1,121 +1,109 @@
+import {
+  h as createDyoElement,
+  useContext as useDyoContext,
+  Context as DyoContext,
+} from 'dyo'
+
 import * as Spec from 'js-spec/validators'
 
 import h from './h'
 import component from './component'
-import createInternalContext from '../internal/adapt/createContext'
 import Context from './types/Context'
-import VirtualNode from './types/VirtualNode'
-import ContextConfig from '../internal/types/ContextConfig'
-import ContextProviderProps from '../internal/types/ContextPrividerProps'
-import ContextConsumerProps from '../internal/types/ContextConsumerProps'
+import VNode from './types/VNode'
+import setHiddenProp from '../internal/setHiddenProp'
+import Component from './types/Component'
 
 function context<T>(
-  config: ContextConfig<T>
-): Context<T> 
+  config: ContextConfig1<T>
+): [Context<T>, Provider<T>] 
 
 function context<T>(
-  displayName: string,
-  config?: Omit<ContextConfig<T>, 'displayName'>
-): Context<T> 
+  config: ContextConfig2<T>
+): [Context<T>, Provider<T>] 
 
-function context(arg1: any, arg2?: any): Context<any> {
-  if (process.env.NODE_ENV === 'development' as any) {
-    let errorMsg = ''
+function context<T>(config: ContextConfig1<T> | ContextConfig2<T>):
+  [Context<T>, Provider<T>] {
+  
+    const
+    Provider = component({
+      name: `ContextProvider (${name})`,
 
-    if (typeof arg1 === 'string') {
-      if (typeof arg2 ===  undefined) {
-        // nothing wrong with undefined as second argument
-      } else if (!arg2 || typeof arg2 !== 'object') {
-        errorMsg = 'Second parameter must be an object or undefined'
-      } else if ('displayName' in arg2) {
-        errorMsg = "Second argument must not contain key 'displayName'"
+      render(props: any): VNode { // TODO
+        const { children, ...propsWithoutChildren } = props
+
+        return h(Provider, propsWithoutChildren, ...children)
       }
-    } else if (!arg1 || typeof arg1 !== 'object') {
-      errorMsg = 'First argument must either be a string or an object'
-    } else if (arg2 !== undefined) {
-      errorMsg = 'Illegal second argument (expected undefined)'
-    }
+    })
 
-    if (errorMsg) {
-      throw new TypeError(`[context] ${errorMsg}`)
-    }
+  const DyoProvider = ({ value, key, children }: any): any => { // TODO
+    return createDyoElement(DyoContext, { value, key }, children)
   }
 
-  let config: any
+  setHiddenProp(Provider, '__type', DyoProvider)
 
-  if (typeof arg1 === 'string') {
-    config = { ...(arg2 || {}), displayName: arg1 }
-  } else {
-    config = arg1
+  const
+    constr = () => {},
+    context = Object.create(constr.prototype) as Context<T>
+
+  (context as any).meta = {
+    type: 'context',
+    name: config.name,
+    default: config.default!
   }
 
-  return createContext(
-    config.displayName,
-    config.defaultValue,
-    config.validate)
+  setHiddenProp(constr, '__type', DyoProvider)
+  setHiddenProp(constr, '__validate', config.validate)
+
+  return [context, Provider]
 }
 
-// --- private ------------------------------------------------------
+// --- types --------------------------------------------------------
 
-function createContext<T>(
-  displayName: string,
-  defaultValue?: T,
-  validate?: (it: T) => boolean | null | Error
-): Context<T> {
+type ContextConfig1<T extends (any | undefined)> = {
+  name: string,
+  default?: T,
+  validate?(value: T): boolean | null | Error
+}
+
+type ContextConfig2<T> = {
+  name: string,
+  default: T,
+  validate?(value: T): boolean | null | Error
+}
+
+type ProviderProps<T> = {
+  value: T,
+  children?: VNode
+}
+
+type Provider<T> = Component<ProviderProps<T>>
+
+
+// --- locals --------------------------------------------------------
+
+function createDyoContext(defaultValue: any) {
   const
-    providerConfig: any = {
-      displayName: `ContextProvider (${displayName})`,
-
-      render(props: any): VirtualNode {
-        const { children, ...props2 } = props
-
-        return h(Provider as any, props2, ...children)
-      }
+    Provider = ({ value, key, children }: any): any => {
+      return createDyoElement(DyoContext, { value, key }, children)
     },
 
-    consumerConfig: any = {
-      displayName: `ContextConsumer (${displayName})`,
+    Consumer = ({ props, children }: any): any => {
+      let value: any = useDyoContext(Provider)
 
-      render(props: any): VirtualNode {
-        const { children, ...props2 } = props
-
-        return h(Consumer as any, props2, ...children)
+      if (value === undefined) {
+        value = defaultValue
       }
-    }
-    
-    if (validate && process.env.NODE_ENV === 'development' as any) {
-      providerConfig.validate = Spec.exact({
-        value: validate
-      })
 
-      consumerConfig.validate = Spec.exact({
-      })
+      return children(value)
     }
 
-  const
-    Provider = component<ContextProviderProps<T>>(providerConfig),
-    Consumer = component<ContextConsumerProps<T>>(consumerConfig)
-
-  const internalContext = createInternalContext(defaultValue)
-
-  Object.defineProperty(Provider, '__internal_context', {
-    value: internalContext
+  Object.defineProperty(Provider, '__internal_defaultContextValue', {
+    value: defaultValue 
   })
 
-  Object.defineProperty(Provider, '__internal_type', {
-    value: internalContext.Provider
-  })
-  
-  Object.defineProperty(Provider, '__internal_defaultValue', {
-    value: defaultValue
-  })
-  
-  Object.defineProperty(Consumer, '__internal_type', {
-    value: internalContext.Consumer
-  })
-
-  return Object.freeze({ Provider, Consumer }) as any // TODO
+  return { Provider, Consumer }
 }
+
 
 // --- exports ------------------------------------------------------
 

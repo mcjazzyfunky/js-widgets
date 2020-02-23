@@ -1,5 +1,3 @@
-type Props = {
-  [name: string]: any,
-}
+type Props = Record<string, any>
 
 export default Props

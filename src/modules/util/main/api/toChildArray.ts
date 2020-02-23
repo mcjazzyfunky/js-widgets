@@ -1,11 +1,11 @@
-import { VirtualNode } from '../../../core/main/index'
+import { VNode } from '../../../core/main/index'
 
 const SymbolIterator =
   typeof Symbol === 'function'
     ? Symbol.iterator
     : '@@iterator'
 
-export default function toChildArray(children: VirtualNode): VirtualNode[] {
+export default function toChildArray(children: VNode): VNode[] {
   return children === undefined || children === null
     ? []
     : Array.isArray(children)

@@ -17,7 +17,7 @@
     "skipLibCheck": true,
     
     "paths": {
-      "js-widgets/core": ["src/modules/core/main/index.ts"],
+      "js-widgets": ["src/modules/core/main/index.ts"],
       "js-widgets/util": ["src/modules/util/main/index.ts"]
     },
     
@@ -30,12 +30,11 @@
     ]
   },
   "files": [
-    "src/modules/root/main/index.ts",
     "src/modules/core/main/index.ts",
     "src/modules/html/main/index.ts",
+    "src/modules/hooks/main/index.ts",
     "src/modules/svg/main/index.ts",
     "src/modules/util/main/index.ts",
-    "src/modules/all/main/index.ts"
   ],
 
   "include": [

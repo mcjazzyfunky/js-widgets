@@ -1,6 +1,6 @@
-import { h } from '../../core/main/index'
+import { h, VElement } from '../../core/main/index'
 
-function f(tagName: string) {
+function f(tagName: string): (...args: any[]) => VElement<any> { // TODO
   return h.bind(null, tagName)
 }
 

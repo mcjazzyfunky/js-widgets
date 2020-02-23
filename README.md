@@ -15,12 +15,12 @@ Disclaimer: This is just an initial draft of README. A lot is missing ....
 #### Example 1 (pure ECMAScript / no JSX)
 
 ```javascript
-import { component, mount } from 'js-widgets'
+import { component, render } from 'js-widgets'
 import { div } from 'js-widgets/html'
-import { Spec } from 'js-spec' // third-party validation library
+import * as Spec from 'js-spec/validators' // third-party validation library
 
 const SayHello = component({
-  displayName: 'SayHello',
+  name: 'SayHello',
 
   validate: Spec.checkProps({
     optional: {
@@ -38,16 +38,17 @@ const content =
     SayHello()
     SayHello({ name: 'Jane Doe' }))
 
-mount(content, document.getElementById('app'))
+render(content, document.getElementById('app'))
 ```
 #### Example 2 (ECMAScript + JSX)
 
 ```tsx
-import { h, component, mount, useState, useOnUpdate } from 'js-widgets'
-import { Spec } from 'js-spec' // third-party validation library
+import { component, render } from 'js-widgets'
+import { useEffect, useValue } from 'js-widgets/hooks'
+import * as Spec from 'js-spec/validators' // third-party validation library
 
 const Counter = component({
-  displayName: 'Counter',
+  name: 'Counter',
   memoize: true,
 
   validate: Spec.checkProps({
@@ -57,23 +58,20 @@ const Counter = component({
     }
   }),
 
-  defaultProps: {
+  defaults: {
     initialValue: 0,
     label: 'Counter'
   },
 
   main(c, props) {
     const
-      [state, setState] = useState(c, {
-        count: props.initialValue
-      }),
+      [count, setCount] = useValue(c, props.initialValue),
+      onIncrement = () => setCount(it => it + 1),
+      onDecrement = () => setCount(it => it - 1)
 
-      onIncrement = () => setState({ count: state.count + 1 }),
-      onDecrement = () => setState({ count: state.count - 1 })
-
-    useOnUpdate(c, () => {
-      console.log( `Update - ${props.label}: ${state.count}`)
-    })
+    useEffect(c, () => {
+      console.log( `Update - ${props.label}: ${count.value}`)
+    }, () => [count.value])
 
     return () =>
       <div className="counter">
@@ -82,7 +80,7 @@ const Counter = component({
           -1
         </button>
         <span>
-          {state.count}
+          {count.value}
         </span>
         <button onClick={onIncrement}>
           +1
@@ -92,7 +90,7 @@ const Counter = component({
   }
 })
 
-mount(<Counter/>, document.getElementById('app'))
+render(<Counter/>, document.getElementById('app'))
 ```
 
 ### Motivation
@@ -249,18 +247,19 @@ What are the main difference to React's API?
 ### Current API (not complete yet)
 
 #### Module "_js-widgets_"
+* `asRef(func)`
 * `component(config)`
 * `context(config)`
 * `h(type, props?, ...children)`
 * `typeOf(element)`
 * `propsOf(element)`
+* `toRef(valueOrRef)`
 * `Boundary(props?, ...children)`
 * `Fragment(props?, ...children)`
-* `mount(content, container)`
-* `unmount(container)`
+* `render(content | null, container)`
 
 #### Module "_js-widgets/util_":
-* `createRef(value)`
+* `forceUpdat(c)`
 * `isElement(it)`
 * `isNode(it)`
 * `childCount(children)`
@@ -272,26 +271,11 @@ What are the main difference to React's API?
 
 #### Module "_js-widgets/hooks_":
 * `useContext(...)`
-* `useDataProxy(...)`
 * `useEffect(...)`
-* `useForceUpdate(...)`
 * `useInterval(...)`
-* `useMousePosition(...)`
-* `useOnMount(...)`
-* `useOnUnmount(...)`
-* `useOnUpdate(...)`
-* `usePrevious(...)`
 * `useState(...)`
 * `useTime(...)`
 * `useValue(...)`
-
-#### Module "_js-widgets/tools_"
-* `componentActions(...)`
-* `componentStore(...)`
-* `proxify(...)`
-* `toProxy(...)`
-* `consuming(...)`
-* `wrap(...)`
 
 #### Module "_js-widgets/html_"
 
@@ -303,4 +287,4 @@ Factory functions for all SVG entities
 
 ### Project status
 
-**Important**: This project is in a very early state and it is not and never will be meant to be used in production.
+**Important**: This project is in an early state and it is not and never will be meant to be used in production.

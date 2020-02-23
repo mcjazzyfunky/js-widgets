@@ -1,8 +1,8 @@
-import { VirtualNode } from '../../../core/main/index'
+import { VNode } from '../../../core/main/index'
 import toChildArray from './toChildArray'
 
 export default function withChildren<R>(
-  f: (nodes: VirtualNode[]) => R): (children: VirtualNode) => R
+  f: (nodes: VNode[]) => R): (children: VNode) => R
 {
   if (process.env.NODE_ENV === 'development' as any) {
     if (typeof f !== 'function') {
@@ -10,5 +10,5 @@ export default function withChildren<R>(
     }
   }
 
-  return (children: VirtualNode) => f(toChildArray(children))
+  return (children: VNode) => f(toChildArray(children))
 }

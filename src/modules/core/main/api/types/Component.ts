@@ -1,11 +1,8 @@
-import VirtualElement from './VirtualElement'
 import Props from './Props'
-
-type ExtProps<P extends Props> = P & {
-  key?: string | number
-}
+import StatelessComponent from './StatelessComponent'
+import StatefulComponent from './StatefulComponent'
 
 type Component<P extends Props = {}> =
-  (props?: P & { key?: string | number }, ...children: any[]) => VirtualElement
+  StatelessComponent<P> | StatefulComponent<P>
 
 export default Component

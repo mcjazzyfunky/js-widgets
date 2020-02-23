@@ -1,5 +1,0 @@
-{
-  "name": "js-widgets.core",
-  "typings": "../dist/types/core/main/index.d.ts",
-  "main": "./index.js"
-}

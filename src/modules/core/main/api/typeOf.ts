@@ -1,24 +1,21 @@
+import { isValidElement as isDyoElement, Fragment as DyoFragment } from 'dyo'
 import Fragment from './Fragment'
-import Boundary from './Boundary'
-import Elements from '../internal/adapt/Elements'
-import FragmentEntity from '../internal/adapt/FragmentEntity'
-import BoundaryEntity from '../internal/adapt/BoundaryEntity'
+import Component from './types/Component'
 
-export default function typeOf(it: any) {
-  let ret = undefined
+export default function typeOf(elem: any): string | Component<any> | undefined {
+  let ret: string | Component<any> | undefined
 
-  const internalType = Elements.getType(it)
+  if (isDyoElement(elem)) {
+    const type = elem.type as any
 
-  if (typeof internalType === 'string') {
-    ret = internalType
-  } else if (internalType === FragmentEntity) {
-    ret = Fragment
-  } else if (internalType === BoundaryEntity) {
-    ret = Boundary
-  } else if (internalType) {
-    ret = (internalType as any).__internal_original
+    if (type === DyoFragment) {
+      ret = Fragment
+    } else if (typeof type === 'string') {
+      ret = type
+    } else if (type && type.__component) {
+      ret = type.__component
+    }
   }
 
   return ret
 }
-

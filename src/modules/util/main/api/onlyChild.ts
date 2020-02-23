@@ -1,8 +1,8 @@
-import { VirtualNode } from '../../../core/main/index'
+import { VNode } from '../../../core/main/index'
 import childCount from './childCount'
 import forEachChild from './forEachChild'
 
-export default function onlyChild(children: VirtualNode): VirtualNode {
+export default function onlyChild(children: VNode): VNode {
   let ret: any
 
   const

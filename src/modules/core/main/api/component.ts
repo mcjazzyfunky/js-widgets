@@ -1,197 +1,263 @@
+import { h, memo, useContext, useEffect, useRef, useState } from 'dyo'
 import * as Spec from 'js-spec/validators'
-import Props from './types/Props'
 import Component from './types/Component'
-import VirtualNode from './types/VirtualNode'
-import h from './h'
-import StatelessComponentConfig from '../internal/types/StatelessComponentConfig'
-import StatefulComponentConfig from '../internal/types/StatefulComponentConfig'
-import createInternalComponent from '../internal/helpers/createInternalComponent'
-import StatefulComponentMeta from '../internal/types/StatefulComponentMeta'
-import StatelessComponentMeta from '../internal/types/StatelessComponentMeta'
+import StatelessComponent from './types/StatelessComponent'
+import StatefulComponent from './types/StatefulComponent'
+import Props from './types/Props'
+import VNode from './types/VNode'
+import Ctrl from './types/Ctrl'
+import PartialOptionalProps from '../internal/types/PartialOptionalProps'
 
-function component<P extends Props = {}>(
-  config: StatelessComponentConfig<P>
-): Component<P>
+function component<
+  P extends Props = {},
+  D extends PartialOptionalProps<P> = {}
+>(config: StatelessComponentConfig<P, D>): StatelessComponent<P> 
 
-function component<P extends Props = {}>(
-  config: StatefulComponentConfig<P>
-): Component<P>
+function component<
+  P extends Props = {},
+  D extends PartialOptionalProps<P> = {}
+>(config: StatefulComponentConfig<P, D>): StatefulComponent<P>
 
-function component<P extends Props = {}>(
-  displayName: string,
-  config: Omit<StatelessComponentConfig<P>, 'displayName'>
-): Component<P>
+function component<
+  P extends Props = {},
+  D extends PartialOptionalProps<P> = {}
+>(config: AdvancedComponentConfig<P, D>): StatefulComponent<P>
 
-function component<P extends Props = {}>(
-  displayName: string,
-  config: Omit<StatefulComponentConfig<P>, 'displayName'>
-): Component<P>
-
-function component<P extends Props = {}>(
-  displayName: string,
-  render: (props: P) => VirtualNode
-): Component<P>
-
-function component(arg1: any, arg2?: any): any {
-  if (process.env.NODE_ENV === 'development' as any) {
-    let errorMsg = ''
-
-    if (typeof arg1 === 'string') {
-      if (typeof arg2 === 'function') {
-        // nothing wrong with a function as second argument
-      } else if (!arg2 || typeof arg2 !== 'object') {
-        errorMsg = 'Second parameter must be an object or an function'
-      } else if ('displayName' in arg2) {
-        errorMsg = "Second argument must not contain key 'displayName'"
-      }
-    } else if (!arg1 || typeof arg1 !== 'object') {
-      errorMsg = 'First argument must either be a string or an object'
-    } else if (arg2 !== undefined) {
-      errorMsg = 'Illegal second argument (expected undefined)'
-    }
-
-    if (errorMsg) {
-      throw new TypeError(`[component] ${errorMsg}`)
-    }
-  }
-
-  let config: any
-  
-  if (typeof arg1 === 'string') {
-    if (typeof arg2 === 'function') {
-      config = { displayName: arg1, render: arg2 }
-    } else { 
-      config = {...(arg2 || {}), displayName: arg1 }
-    }
-  } else {
-    config = arg1
-  }
-
-  const
-    ret = defineComponent(config),
-    internalType = createInternalComponent(config)
-
-  Object.defineProperty(internalType, '__internal_original', {
-    value: ret
-  }),
-
-  Object.defineProperty(ret, '__internal_type', {
-    writable: true, // TODO
-    value: internalType
-  })
-
-  return ret
-}
-
-// --- locals ---------------------------------------------------
-
-const
-  REGEX_DISPLAY_NAME = /^([a-z]+:)*[A-Z]/,
-
-  specOfComponentConfig =
-    Spec.or(
-      {
-        when: Spec.hasOwnProp('render'),
-        
-        then: Spec.exact({
-          displayName: Spec.match(REGEX_DISPLAY_NAME),
-          validate: Spec.nullableOptional(Spec.func),
-          memoize: Spec.optional(Spec.boolean),
-          render: Spec.func
-        })
-      }, 
-      {
-        when: Spec.hasOwnProp('init'),
-
-        then: Spec.exact({
-          displayName: Spec.match(REGEX_DISPLAY_NAME),
-          validate: Spec.nullableOptional(Spec.func),
-          memoize: Spec.optional(Spec.boolean),
-          init: Spec.func
-        })
-      })
-
-function validateComponentConfig(config: any): null | Error {
-  let ret = null
-  const error = specOfComponentConfig.validate(config)
-
-  if (error) {
-    let errorMsg = 'Invalid configuration for component'
-
-    if (config && typeof config.displayName === 'string'
-      && config.displayName.match(REGEX_DISPLAY_NAME)) {
-
-      errorMsg += ` "${config.displayName}"`
-    }
-
-    errorMsg += ` => ${error.message}`
-
-    ret = new Error(errorMsg)
-  }
-
-  return ret
-}
-
-function convertConfigToMeta(config: any): any {
-  const ret: any = {
-    displayName: config.displayName,
-    validate: config.validate || null,
-    // plus key "render" or "init"
-  }
+function component<
+  P extends Props,
+  D extends PartialOptionalProps<P>
+>(config: any): Component<P> {
+  let
+    funcComp: any, // TODO
+    ret: Component<P>
 
   if (config.render) {
-    ret.render = config.render
-  } else {
-    ret.init = config.init
-  }
+    if (!config.defaults) {
+      funcComp = config.render.bind(null)
+    } else {
+      funcComp = (rawProps: P & D) => {
+        const props = Object.assign({}, config.defaults, rawProps) // TODO: optimize
 
-  return Object.freeze(ret)
-}
+        return config.render(props)
+      }
+    }
+  } else if (config.init) {
+    funcComp = (props: P & D) => {
+      const data = useRef({}) as any // TODO
+      
+      if (props !== data.oldProps) {
+        data.oldProps = props
 
-function defineComponent<P extends Props = {}>(
-  config: StatelessComponentConfig<P>
-): Component<P>
+        data.currProps = config.defaults 
+          ? Object.assign({}, config.defaults, props) // TODO: optimize
+          : props
+      }
 
-function defineComponent<P extends Props = {}>(
-  config: StatefulComponentConfig<P>
-): Component<P>
+      if (!data.render) {
+        const result = createCtrl() // TODO!!!
 
-function defineComponent<P extends Props = {}>(
-  config: StatefulComponentConfig<P> | StatelessComponentConfig<P>
-): Component<P> {
-  if (process.env.NODE_ENV === 'development' as any) {
-    const error = validateComponentConfig(config)
+        data.ctrl = result[0]
+        data.run = result[1]
+        data.render = config.init(data.ctrl, () => data.currProps)
+      }
 
-    if (error) {
-      throw new Error(
-        `[component] ${error.message}`)
+      data.run()
+      return data.render(data.currProps)
     }
   }
-
-  let createComponentElement: Function | null = null
-
-  const ret: Component<P> =
-    Object.assign(
-      function (/* arguments */) {
-        return createComponentElement!.apply(null, arguments)
-      },
-      {
-        meta: null! as (StatefulComponentMeta<P> | StatelessComponentMeta<P>) 
-      })
   
-  createComponentElement = h.bind(null, ret as any)
+  if (!config.main) {
+    funcComp.displayName = config.name
 
-  Object.defineProperty(ret, 'js-widgets:kind', {
-    value: 'componentFactory'
-  })
+    if (config.memoize === true) {
+      funcComp = memo(funcComp)
+    }
 
-  Object.defineProperty(ret, 'meta', {
-    value: convertConfigToMeta(config)
-  })
+    ret = ((...args: any[]) => h(funcComp, ...args)) as any // TODO: optimize
+
+    if (config.render) {
+      (ret as any).meta = Object.freeze({
+        type: 'component',
+        name: config.name,
+        stateful: false,
+        memo: config.memo || false,
+        render: config.render
+      })
+    } else {
+      (ret as any).meta = Object.freeze({
+        type: 'component',
+        name: config.name,
+        stateful: false,
+        memo: config.memo || false,
+        render: config.render
+      })
+    }
+
+    funcComp.__component = ret
+    ;(ret as any).__type = funcComp
+  } else {
+    const
+      main = config.main,
+
+      init = (ctrl: Ctrl, getProps: () => P & D) => {
+        const
+          props = Object.assign({}, config.defaults, getProps()),
+          render = main(ctrl, props)
+
+        return () => {
+          for (const propName in props) {
+            delete props[propName]
+          }
+
+          Object.assign(props, config.defaults, getProps()) // TODO: optimize
+
+          return render()
+        }
+      },
+
+      newConfig = { ...config, init }
+  
+    delete newConfig.main
+
+    ret = component(newConfig)
+  }
 
   return ret
 }
 
-// --- exports ------------------------------------------------------
+// --- types ---------------------------------------------------------
+
+type StatelessComponentConfig<
+  P extends Props = {},
+  D extends PartialOptionalProps<P> = {}
+> = {
+  name: string,
+  memoize?: boolean,
+  defaults?: D,
+  render(props: P & D): VNode
+}
+
+type StatefulComponentConfig<
+  P extends Props = {},
+  D extends PartialOptionalProps<P> = {}
+> = {
+  name: string,
+  memoize?: boolean,
+  defaults?: D,
+  init(c: Ctrl, getProps: () => P & D): (props: P & D) => VNode
+}
+
+type AdvancedComponentConfig<
+  P extends Props = {},
+  D extends PartialOptionalProps<P> = {}
+> = {
+  name: string,
+  memoize?: boolean,
+  defaults?: D,
+  main(c: Ctrl, props: P & D): () => VNode
+}
+
+type Action = () => void
+
+// --- locals --------------------------------------------------------
+
+function createCtrl(): [Ctrl, () => void] {
+  let mounted = false
+
+  let
+    forceUpdate: Action | null = null,
+    onceBeforeUpdateActions: Action[] = []
+
+  const
+    afterMountActions: Action[] = [],
+    beforeUpdateActions: Action[] = [],
+    afterUpdateActions: Action[] = [],
+    beforeUnmountActions: Action[] = [],
+    contextActions: Action[] = [],
+
+    ctrl: Ctrl = {
+      isMounted: () => mounted,
+
+      update(onceBeforeUpdateAction) {
+        onceBeforeUpdateActions.push(() => {
+          mounted = true
+        })
+
+        if (onceBeforeUpdateAction) {
+          onceBeforeUpdateActions.push(onceBeforeUpdateAction)
+        }
+
+        forceUpdate && forceUpdate!()
+      },
+
+      consumeContext(ctx) {
+        const DyoContextProvider = (ctx as any)?.constructor?.__type
+
+        if (!DyoContextProvider) {
+          throw new TypeError('[Ctrl#consumeContxt] First argument must be a context')
+        }
+
+        let value = useContext(DyoContextProvider)
+
+        contextActions.push(() => {
+          value = useContext(DyoContextProvider)
+        })
+
+        return () => value
+      },
+
+      afterMount(action) {
+        afterMountActions.push(action)
+      },
+
+      beforeUpdate(action) {
+        beforeUpdateActions.push(action)
+      },
+
+      afterUpdate(action) {
+        afterUpdateActions.push(action)
+      },
+
+      beforeUnmount(action) {
+        beforeUnmountActions.push(action)
+      }
+    },
+
+    run = () => {
+      if (mounted) {
+        contextActions.forEach(it => it())
+      }
+
+      const [, setState] = useState(false)
+
+      if (!forceUpdate) {
+        forceUpdate = () => setState(it => !it)
+      }
+
+      useEffect(() => {
+        afterMountActions.forEach(it => it())
+
+        return () => beforeUnmountActions.forEach(it => it())
+      }, [])
+
+      useEffect(() => {
+        mounted = true
+
+        afterUpdateActions.forEach(it => it())
+      })
+
+      if (onceBeforeUpdateActions.length) {
+        const actions = onceBeforeUpdateActions
+        onceBeforeUpdateActions = []
+        actions.forEach(it => it())
+      }
+
+      beforeUpdateActions.forEach(it => it())
+    }
+
+  return [ctrl, run]
+}
+
+// --- exports -----------------------------------------------------------
 
 export default component

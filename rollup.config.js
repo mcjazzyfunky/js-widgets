@@ -9,7 +9,7 @@ import gzip from 'rollup-plugin-gzip'
 
 const configs = []
 
-for (const pkg of ['all' , 'core', 'html', 'svg', 'root', 'util']) {
+for (const pkg of ['core', 'hooks', 'html', 'svg', 'util']) {
   for (const format of ['umd', 'cjs', 'amd', 'esm']) {
     for (const productive of [false, true]) {
       configs.push(createConfig(pkg, format, productive))
@@ -33,7 +33,7 @@ function createConfig(pkg, moduleFormat, productive) {
       format: moduleFormat,
       sourcemap: false, // productive ? false : 'inline', // TODO
 
-      name: pkg === 'root' || pkg === 'all'
+      name: pkg === 'core'
         ? 'jsWidgets'
         : `jsWidgets.${pkg}`,
 
@@ -41,15 +41,11 @@ function createConfig(pkg, moduleFormat, productive) {
         'dyo': 'dyo',
         'js-spec': 'jsSpec',
         'js-widgets': 'jsWidgets',
-        'js-widgets/core': 'jsWidgets.core',
         'js-widgets/util': 'jsWidgets.util',
       }
     },
 
-    external:
-       pkg === 'all'
-         ? ['js-widgets']
-         : ['js-spec', 'js-widgets', 'js-widgets/core', 'js-widgets/util'],
+    external: ['js-spec', 'js-widgets', 'js-widgets/util'],
 
     plugins: [
       resolve(),
@@ -60,15 +56,13 @@ function createConfig(pkg, moduleFormat, productive) {
         exclude: 'node_modules/**',
         delimiters: ['', ''],
 
-        values: pkg === 'all' ? {
+        values: {
           'process.env.NODE_ENV': productive ? "'production'" : "'development'",
-        } : {
-          'process.env.NODE_ENV': productive ? "'production'" : "'development'",
-          "'../core/main/index'": "'js-widgets/core'",
-          "'../../core/main/index'": "'js-widgets/core'",
-          "'../../../core/main/index'": "'js-widgets/core'",
-          "'../../../../core/main/index'": "'js-widgets/core'",
-          "'../../../../../core/main/index'": "'js-widgets/core'",
+          "'../core/main/index'": "'js-widgets'",
+          "'../../core/main/index'": "'js-widgets'",
+          "'../../../core/main/index'": "'js-widgets'",
+          "'../../../../core/main/index'": "'js-widgets'",
+          "'../../../../../core/main/index'": "'js-widgets'",
 
           "'../util/main/index'": "'js-widgets/util'",
           "'../../util/main/index'": "'js-widgets/util'",

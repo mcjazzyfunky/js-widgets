@@ -1,25 +1,24 @@
+import { Fragment as DyoFragment } from 'dyo'
 import h from './h'
+import setHiddenProp from '../internal/setHiddenProp'
 import component from './component'
+import Children from './types/Children'
 import Component from './types/Component'
-import FragmentEntity from '../internal/adapt/FragmentEntity'
 
 type FragmentProps = {
-  key?: number | string,
-  children?: any // TODO
+  children?: Children
 }
 
-const Fragment = component<FragmentProps>({
-  displayName: 'Fragment',
+const Fragment: Component<FragmentProps> = component({
+  name: 'Fragment',
 
   render(props) {
     const { children, ...propsWithoutChildren } = props
 
-    return h(Fragment as any, propsWithoutChildren, ...children)
+    return h(Fragment, propsWithoutChildren, ...children)
   }
-}) as Component<FragmentProps>
-
-Object.defineProperty(Fragment, '__internal_type', {
-  value: FragmentEntity 
 })
+
+setHiddenProp(Fragment, '__type', DyoFragment)
 
 export default Fragment
