@@ -259,7 +259,7 @@ What are the main difference to React's API?
 * `render(content | null, container)`
 
 #### Module "_js-widgets/util_":
-* `forceUpdat(c)`
+* `forceUpdate(c)`
 * `isElement(it)`
 * `isNode(it)`
 * `childCount(children)`
