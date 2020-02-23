@@ -138,15 +138,15 @@ What are the main difference to React's API?
   nor will render functions be called directly. The only useful
   usage of component types are that they will be passed as first argument to
   the `React.createElement` function. Same for context provider
-  and consumers and the `Fragment` symbol.
+  and the `Fragment` symbol.
 
   In js-widgets things are different: Everything that can be used as first
   argument of the `h` function besides strings is a factory
   function that returns the result of a corresponding `h` call.
   Besides the second argument (`props`) of the `h` function
   and also for all the component factories is optional to provide a concice
-  syntax: All component types, `Fragment`, context providers, context
-  consumers are factory functions with an optional second `props` argument:
+  syntax: All component types, `Fragment`, context providers
+  are factory functions with an optional second `props` argument:
 
   ```jsx
   SomeComponent('some text')
@@ -189,16 +189,6 @@ What are the main difference to React's API?
     <SomeComponent/>
     <SomeOtherComponent/>
   </SomeContextProvider>
-  ```
-
-  ```jsx
-  SomeCtx.Consumer(value =>
-    SomeComponent(value))
-  
-  // or when using jsWidgets with JSX
-  <SomeCtx.Consumer>
-    { it => <SomeComponent/> }
-  </SomeCtx.Consumer>
   ```
 
   Here's another non-JSX demo example:
