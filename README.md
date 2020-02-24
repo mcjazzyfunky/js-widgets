@@ -263,6 +263,7 @@ What are the main difference to React's API?
 * `useContext(...)`
 * `useEffect(...)`
 * `useInterval(...)`
+* `useMethods(...)`
 * `useState(...)`
 * `useTime(...)`
 * `useValue(...)`
