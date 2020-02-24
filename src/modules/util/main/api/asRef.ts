@@ -1,4 +1,4 @@
-import Ref from './types/Ref'
+import { Ref } from '../../../core/main/index'
 
 export default function asRef<T>(getter: () => T): Ref<T> {
   return {

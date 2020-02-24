@@ -134,6 +134,7 @@ type StatelessComponentConfig<
   name: string,
   memoize?: boolean,
   defaults?: D,
+  validate?(props: P & D): boolean | Error | null,
   render(props: P & D): VNode
 }
 
@@ -144,6 +145,7 @@ type StatefulComponentConfig<
   name: string,
   memoize?: boolean,
   defaults?: D,
+  validate?(props: P & D): boolean | Error | null,
   init(c: Ctrl, getProps: () => P & D): (props: P & D) => VNode
 }
 
@@ -154,6 +156,7 @@ type AdvancedComponentConfig<
   name: string,
   memoize?: boolean,
   defaults?: D,
+  validate?(props: P & D): boolean | Error | null,
   main(c: Ctrl, props: P & D): () => VNode
 }
 

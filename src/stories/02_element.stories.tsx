@@ -152,6 +152,8 @@ const BoundaryDemo = component({
   }
 })
 
+// --- exports -------------------------------------------------------
+
 export const fragments = demo(<FragmentDemo/>)
 export const boundary = demo(<BoundaryDemo/>)
 export const iterators = demo(<IteratorDemo/>)

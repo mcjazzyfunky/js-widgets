@@ -1,5 +1,5 @@
-  
-import { asRef, toRef, Ctrl, R } from '../../../core/main/index'
+import { Ctrl, R } from '../../../core/main/index'
+import { toRef } from '../../../util/main/index'
 import useEffect from './useEffect'
 
 function useInterval(

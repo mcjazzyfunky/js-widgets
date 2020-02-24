@@ -1,11 +1,9 @@
 // functions
-export { default as asRef } from './api/asRef'
 export { default as component } from './api/component'
 export { default as context } from './api/context'
 export { default as h } from './api/h'
 export { default as propsOf } from './api/propsOf'
 export { default as render } from './api/render'
-export { default as toRef } from './api/toRef'
 export { default as typeOf } from './api/typeOf'
 export { default as Boundary } from './api/Boundary'
 export { default as Fragment } from './api/Fragment'

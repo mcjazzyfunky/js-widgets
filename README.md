@@ -237,18 +237,17 @@ What are the main difference to React's API?
 ### Current API (not complete yet)
 
 #### Module "_js-widgets_"
-* `asRef(func)`
 * `component(config)`
 * `context(config)`
 * `h(type, props?, ...children)`
 * `typeOf(element)`
 * `propsOf(element)`
-* `toRef(valueOrRef)`
 * `Boundary(props?, ...children)`
 * `Fragment(props?, ...children)`
 * `render(content | null, container)`
 
 #### Module "_js-widgets/util_":
+* `asRef(func)`
 * `forceUpdate(c)`
 * `isElement(it)`
 * `isNode(it)`
@@ -257,6 +256,7 @@ What are the main difference to React's API?
 * `mapChildren(children, mapper)`
 * `onlyChild(children)`
 * `toChildArray(children)`
+* `toRef(valueOrRef)`
 * `withChildren(f)`
 
 #### Module "_js-widgets/hooks_":

@@ -1,7 +1,8 @@
 import * as Spec from 'js-spec/validators'
 import { demo } from './utils'
 import { component, context, h, Component, Ctrl } from '../modules/core/main/index'
-import { useContext, useEffect, useState, useTime } from '../modules/hooks/main/index'
+import { asRef } from '../modules/util/main/index'
+import { useContext, useEffect, useInterval, useState, useTime, useValue } from '../modules/hooks/main/index'
 
 export default {
   title: 'Hooks demos'
@@ -83,7 +84,6 @@ type AppProps = {
 const I18nDemo: Component<AppProps> = component({
   name: 'I18nDemo',
 
-  /* // TODO
   validate: (
     Spec.checkProps({
       optional: {
@@ -91,7 +91,6 @@ const I18nDemo: Component<AppProps> = component({
       }
     })
   ),
-  */
 
   defaults: {
     defaultLocale: 'en'
@@ -124,22 +123,50 @@ interface LocaleTextProps {
 const LocaleText: Component<LocaleTextProps> = component({
   name: 'LocaleText',
 
-  /* // TODO
   validate: Spec.checkProps({
     required: {
       id: Spec.string
     }
   }),
-  */
 
   main(c, props) {
     const locale = useContext(c, LocaleCtx)
-    return () => {
-console.log('rendering', locale)
-      return <p>
+    return () =>
+      <p>
         { translations[locale.value][props.id] }
       </p>
-    }
+  }
+})
+
+// === IntervalDemo ==================================================
+
+const IntervalDemo = component({
+  name: 'IntervalDemo',
+
+  init(c) {
+    const
+      [count, setCount] = useValue(c, 0),
+      [delay, setDelay] = useValue(c, 1000),
+      onReset = () => setDelay(1000)
+
+    useInterval(c, () => {
+      setCount(it => it + 1)
+    }, asRef(() => delay.value))
+
+    useInterval(c, () => {
+      if (delay.value > 10) {
+        setDelay(i => i / 2)
+      }
+    }, 1000)
+
+    return () => 
+      <div>
+        <h1>Counter: {count.value}</h1>
+        <h4>Delay: {delay.value}</h4>
+        <button onClick={onReset}>
+          Reset delay
+        </button>
+      </div>
   }
 })
 
@@ -148,3 +175,4 @@ console.log('rendering', locale)
 export const clock = demo(<ClockDemo/>)
 export const mouse = demo(<MouseDemo/>)
 export const internationalization = demo(<I18nDemo/>)
+export const interval = demo(<IntervalDemo/>)
