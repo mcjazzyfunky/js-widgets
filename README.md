@@ -244,7 +244,7 @@ What are the main difference to React's API?
 * `propsOf(element)`
 * `Boundary(props?, ...children)`
 * `Fragment(props?, ...children)`
-* `render(content | null, container)`
+* `render(content or null, container)`
 
 #### Module "_js-widgets/util_":
 * `asRef(func)`
