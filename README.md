@@ -86,7 +86,6 @@ const Counter = component({
           +1
         </button>
       </div>
-    )
   })
 })
 

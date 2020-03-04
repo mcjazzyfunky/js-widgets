@@ -1,5 +1,4 @@
 import { Props, VNode, Ctrl } from '../../../core/main/index'
-import PartialOptionalProps from '../../../core/main/internal/types/PartialOptionalProps'
 
 export default function useHooks<
   P extends Props

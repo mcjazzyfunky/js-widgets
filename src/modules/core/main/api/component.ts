@@ -10,21 +10,21 @@ import PartialOptionalProps from '../internal/types/PartialOptionalProps'
 
 function component<
   P extends Props = {}
->(config: StatelessComponentConfigWithoutDefaults<P>): StatelessComponent<P> 
+>(config: Omit<StatelessComponentConfig<P, {}>, 'defaults'>): StatelessComponent<P> 
 
 function component<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
->(config: StatelessComponentConfigWithDefaults<P, D>): StatelessComponent<P> 
+>(config: StatelessComponentConfig<P, D>): StatelessComponent<P> 
 
 function component<
   P extends Props = {}
->(config: StatefulComponentConfigWithoutDefaults<P>): StatefulComponent<P>
+>(config: Omit<StatefulComponentConfig<P, {}>, 'defaults'>): StatefulComponent<P>
 
 function component<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
->(config: StatefulComponentConfigWithDefaults<P, D>): StatefulComponent<P>
+>(config: StatefulComponentConfig<P, D>): StatefulComponent<P>
 
 function component<
   P extends Props,
@@ -112,7 +112,7 @@ type StatelessComponentConfigWithoutDefaults<
   render(props: P): VNode
 }
 
-type StatelessComponentConfigWithDefaults<
+type StatelessComponentConfig<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
 > = {
@@ -132,7 +132,7 @@ type StatefulComponentConfigWithoutDefaults<
   init(c: Ctrl, getProps: () => P): (props: P) => VNode
 }
 
-type StatefulComponentConfigWithDefaults<
+type StatefulComponentConfig<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
 > = {
