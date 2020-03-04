@@ -1,8 +1,9 @@
 import { Ctrl } from '../../../core/main/index'
+import hook from './hook'
 
 type Updater<T extends object> = Partial<T> | ((oldState: T) => Partial<T>)
 
-export default function useState<T extends object>(c: Ctrl, initial?: T):
+function useState<T extends object>(c: Ctrl, initial?: T):
   [T, (updater: Updater<T>) => void] {
 
   const state: T = initial || {} as T
@@ -19,3 +20,5 @@ export default function useState<T extends object>(c: Ctrl, initial?: T):
 
   return [state, update]
 }
+
+export default hook('useState', useState)

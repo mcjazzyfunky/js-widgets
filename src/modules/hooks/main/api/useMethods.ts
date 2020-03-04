@@ -1,14 +1,19 @@
-import { Ctrl, Ref } from '../../../core/main/index'
+import { Ctrl, Props, Ref } from '../../../core/main/index'
+import hook from './hook'
 
 // TODO!!!!! - this is not working at all!
-export default function useMethods<M extends Record<string, (...args: any[]) => any>>(
-  c: Ctrl,
-  getRef: () => Ref<M> | undefined,
+function useMethods<
+  M extends Record<string, (...args: any[]) => any>,
+  P extends Props & { ref?: Ref<M> }
+>(
+  c: Ctrl<P>,
   methods: M
 ) {
-  const ref = getRef()
+  const ref = c.getProps().ref 
 
   if (ref && typeof ref === 'object') {
     ref.current = methods
   }
 }
+
+export default hook('useMethods', useMethods)

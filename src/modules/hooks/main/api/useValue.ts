@@ -1,8 +1,9 @@
 import { Ctrl } from '../../../core/main/index'
+import hook from './hook'
 
 type Updater<T> = T | ((oldValue: T) => T)
 
-export default function useValue<T>(c: Ctrl, initialValue: T):
+function useValue<T>(c: Ctrl, initialValue: T):
   [{ value: T }, (updater: Updater<T>) => void] {
 
   const
@@ -20,3 +21,5 @@ export default function useValue<T>(c: Ctrl, initialValue: T):
 
   return [state, updateValue]
 }
+
+export default hook('useValue', useValue)

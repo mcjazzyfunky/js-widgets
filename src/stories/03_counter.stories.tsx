@@ -24,14 +24,13 @@ const SimpleCounter: Component<SimpleCounterProps> = component({
       [count, setCount] = useValue(c, props.initialCount),
       onIncrement = () => setCount(it => it + 1)
 
-    return () => (
+    return () => 
       <div>
         <label>{props.label}: </label>
         <button onClick={onIncrement}>
           {count.value}
         </button>
       </div>
-    )
   })
 })
 
@@ -58,7 +57,7 @@ const ComplexCounter: Component<ComplexCounterProps> = component({
       onIncrement = () => setState({ count: state.count + 1 }),
       onDecrement = () => setState({ count: state.count - 1})
 
-    useMethods(c, () => props.ref, {
+    useMethods(c, {
       reset(n: number = 0) {
         setState({ count: n })
       }

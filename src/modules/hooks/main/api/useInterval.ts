@@ -1,6 +1,7 @@
 import { Ctrl, R } from '../../../core/main/index'
 import { toRef } from '../../../util/main/index'
 import useEffect from './useEffect'
+import hook from './hook'
 
 function useInterval(
   c: Ctrl,
@@ -18,5 +19,4 @@ function useInterval(
   }, () => [callbackRef.current, delayRef.current])
 }
 
-
-export default useInterval
+export default hook('useInterval', useInterval)

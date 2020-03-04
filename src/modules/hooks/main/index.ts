@@ -1,3 +1,4 @@
+export { default as hook } from './api/hook'
 export { default as useContext } from './api/useContext'
 export { default as useEffect } from './api/useEffect'
 export { default as useInterval } from './api/useInterval'

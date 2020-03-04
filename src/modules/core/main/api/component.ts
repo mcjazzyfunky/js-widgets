@@ -57,13 +57,13 @@ function component<
       }
 
       if (!data.render) {
-        const result = createCtrl() // TODO!!!
+        const result = createCtrl(config.name, () => data.currProps) // TODO!!!
 
         data.ctrl = result[0]
         data.run = result[1]
-        data.render = config.init(data.ctrl, () => data.currProps)
+        data.render = config.init(data.ctrl)
       }
-
+      
       data.run()
       return data.render(data.currProps)
     }
@@ -103,15 +103,6 @@ function component<
 
 // --- types ---------------------------------------------------------
 
-type StatelessComponentConfigWithoutDefaults<
-  P extends Props = {}
-> = {
-  name: string,
-  memoize?: boolean,
-  validate?(props: P): boolean | Error | null,
-  render(props: P): VNode
-}
-
 type StatelessComponentConfig<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
@@ -123,15 +114,6 @@ type StatelessComponentConfig<
   render(props: P & D): VNode
 }
 
-type StatefulComponentConfigWithoutDefaults<
-  P extends Props = {}
-> = {
-  name: string,
-  memoize?: boolean,
-  validate?(props: P): boolean | Error | null,
-  init(c: Ctrl, getProps: () => P): (props: P) => VNode
-}
-
 type StatefulComponentConfig<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
@@ -139,18 +121,21 @@ type StatefulComponentConfig<
   name: string,
   memoize?: boolean,
   defaults?: D,
-  validate?(props: P & D): boolean | Error | null,
-  init(c: Ctrl, getProps: () => P & D): (props: P & D) => VNode
+  validate?(props: P): boolean | Error | null,
+  init(c: Ctrl<P & D>, getProps: () => P & D): (props: P & D) => VNode
 }
 
 type Action = () => void
 
 // --- locals --------------------------------------------------------
 
-function createCtrl(): [Ctrl, () => void] {
-  let mounted = false
-
+function createCtrl<P extends Props>(
+  name: string,
+  getProps: () => P
+): [Ctrl<P>, () => void] {
   let
+    initialized = false,
+    mounted = false,
     forceUpdate: Action | null = null,
     onceBeforeUpdateActions: Action[] = []
 
@@ -161,8 +146,11 @@ function createCtrl(): [Ctrl, () => void] {
     beforeUnmountActions: Action[] = [],
     contextActions: Action[] = [],
 
-    ctrl: Ctrl = {
+    ctrl: Ctrl<P> = {
+      getName: () => name,
+      getProps,
       isMounted: () => mounted,
+      isInitialized: () => initialized,
 
       update(onceBeforeUpdateAction) {
         onceBeforeUpdateActions.push(() => {
@@ -210,6 +198,10 @@ function createCtrl(): [Ctrl, () => void] {
     },
 
     run = () => {
+      if (!initialized) {
+        initialized = true
+      }
+
       if (mounted) {
         contextActions.forEach(it => it())
       }

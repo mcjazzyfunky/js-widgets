@@ -1,6 +1,7 @@
 import { Context, Ctrl } from '../../../core/main/index'
+import hook from './hook'
 
-export default function useContext<T>(c: Ctrl, ctx: Context<T>): { value: T } {
+function useContext<T>(c: Ctrl, ctx: Context<T>): { value: T } {
   const
     getContext = c.consumeContext(ctx),
     ret = { value: getContext() }
@@ -11,3 +12,5 @@ export default function useContext<T>(c: Ctrl, ctx: Context<T>): { value: T } {
 
   return ret
 }
+
+export default hook('useContext', useContext)

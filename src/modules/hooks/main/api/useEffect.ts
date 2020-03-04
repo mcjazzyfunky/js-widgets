@@ -1,6 +1,7 @@
 import { Ctrl } from '../../../core/main/index'
+import hook from './hook'
 
-export default function useEffect(
+function useEffect(
   c: Ctrl,
   action: () => (void | (() => void)),
   dependencies?: null | (() => any[])
@@ -54,3 +55,7 @@ function isEqual(arr1: any[], arr2: any[]):  boolean {
 
   return ret
 }
+
+// --- exports -------------------------------------------------------
+
+export default hook('useEffect', useEffect)

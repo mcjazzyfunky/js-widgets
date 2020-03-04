@@ -42,30 +42,57 @@ render(content, document.getElementById('app'))
 ```
 #### Example 2 (ECMAScript + JSX)
 
+```javascript
+import { component, h, render } from 'js-widgets'
+
+const SayHello = component({
+  name: 'SayHello',
+  memoize: true,
+
+  defaults: {
+    name: 'world'
+  },
+
+  render(props) {
+    return <div>Hello, {props.name}!</div>
+  }
+})
+
+render(<SayHello/>, document.getElementById('app'))
+```
+
+#### Example 3 (TypeScript)
+
 ```tsx
-import { component, render } from 'js-widgets'
+import { component, h, render, Component } from 'js-widgets'
 import { useEffect, useValue, withHooks } from 'js-widgets/hooks'
 import * as Spec from 'js-spec/validators' // third-party validation library
 
-const Counter = component({
+type CounterProps = {
+  initialCount?: number,
+  label?: string
+}
+
+const Counter: Component<CounterProps> = component({
   name: 'Counter',
   memoize: true,
 
+  // normally not really necessary in TypeScript, but anyway...
   validate: Spec.checkProps({
     optional: {
-      initialValue: Spec.integer,
+      initialCount: Spec.integer,
       label: Spec.string
     }
   }),
 
   defaults: {
-    initialValue: 0,
+    initialCount: 0,
     label: 'Counter'
   },
 
   init: withHooks((c, props) => {
     const
-      [count, setCount] = useValue(c, props.initialValue),
+      [count, setCount] = useValue(c, props.initialCount),
       onIncrement = () => setCount(it => it + 1),
       onDecrement = () => setCount(it => it - 1)
 
@@ -266,6 +293,7 @@ What are the main difference to React's API?
 * `useState(...)`
 * `useTime(...)`
 * `useValue(...)`
+* `withHooks(...)`
 
 #### Module "_js-widgets/html_"
 

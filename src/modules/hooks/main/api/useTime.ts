@@ -1,4 +1,5 @@
 import { Ctrl, R } from '../../../core/main/index'
+import hook from './hook'
 
 import useValue from './useValue'
 import useInterval from './useInterval'
@@ -7,7 +8,6 @@ function useTime(
   c: Ctrl,
   delay?: R<number>
 ): { value: Date } 
-
 
 function useTime(
   c: Ctrl,
@@ -35,4 +35,4 @@ function getDate() {
   return new Date()
 }
 
-export default useTime
+export default hook('useTime', useTime)
