@@ -97,7 +97,7 @@ const IteratorDemo = component({
 const ErrorTrigger = component({
   name: 'ErrorTrigger',
 
-  main(c) {
+  init(c) {
     const
       [$errorMsg, setErrorMsg] = useValue<string | null>(c, null),
       onButtonClick = () => setErrorMsg('Simulated error!')
@@ -121,7 +121,7 @@ const ErrorTrigger = component({
 const BoundaryDemo = component({
   name: 'BoundaryDemo',
 
-  main(c) {
+  init(c) {
     const
       [error, setError] = useValue<Error | null>(c, null),
       

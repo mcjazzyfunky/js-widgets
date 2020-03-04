@@ -9,19 +9,22 @@ import Ctrl from './types/Ctrl'
 import PartialOptionalProps from '../internal/types/PartialOptionalProps'
 
 function component<
-  P extends Props = {},
-  D extends PartialOptionalProps<P> = {}
->(config: StatelessComponentConfig<P, D>): StatelessComponent<P> 
+  P extends Props = {}
+>(config: StatelessComponentConfigWithoutDefaults<P>): StatelessComponent<P> 
 
 function component<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
->(config: StatefulComponentConfig<P, D>): StatefulComponent<P>
+>(config: StatelessComponentConfigWithDefaults<P, D>): StatelessComponent<P> 
+
+function component<
+  P extends Props = {}
+>(config: StatefulComponentConfigWithoutDefaults<P>): StatefulComponent<P>
 
 function component<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
->(config: AdvancedComponentConfig<P, D>): StatefulComponent<P>
+>(config: StatefulComponentConfigWithDefaults<P, D>): StatefulComponent<P>
 
 function component<
   P extends Props,
@@ -66,68 +69,50 @@ function component<
     }
   }
   
-  if (!config.main) {
-    funcComp.displayName = config.name
+  funcComp.displayName = config.name
 
-    if (config.memoize === true) {
-      funcComp = memo(funcComp)
-    }
-
-    ret = ((...args: any[]) => h(funcComp, ...args)) as any // TODO: optimize
-
-    if (config.render) {
-      (ret as any).meta = Object.freeze({
-        type: 'component',
-        name: config.name,
-        stateful: false,
-        memo: config.memo || false,
-        render: config.render
-      })
-    } else {
-      (ret as any).meta = Object.freeze({
-        type: 'component',
-        name: config.name,
-        stateful: false,
-        memo: config.memo || false,
-        render: config.render
-      })
-    }
-
-    funcComp.__component = ret
-    ;(ret as any).__type = funcComp
-  } else {
-    const
-      main = config.main,
-
-      init = (ctrl: Ctrl, getProps: () => P & D) => {
-        const
-          props = Object.assign({}, config.defaults, getProps()),
-          render = main(ctrl, props)
-
-        return () => {
-          for (const propName in props) {
-            delete props[propName]
-          }
-
-          Object.assign(props, config.defaults, getProps()) // TODO: optimize
-
-          return render()
-        }
-      },
-
-      newConfig = { ...config, init }
-  
-    delete newConfig.main
-
-    ret = component(newConfig)
+  if (config.memoize === true) {
+    funcComp = memo(funcComp)
   }
+
+  ret = ((...args: any[]) => h(funcComp, ...args)) as any // TODO: optimize
+
+  if (config.render) {
+    (ret as any).meta = Object.freeze({
+      type: 'component',
+      name: config.name,
+      stateful: false,
+      memo: config.memo || false,
+      render: config.render
+    })
+  } else {
+    (ret as any).meta = Object.freeze({
+      type: 'component',
+      name: config.name,
+      stateful: false,
+      memo: config.memo || false,
+      render: config.render
+    })
+  }
+
+  funcComp.__component = ret
+  ;(ret as any).__type = funcComp
 
   return ret
 }
 
 // --- types ---------------------------------------------------------
 
-type StatelessComponentConfig<
+type StatelessComponentConfigWithoutDefaults<
+  P extends Props = {}
+> = {
+  name: string,
+  memoize?: boolean,
+  validate?(props: P): boolean | Error | null,
+  render(props: P): VNode
+}
+
+type StatelessComponentConfigWithDefaults<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
 > = {
@@ -138,7 +123,16 @@ type StatelessComponentConfig<
   render(props: P & D): VNode
 }
 
-type StatefulComponentConfig<
+type StatefulComponentConfigWithoutDefaults<
+  P extends Props = {}
+> = {
+  name: string,
+  memoize?: boolean,
+  validate?(props: P): boolean | Error | null,
+  init(c: Ctrl, getProps: () => P): (props: P) => VNode
+}
+
+type StatefulComponentConfigWithDefaults<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
 > = {
@@ -147,17 +141,6 @@ type StatefulComponentConfig<
   defaults?: D,
   validate?(props: P & D): boolean | Error | null,
   init(c: Ctrl, getProps: () => P & D): (props: P & D) => VNode
-}
-
-type AdvancedComponentConfig<
-  P extends Props = {},
-  D extends PartialOptionalProps<P> = {}
-> = {
-  name: string,
-  memoize?: boolean,
-  defaults?: D,
-  validate?(props: P & D): boolean | Error | null,
-  main(c: Ctrl, props: P & D): () => VNode
 }
 
 type Action = () => void

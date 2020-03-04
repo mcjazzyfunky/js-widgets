@@ -1,7 +1,7 @@
 import { demo } from './utils'
 import { createElement } from 'dyo'
 import { h, component, Component, VNode } from '../modules/core/main/index'
-import { useEffect, useState } from '../modules/hooks/main/index'
+import { useEffect, useState, withHooks } from '../modules/hooks/main/index'
 import { forceUpdate } from '../modules/util/main/index'
 
 export default {
@@ -94,7 +94,7 @@ function runTests() {
 const PerformanceTest = component({
   name: 'PerformanceTest',
 
-  main(c) {
+  init(c) {
     const
       [state, setState] = useState(c, {
         running: false,
@@ -237,7 +237,7 @@ const SpeedTest: Component<SpeedTestProps> = component({
     framesPerSecond: prefs.framesPerSecond
   },
 
-  main(c, props) {
+  init: withHooks((c, props) => {
     let 
       intervalId = null as any,
       startTime = Date.now(),
@@ -293,7 +293,7 @@ const SpeedTest: Component<SpeedTestProps> = component({
         </div>
       )
     }
-  }
+  })
 })
 
 export const performanceTest2 = demo(

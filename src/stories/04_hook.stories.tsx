@@ -2,7 +2,7 @@ import * as Spec from 'js-spec/validators'
 import { demo } from './utils'
 import { component, context, h, Component, Ctrl } from '../modules/core/main/index'
 import { asRef } from '../modules/util/main/index'
-import { useContext, useEffect, useInterval, useState, useTime, useValue } from '../modules/hooks/main/index'
+import { useContext, useEffect, useInterval, useState, useTime, useValue, withHooks } from '../modules/hooks/main/index'
 
 export default {
   title: 'Hooks demos'
@@ -30,7 +30,7 @@ const ClockDemo = component({
 const MouseDemo = component({
   name: 'MouseDemo',
 
-  main(c) {
+  init(c) {
     const mousePos = useMousePosition(c)
 
     return () => {
@@ -96,7 +96,7 @@ const I18nDemo: Component<AppProps> = component({
     defaultLocale: 'en'
   },
 
-  main(c, props) {
+  init: withHooks((c, props) => {
     const
       [state, setState] = useState(c, { locale: props.defaultLocale }),
       onChange = (ev: any) => setState({ locale: ev.target.value })
@@ -113,29 +113,30 @@ const I18nDemo: Component<AppProps> = component({
           <LocaleText id="salutation"/>
         </div>
       </LocaleProvider>
-  }
+  })
 })
 
-interface LocaleTextProps {
+type LocaleTextProps = {
   id: string
 }
 
 const LocaleText: Component<LocaleTextProps> = component({
   name: 'LocaleText',
-
+  
   validate: Spec.checkProps({
     required: {
       id: Spec.string
     }
   }),
 
-  main(c, props) {
+  init: withHooks((c, props) => {
     const locale = useContext(c, LocaleCtx)
+
     return () =>
       <p>
         { translations[locale.value][props.id] }
       </p>
-  }
+  })
 })
 
 // === IntervalDemo ==================================================

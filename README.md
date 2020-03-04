@@ -44,7 +44,7 @@ render(content, document.getElementById('app'))
 
 ```tsx
 import { component, render } from 'js-widgets'
-import { useEffect, useValue } from 'js-widgets/hooks'
+import { useEffect, useValue, withHooks } from 'js-widgets/hooks'
 import * as Spec from 'js-spec/validators' // third-party validation library
 
 const Counter = component({
@@ -63,7 +63,7 @@ const Counter = component({
     label: 'Counter'
   },
 
-  main(c, props) {
+  init: withHooks((c, props) => {
     const
       [count, setCount] = useValue(c, props.initialValue),
       onIncrement = () => setCount(it => it + 1),
@@ -87,7 +87,7 @@ const Counter = component({
         </button>
       </div>
     )
-  }
+  })
 })
 
 render(<Counter/>, document.getElementById('app'))
