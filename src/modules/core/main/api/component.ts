@@ -7,25 +7,24 @@ import Props from './types/Props'
 import VNode from './types/VNode'
 import Ctrl from './types/Ctrl'
 import PartialOptionalProps from '../internal/types/PartialOptionalProps'
-/*
-function component<
-  P extends Props = {}
->(config: Omit<StatelessComponentConfig<P, {}>, 'defaults'>): StatelessComponent<P> 
-*/
-function component<
-  P extends Props = {},
-  D extends PartialOptionalProps<P> = {}
->(config: StatelessComponentConfig<P, D>): StatelessComponent<P> 
 
-/*
-function component<
-  P extends Props = {}
->(config: Omit<StatefulComponentConfig<P, {}>, 'defaults'>): StatefulComponent<P>
-*/
 function component<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
->(config: StatefulComponentConfig<P, D>): StatefulComponent<P>
+>(config: StatelessComponentConfig2<P, D>): StatelessComponent<P> 
+
+function component<
+  P extends Props = {}
+>(config: Omit<StatelessComponentConfig1<P>, 'defaults'>): StatelessComponent<P> 
+
+function component<
+  P extends Props = {},
+  D extends PartialOptionalProps<P> = {}
+>(config: StatefulComponentConfig2<P, D>): StatefulComponent<P>
+
+function component<
+  P extends Props = {}
+>(config: StatefulComponentConfig1<P>): StatefulComponent<P>
 
 function component<
   P extends Props,
@@ -104,24 +103,41 @@ function component<
 
 // --- types ---------------------------------------------------------
 
-type StatelessComponentConfig<
+type StatelessComponentConfig1<
+  P extends Props = {}
+> = {
+  name: string,
+  memoize?: boolean,
+  validate?(props: P): boolean | Error | null,
+  render(props: P): VNode
+}
+
+type StatelessComponentConfig2<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
 > = {
   name: string,
   memoize?: boolean,
-  defaults?: D,
-  validate?(props: P & D): boolean | Error | null,
+  defaults: D,
+  validate?(props: P): boolean | Error | null,
   render(props: P & D): VNode
 }
 
-type StatefulComponentConfig<
+type StatefulComponentConfig1<
+  P extends Props = {}
+> = {
+  name: string,
+  memoize?: boolean,
+  validate?(props: P): boolean | Error | null,
+  init(c: Ctrl<P>): (props: P) => VNode
+}
+type StatefulComponentConfig2<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
 > = {
   name: string,
   memoize?: boolean,
-  defaults?: D,
+  defaults: D,
   validate?(props: P): boolean | Error | null,
   init(c: Ctrl<P & D>): (props: P & D) => VNode
 }
