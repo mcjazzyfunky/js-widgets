@@ -44,10 +44,20 @@ render(content, document.getElementById('app'))
 
 ```javascript
 import { component, h, render } from 'js-widgets'
+import * as Spec from 'js-spec/validators'
 
 const SayHello = component({
   name: 'SayHello',
   memoize: true,
+  
+  // prop validation only on DEV system
+  ...process.env.NODE_ENV === 'development' && {
+    validate: Spec.checkProps({
+      optional: {
+        name: Spec.string
+      }
+    })
+  },
 
   defaults: {
     name: 'world'
@@ -66,7 +76,6 @@ render(<SayHello/>, document.getElementById('app'))
 ```tsx
 import { component, h, render, Component } from 'js-widgets'
 import { useEffect, useProps, useValue } from 'js-widgets/hooks'
-import * as Spec from 'js-spec/validators' // third-party validation library
 
 type CounterProps = {
   initialCount?: number,
@@ -76,14 +85,6 @@ type CounterProps = {
 const Counter: Component<CounterProps> = component({
   name: 'Counter',
   memoize: true,
-
-  // normally not really necessary in TypeScript, but anyway...
-  validate: Spec.checkProps({
-    optional: {
-      initialCount: Spec.integer,
-      label: Spec.string
-    }
-  }),
 
   defaults: {
     initialCount: 0,
