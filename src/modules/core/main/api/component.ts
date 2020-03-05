@@ -15,7 +15,7 @@ function component<
 
 function component<
   P extends Props = {}
->(config: Omit<StatelessComponentConfig1<P>, 'defaults'>): StatelessComponent<P> 
+>(config: StatelessComponentConfig1<P>): StatelessComponent<P> 
 
 function component<
   P extends Props = {},
