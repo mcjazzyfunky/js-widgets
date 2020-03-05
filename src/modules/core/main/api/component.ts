@@ -7,20 +7,21 @@ import Props from './types/Props'
 import VNode from './types/VNode'
 import Ctrl from './types/Ctrl'
 import PartialOptionalProps from '../internal/types/PartialOptionalProps'
-
+/*
 function component<
   P extends Props = {}
 >(config: Omit<StatelessComponentConfig<P, {}>, 'defaults'>): StatelessComponent<P> 
-
+*/
 function component<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
 >(config: StatelessComponentConfig<P, D>): StatelessComponent<P> 
 
+/*
 function component<
   P extends Props = {}
 >(config: Omit<StatefulComponentConfig<P, {}>, 'defaults'>): StatefulComponent<P>
-
+*/
 function component<
   P extends Props = {},
   D extends PartialOptionalProps<P> = {}
@@ -122,7 +123,7 @@ type StatefulComponentConfig<
   memoize?: boolean,
   defaults?: D,
   validate?(props: P): boolean | Error | null,
-  init(c: Ctrl<P & D>, getProps: () => P & D): (props: P & D) => VNode
+  init(c: Ctrl<P & D>): (props: P & D) => VNode
 }
 
 type Action = () => void

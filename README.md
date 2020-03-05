@@ -65,7 +65,7 @@ render(<SayHello/>, document.getElementById('app'))
 
 ```tsx
 import { component, h, render, Component } from 'js-widgets'
-import { useEffect, useValue, withHooks } from 'js-widgets/hooks'
+import { useEffect, useProps, useValue } from 'js-widgets/hooks'
 import * as Spec from 'js-spec/validators' // third-party validation library
 
 type CounterProps = {
@@ -90,8 +90,9 @@ const Counter: Component<CounterProps> = component({
     label: 'Counter'
   },
 
-  init: withHooks((c, props) => {
+  init(c) {
     const
+      props = useProps(c),
       [count, setCount] = useValue(c, props.initialCount),
       onIncrement = () => setCount(it => it + 1),
       onDecrement = () => setCount(it => it - 1)
@@ -113,7 +114,7 @@ const Counter: Component<CounterProps> = component({
           +1
         </button>
       </div>
-  })
+  }
 })
 
 render(<Counter/>, document.getElementById('app'))
@@ -286,14 +287,15 @@ What are the main difference to React's API?
 * `withChildren(f)`
 
 #### Module "_js-widgets/hooks_":
+* `hook(...)`
 * `useContext(...)`
 * `useEffect(...)`
 * `useInterval(...)`
 * `useMethods(...)`
+* `useProps(...)`
 * `useState(...)`
 * `useTime(...)`
 * `useValue(...)`
-* `withHooks(...)`
 
 #### Module "_js-widgets/html_"
 

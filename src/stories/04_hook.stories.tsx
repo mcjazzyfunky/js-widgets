@@ -2,7 +2,7 @@ import * as Spec from 'js-spec/validators'
 import { demo } from './utils'
 import { component, context, h, Component, Ctrl } from '../modules/core/main/index'
 import { asRef } from '../modules/util/main/index'
-import { useContext, useEffect, useInterval, useState, useTime, useValue, withHooks } from '../modules/hooks/main/index'
+import { useContext, useEffect, useInterval, useProps, useState, useTime, useValue } from '../modules/hooks/main/index'
 
 export default {
   title: 'Hooks demos'
@@ -96,8 +96,9 @@ const I18nDemo: Component<AppProps> = component({
     defaultLocale: 'en'
   },
 
-  init: withHooks((c, props) => {
+  init(c) {
     const
+      props = useProps(c),
       [state, setState] = useState(c, { locale: props.defaultLocale }),
       onChange = (ev: any) => setState({ locale: ev.target.value })
 
@@ -113,7 +114,7 @@ const I18nDemo: Component<AppProps> = component({
           <LocaleText id="salutation"/>
         </div>
       </LocaleProvider>
-  })
+  }
 })
 
 type LocaleTextProps = {
@@ -129,14 +130,16 @@ const LocaleText: Component<LocaleTextProps> = component({
     }
   }),
 
-  init: withHooks((c, props) => {
-    const locale = useContext(c, LocaleCtx)
+  init(c) {
+    const
+      props = useProps(c),
+      locale = useContext(c, LocaleCtx)
 
     return () =>
       <p>
         { translations[locale.value][props.id] }
       </p>
-  })
+  }
 })
 
 // === IntervalDemo ==================================================

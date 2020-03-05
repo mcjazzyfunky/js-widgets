@@ -1,6 +1,6 @@
 import { demo } from './utils'
 import { component, h, Component, Ref } from '../modules/core/main/index'
-import { useMethods, useState, useValue, withHooks } from '../modules/hooks/main/index'
+import { useMethods, useProps, useState, useValue } from '../modules/hooks/main/index'
 
 export default { title: 'Counters' }
 
@@ -8,7 +8,7 @@ export default { title: 'Counters' }
 
 type SimpleCounterProps = {
   label?: string,
-  initialValue?: number
+  initialCount?: number
 }
 
 const SimpleCounter: Component<SimpleCounterProps> = component({
@@ -19,8 +19,9 @@ const SimpleCounter: Component<SimpleCounterProps> = component({
     label: 'Counter'
   },
 
-  init: withHooks((c, props) => {
+  init(c) {
     const
+      props = useProps(c),
       [count, setCount] = useValue(c, props.initialCount),
       onIncrement = () => setCount(it => it + 1)
 
@@ -31,7 +32,7 @@ const SimpleCounter: Component<SimpleCounterProps> = component({
           {count.value}
         </button>
       </div>
-  })
+  }
 })
 
 // === ComplexCounter ================================================
@@ -51,8 +52,9 @@ const ComplexCounter: Component<ComplexCounterProps> = component({
     label: 'Counter'
   },
 
-  init: withHooks((c, props) => {
+  init(c) {
     const
+      props = useProps(c),
       [state, setState] = useState(c, { count: props.initialValue }),
       onIncrement = () => setState({ count: state.count + 1 }),
       onDecrement = () => setState({ count: state.count - 1})
@@ -71,7 +73,7 @@ const ComplexCounter: Component<ComplexCounterProps> = component({
         <button onClick={onIncrement}>+</button>
       </div>
     )
-  })
+  }
 })
 
 const ComplexCounterDemo = component({
