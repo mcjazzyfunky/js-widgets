@@ -175,7 +175,7 @@ const counterDefaults = {
   label: 'Counter'
 }
 
-function initCounter(c: Ctrl(<CounterProps>) {
+function initCounter(c: Ctrl<CounterProps>) {
   const
     props = useProps(c, counterDefaults),
     [count, setCount] = useValue(c, props.initialCount),
