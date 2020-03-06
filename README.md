@@ -127,14 +127,13 @@ render(<Counter/>, document.getElementById('app'))
 
 ```tsx
 import { component, render } from 'js-widgets'
-import { div } from 'js-widgets/html'
 
 type SayHelloProps = {
   salutation?: string,
   name?: string
 }
 
-export default component<SayHelloProps>({
+const SayHello = component<SayHelloProps>({
   name: 'SayHello',
   memoize: true,
   render: renderSayHello
@@ -163,7 +162,7 @@ type CounterProps = {
   label?: string
 }
 
-export default component<CounterProps>({
+const Counter = component<CounterProps>({
   name: 'Counter',
   memoize: true,
   init: initCounter
