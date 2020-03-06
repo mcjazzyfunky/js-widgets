@@ -156,7 +156,7 @@ render(<SayHello name="Jane Doe"/>, '#app')
 #### Stateful component
 
 ```tsx
-import { component, h, Ctrl } from 'js-widgets'
+import { component, h, render, Ctrl } from 'js-widgets'
 import { useProps, useValue } from 'js-widgets/hooks'
 
 type CounterProps = {
