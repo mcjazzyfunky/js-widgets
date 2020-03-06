@@ -121,6 +121,82 @@ const Counter: Component<CounterProps> = component({
 render(<Counter/>, document.getElementById('app'))
 ```
 
+### The author's preferred syntax
+
+#### Stateless component
+
+```tsx
+import { component, render } from 'js-widgets'
+import { div } from 'js-widgets/html'
+
+type SayHelloProps = {
+  salutation?: string,
+  name?: string
+}
+
+export default component<SayHelloProps>({
+  name: 'SayHello',
+  memoize: true,
+  render: renderSayHello
+})
+
+function renderSayHello({
+  salutation = 'Hallo',
+  name = 'world'
+}: SayHelloProps) {
+  return (
+    <div>
+      {salutation}, {name}!
+    <div>
+  )
+}
+```
+
+#### Stateful component
+
+```tsx
+import { component, h, render, Ctrl } from 'js-widgets'
+import { useProps, useValue } from 'js-widgets/hooks'
+
+type CounterProps = {
+  initialCount?: number,
+  label?: string
+}
+
+export default component<CounterProps>({
+  name: 'Counter',
+  memoize: true,
+  init: initCounter
+})
+
+const counterDefaults = {
+  initialCount: 0,
+  label: 'Counter'
+}
+
+function initCounter(c: Ctrl(<CounterProps>) {
+  const
+    props = useProps(c, counterDefaults),
+    [count, setCount] = useValue(c, props.initialCount),
+    onIncrement = () => setCount(it => it + 1),
+    onDecrement = () => setCount(it => it - 1)
+
+  return () =>
+    <div className="counter">
+      <label>{props.label}: </label> 
+      <button onClick={onDecrement}>
+        -1
+      </button>
+      <span>
+        {count.value}
+      </span>
+      <button onClick={onIncrement}>
+        +1
+      </button>
+    </div>
+}
+```
+
 ### Motivation
 
 What are the main difference to React's API?
