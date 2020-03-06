@@ -126,7 +126,7 @@ render(<Counter/>, document.getElementById('app'))
 #### Stateless component
 
 ```tsx
-import { component, h } from 'js-widgets'
+import { component, h, render } from 'js-widgets'
 
 type SayHelloProps = {
   salutation?: string,
@@ -149,6 +149,8 @@ function renderSayHello({
     <div>
   )
 }
+
+render(<SayHello name="Jane Doe"/>, '#app')
 ```
 
 #### Stateful component
@@ -194,6 +196,8 @@ function initCounter(c: Ctrl(<CounterProps>) {
       </button>
     </div>
 }
+
+render(<Counter/>, '#app')
 ```
 
 ### Motivation
