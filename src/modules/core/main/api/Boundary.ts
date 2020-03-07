@@ -29,7 +29,7 @@ function CustomDyoBoundary({
   children
 }: any) { // TODO
   return createDyoElement(DyoBoundary as any, { // TODO
-    fallback(cause: any) {console.log(1111, cause)
+    fallback(cause: any) {
       return fallback(cause.message)
     }
   } as any, children) // TODO

@@ -22,6 +22,22 @@ function component<
   let
     funcComp: any, // TODO
     ret: Component<P>
+  
+  if (process.env.NODE_ENV === 'development' as any) {
+    const error = validateComponentConfig(config)
+
+    if (error) {
+      const errorMsg =
+        config
+          && typeof config === 'object'
+          && typeof config.name === 'string'
+          && config.name.trim() !== ''
+            ? `Illegal configuration for component "${config.name}" =>  ${error.message}`
+            : `Illegal component configuration" =>  ${error.message}`
+
+      throw new TypeError(errorMsg)
+    }
+  }
 
   if (config.render) {
     funcComp = config.render.bind(null)
@@ -61,6 +77,7 @@ function component<
       name: config.name,
       stateful: false,
       memo: config.memo || false,
+      validate: config.validate || null,
       render: config.render
     })
   } else {
@@ -69,6 +86,7 @@ function component<
       name: config.name,
       stateful: false,
       memo: config.memo || false,
+      validate: config.validate || null,
       render: config.render
     })
   }
@@ -84,6 +102,32 @@ function component<
 type Action = () => void
 
 // --- locals --------------------------------------------------------
+
+const
+  REGEX_COMPONENT_NAME = /^([a-zA-Z][a-zA-Z0-9]*:)*[A-Z][a-zA-Z0-9.]*$/,
+
+  validateStatelessComponentConfig = Spec.exact({
+    name: Spec.match(REGEX_COMPONENT_NAME),
+    validate: Spec.optional(Spec.func),
+    memoize: Spec.optional(Spec.boolean),
+    render: Spec.func
+  }),
+
+  validateStatefulComponentConfig = Spec.exact({
+    name: Spec.match(REGEX_COMPONENT_NAME),
+    validate: Spec.optional(Spec.func),
+    memoize: Spec.optional(Spec.boolean),
+    init: Spec.func
+  }),
+
+  validateComponentConfig = Spec.or(
+    {
+      when: Spec.hasOwnProp('render'),
+      then: validateStatelessComponentConfig
+    }, {
+      when: Spec.hasOwnProp('init'),
+      then: validateStatefulComponentConfig
+    })
 
 function createCtrl<P extends Props>(
   name: string,

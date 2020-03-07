@@ -10,6 +10,7 @@ import h from './h'
 import component from './component'
 import Context from './types/Context'
 import VNode from './types/VNode'
+import hasOwnProp from '../internal/hasOwnProp'
 import setHiddenProp from '../internal/setHiddenProp'
 import Component from './types/Component'
 
@@ -24,9 +25,49 @@ function context<T>(
 function context<T>(config: ContextConfig1<T> | ContextConfig2<T>):
   [Context<T>, Provider<T>] {
   
-    const
+  if (process.env.NODE_ENV === 'development' as any) {
+    const error = validateContextConfig(config)
+
+    if (error) {
+      const errorMsg =
+        config
+          && typeof config === 'object'
+          && typeof config.name === 'string'
+          && config.name.trim() !== ''
+            ? `Illegal configuration for context "${config.name}" =>  ${error.message}`
+            : `Illegal context configuration " =>  ${error.message}`
+
+      throw new TypeError(errorMsg)
+    }
+  }
+  
+  const
     Provider = component({
-      name: `ContextProvider (${name})`,
+      name: `ContextProvider:${config.name}`,
+
+      ...process.env.NODE_ENV === 'development' as any && config.validate && {
+        validate(props: any) {
+          const illegalKeys = Object.keys(props).filter(it => it !== 'value' && it !== 'children')
+
+          let errorMsg: string | null = null
+
+          if (!hasOwnProp(props, 'value')) {
+            errorMsg = "Must contain prop 'value'"
+          } else if (illegalKeys.length > 0) {
+            errorMsg = 'Illegal key(s): ' + illegalKeys.join(', ')
+          } else {
+            const result = config.validate!(props.value)
+
+            if (result === false) {
+              errorMsg = "Invalid property 'value'"
+            } else if (result instanceof Error) {
+              errorMsg = "Invalid property 'value' => " + result.message.trim()
+            }
+          }
+
+          return errorMsg ? new TypeError(errorMsg) : null
+        }
+      },
 
       render(props: any): VNode { // TODO
         const { children, ...propsWithoutChildren } = props
@@ -48,11 +89,11 @@ function context<T>(config: ContextConfig1<T> | ContextConfig2<T>):
   (context as any).meta = {
     type: 'context',
     name: config.name,
+    validate: config.validate || null,
     default: config.default!
   }
 
   setHiddenProp(constr, '__type', DyoProvider)
-  setHiddenProp(constr, '__validate', config.validate)
 
   return [context, Provider]
 }
@@ -81,29 +122,14 @@ type Provider<T> = Component<ProviderProps<T>>
 
 // --- locals --------------------------------------------------------
 
-function createDyoContext(defaultValue: any) {
-  const
-    Provider = ({ value, key, children }: any): any => {
-      return createDyoElement(DyoContext, { value, key }, children)
-    },
+const
+  REGEX_CONTEXT_NAME = /^([a-zA-Z][a-zA-Z0-9]*:)*[A-Z][a-zA-Z0-9.]*$/,
 
-    Consumer = ({ props, children }: any): any => {
-      let value: any = useDyoContext(Provider)
-
-      if (value === undefined) {
-        value = defaultValue
-      }
-
-      return children(value)
-    }
-
-  Object.defineProperty(Provider, '__internal_defaultContextValue', {
-    value: defaultValue 
+  validateContextConfig = Spec.exact({
+    name: Spec.match(REGEX_CONTEXT_NAME),
+    default: Spec.optional(Spec.any),
+    validate: Spec.optional(Spec.func)
   })
-
-  return { Provider, Consumer }
-}
-
 
 // --- exports ------------------------------------------------------
 

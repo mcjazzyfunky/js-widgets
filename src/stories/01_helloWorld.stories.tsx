@@ -1,14 +1,22 @@
 import { demo } from './utils'
-import { component, h, Component } from '../modules/core/main/index'
+import { component, h } from '../modules/core/main/index'
+import * as Spec from 'js-spec/validators'
 
 type SayHelloProps = {
   salutation?: string,
   name?: string
 }
 
-const SayHello: Component<SayHelloProps> = component({
+const SayHello = component<SayHelloProps>({
   name: 'Hello',
- 
+
+  validate: Spec.checkProps({
+    optional: {
+      salutation: Spec.string,
+      name: Spec.string
+    }
+  }),
+
   render({
     salutation = 'Hello',
     name = 'world'
