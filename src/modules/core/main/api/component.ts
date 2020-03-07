@@ -7,6 +7,7 @@ import Props from './types/Props'
 import VNode from './types/VNode'
 import Ctrl from './types/Ctrl'
 import PartialOptionalProps from '../internal/types/PartialOptionalProps'
+import ValidateShape from '../internal/types/ValidateShape'
 
 function component<
   P extends Props = {},
@@ -118,7 +119,7 @@ type StatelessComponentConfig2<
 > = {
   name: string,
   memoize?: boolean,
-  defaults: D,
+  defaults: ValidateShape<D, PartialOptionalProps<P>>,
   validate?(props: P): boolean | Error | null,
   render(props: P & D): VNode
 }
@@ -137,7 +138,7 @@ type StatefulComponentConfig2<
 > = {
   name: string,
   memoize?: boolean,
-  defaults: D,
+  defaults: ValidateShape<D, PartialOptionalProps<P>>,
   validate?(props: P): boolean | Error | null,
   init(c: Ctrl<P & D>): (props: P & D) => VNode
 }

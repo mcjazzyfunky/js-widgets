@@ -3,10 +3,10 @@ import hook from './hook'
 
 function useProps<
   P extends Props,
-  D extends PartialOptionalProps<P> = {}  
->(c: Ctrl<P>, defaultProps?: D): P & D {
+  D extends PickOptionalProps<P>
+>(c: Ctrl<P>, defaultProps?: ValidateShape<D, PickOptionalProps<P>>): P & D {
   const props = Object.assign({}, defaultProps, c.getProps())
-  
+
   c.beforeUpdate(() => {
     for (const propName in props) {
       delete props[propName]
@@ -20,15 +20,14 @@ function useProps<
 
 // --- types ---------------------------------------------------------
 
-type OmitNeverProps<T extends object> = Pick<T, {
-  [K in keyof T]: T[K] extends never ? never : K
+type ValidateShape<T, Shape> =
+  T extends Shape ?
+  Exclude<keyof T, keyof Shape> extends never ?
+  T : never : never;
+
+type PickOptionalProps<T extends Record<string, any>> = Pick<T, {
+  [K in keyof T]: T extends Record<K, T[K]> ? never : K
 }[keyof T]>
-
-type PickOptionalProps<T extends object> = OmitNeverProps<{
-  [K in keyof T]: T extends Record<K, T[K]> ? never : T[K]
-}>
-
-type PartialOptionalProps<T extends Object> = Partial<PickOptionalProps<T>>
 
 // --- exports -------------------------------------------------------
 
