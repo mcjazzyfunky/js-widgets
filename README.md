@@ -17,16 +17,9 @@ Disclaimer: This is just an initial draft of README. A lot is missing ....
 ```javascript
 import { component, render } from 'js-widgets'
 import { div } from 'js-widgets/html'
-import * as Spec from 'js-spec/validators' // third-party validation library
 
 const SayHello = component({
   name: 'SayHello',
-
-  validate: Spec.checkProps({
-    optional: {
-      name: Spec.string
-    }
-  }),
 
   render({ name = 'world' }) {
     return div(`Hello, ${name}!`)
@@ -44,14 +37,16 @@ render(content, document.getElementById('app'))
 
 ```javascript
 import { component, h, render } from 'js-widgets'
-import * as Spec from 'js-spec/validators'
+import * as Spec from 'js-spec/validators' // third-party validation library
+
+const __DEV__ = process.env.NODE_ENV === 'development'
 
 const SayHello = component({
   name: 'SayHello',
   memoize: true,
   
   // prop validation only on DEV system
-  ...process.env.NODE_ENV === 'development' && {
+  ...__DEV__ && {
     validate: Spec.checkProps({
       optional: {
         name: Spec.string
@@ -59,12 +54,8 @@ const SayHello = component({
     })
   },
 
-  defaults: {
-    name: 'world'
-  },
-
-  render(props) {
-    return <div>Hello, {props.name}!</div>
+  render({ name = 'world' }) {
+    return <div>Hello, {name}!</div>
   }
 })
 
@@ -86,14 +77,13 @@ const Counter: Component<CounterProps> = component({
   name: 'Counter',
   memoize: true,
 
-  defaults: {
-    initialCount: 0,
-    label: 'Counter'
-  },
-
   init(c) {
     const
-      props = useProps(c),
+      props = useProps(c, {
+        initialValue: 0, // default values
+        label: 'Counter' // for props
+      }),
+
       [count, setCount] = useValue(c, props.initialCount),
       onIncrement = () => setCount(it => it + 1),
       onDecrement = () => setCount(it => it - 1)

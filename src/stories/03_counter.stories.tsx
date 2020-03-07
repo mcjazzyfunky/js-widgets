@@ -14,14 +14,13 @@ type SimpleCounterProps = {
 const SimpleCounter: Component<SimpleCounterProps> = component({
   name: 'Counter',
 
-  defaults: {
-    initialCount: 0,
-    label: 'Counter'
-  },
-
   init(c) {
     const
-      props = useProps(c),
+      props = useProps(c, {
+        initialCount: 0,
+        label: 'Counter'
+      }),
+
       [count, setCount] = useValue(c, props.initialCount),
       onIncrement = () => setCount(it => it + 1)
 
@@ -47,14 +46,13 @@ const ComplexCounter: Component<ComplexCounterProps> = component({
   name: 'ComplexCounter',
   memoize: true,
 
-  defaults: {
-    initialValue: 0,
-    label: 'Counter'
-  },
-
   init(c) {
     const
-      props = useProps(c),
+      props = useProps(c, {
+        initialValue: 0,
+        label: 'Counter'
+      }),
+
       [state, setState] = useState(c, { count: props.initialValue }),
       onIncrement = () => setState({ count: state.count + 1 }),
       onDecrement = () => setState({ count: state.count - 1})

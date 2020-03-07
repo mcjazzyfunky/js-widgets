@@ -1,60 +1,37 @@
 import { h, memo, useContext, useEffect, useRef, useState } from 'dyo'
 import * as Spec from 'js-spec/validators'
 import Component from './types/Component'
+import Props from './types/Props'
+import Ctrl from './types/Ctrl'
 import StatelessComponent from './types/StatelessComponent'
 import StatefulComponent from './types/StatefulComponent'
-import Props from './types/Props'
-import VNode from './types/VNode'
-import Ctrl from './types/Ctrl'
-import PartialOptionalProps from '../internal/types/PartialOptionalProps'
-import ValidateShape from '../internal/types/ValidateShape'
-
-function component<
-  P extends Props = {},
-  D extends PartialOptionalProps<P> = {}
->(config: StatelessComponentConfig2<P, D>): StatelessComponent<P> 
+import StatelessComponentConfig from './types/StatelessComponentConfig'
+import StatefulComponentConfig from './types/StatefulComponentConfig'
 
 function component<
   P extends Props = {}
->(config: StatelessComponentConfig1<P>): StatelessComponent<P> 
-
-function component<
-  P extends Props = {},
-  D extends PartialOptionalProps<P> = {}
->(config: StatefulComponentConfig2<P, D>): StatefulComponent<P>
+>(config: StatelessComponentConfig<P>): StatelessComponent<P> 
 
 function component<
   P extends Props = {}
->(config: StatefulComponentConfig1<P>): StatefulComponent<P>
+>(config: StatefulComponentConfig<P>): StatefulComponent<P>
 
 function component<
   P extends Props,
-  D extends PartialOptionalProps<P>
 >(config: any): Component<P> {
   let
     funcComp: any, // TODO
     ret: Component<P>
 
   if (config.render) {
-    if (!config.defaults) {
-      funcComp = config.render.bind(null)
-    } else {
-      funcComp = (rawProps: P & D) => {
-        const props = Object.assign({}, config.defaults, rawProps) // TODO: optimize
-
-        return config.render(props)
-      }
-    }
+    funcComp = config.render.bind(null)
   } else if (config.init) {
-    funcComp = (props: P & D) => {
+    funcComp = (props: P) => {
       const data = useRef({}) as any // TODO
       
       if (props !== data.oldProps) {
         data.oldProps = props
-
-        data.currProps = config.defaults 
-          ? Object.assign({}, config.defaults, props) // TODO: optimize
-          : props
+        data.currProps = props 
       }
 
       if (!data.render) {
@@ -103,45 +80,6 @@ function component<
 }
 
 // --- types ---------------------------------------------------------
-
-type StatelessComponentConfig1<
-  P extends Props = {}
-> = {
-  name: string,
-  memoize?: boolean,
-  validate?(props: P): boolean | Error | null,
-  render(props: P): VNode
-}
-
-type StatelessComponentConfig2<
-  P extends Props = {},
-  D extends PartialOptionalProps<P> = {}
-> = {
-  name: string,
-  memoize?: boolean,
-  defaults: ValidateShape<D, PartialOptionalProps<P>>,
-  validate?(props: P): boolean | Error | null,
-  render(props: P & D): VNode
-}
-
-type StatefulComponentConfig1<
-  P extends Props = {}
-> = {
-  name: string,
-  memoize?: boolean,
-  validate?(props: P): boolean | Error | null,
-  init(c: Ctrl<P>): (props: P) => VNode
-}
-type StatefulComponentConfig2<
-  P extends Props = {},
-  D extends PartialOptionalProps<P> = {}
-> = {
-  name: string,
-  memoize?: boolean,
-  defaults: ValidateShape<D, PartialOptionalProps<P>>,
-  validate?(props: P): boolean | Error | null,
-  init(c: Ctrl<P & D>): (props: P & D) => VNode
-}
 
 type Action = () => void
 

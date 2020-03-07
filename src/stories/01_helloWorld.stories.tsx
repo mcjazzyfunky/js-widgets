@@ -9,13 +9,11 @@ type SayHelloProps = {
 const SayHello: Component<SayHelloProps> = component({
   name: 'Hello',
  
-  defaults: {
-    salutation: 'Hello',
-    name: 'world'
-  },
-
-  render(props) {
-    return <div>{props.salutation} {props.name}!</div>
+  render({
+    salutation = 'Hello',
+    name = 'world'
+  }) {
+    return <div>{salutation} {name}!</div>
   }
 })
 

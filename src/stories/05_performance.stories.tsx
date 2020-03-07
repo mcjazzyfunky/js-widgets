@@ -230,16 +230,15 @@ type SpeedTestProps = {
 const SpeedTest: Component<SpeedTestProps> = component({
   name: 'SpeedTest',
   
-  defaults: {
-    tileWidth: 3,
-    rowCount: prefs.rowCount,
-    columnCount: prefs.columnCount,
-    framesPerSecond: prefs.framesPerSecond
-  },
-
   init(c) {
     let 
-      props = useProps(c),
+      props = useProps(c, {
+        tileWidth: 3,
+        rowCount: prefs.rowCount,
+        columnCount: prefs.columnCount,
+        framesPerSecond: prefs.framesPerSecond
+      }),
+
       intervalId = null as any,
       startTime = Date.now(),
       frameCount = 0,

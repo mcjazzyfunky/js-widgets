@@ -92,13 +92,12 @@ const I18nDemo: Component<AppProps> = component({
     })
   ),
 
-  defaults: {
-    defaultLocale: 'en'
-  },
-
   init(c) {
     const
-      props = useProps(c),
+      props = useProps(c, {
+        defaultLocale: 'en'
+      }),
+
       [state, setState] = useState(c, { locale: props.defaultLocale }),
       onChange = (ev: any) => setState({ locale: ev.target.value })
 
