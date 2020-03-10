@@ -1,5 +1,6 @@
-import { h, memo, useContext, useEffect, useRef, useState } from 'dyo'
+import { memo, useContext, useEffect, useRef, useState } from 'dyo'
 import * as Spec from 'js-spec/validators'
+import h from './h'
 import Component from './types/Component'
 import Props from './types/Props'
 import Ctrl from './types/Ctrl'
@@ -71,7 +72,7 @@ function component<
     funcComp = memo(funcComp)
   }
 
-  ret = ((...args: any[]) => h(funcComp, ...args)) as any // TODO: optimize
+  ret = ((...args: any[]) => h(ret, ...args)) as any // TODO: optimize
 
   if (config.render) {
     (ret as any).meta = Object.freeze({
