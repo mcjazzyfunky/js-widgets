@@ -111,7 +111,7 @@ const Counter: Component<CounterProps> = component({
 render(<Counter/>, document.getElementById('app'))
 ```
 
-### The author's preferred syntax
+### The author's preferred syntax (TypeScript)
 
 #### Stateless component
 
@@ -337,11 +337,9 @@ What are the main difference to React's API?
 * `component(config)`
 * `context(config)`
 * `h(type, props?, ...children)`
-* `typeOf(element)`
-* `propsOf(element)`
+* `render(content or null, container)`
 * `Boundary(props?, ...children)`
 * `Fragment(props?, ...children)`
-* `render(content or null, container)`
 
 #### Module "_js-widgets/util_":
 * `asRef(func)`

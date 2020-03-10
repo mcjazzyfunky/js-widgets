@@ -3,13 +3,14 @@
 import { h as createDyoElement, Boundary as DyoBoundary } from 'dyo'
 import h from './h'
 import setHiddenProp from '../internal/setHiddenProp'
+import convertNode from '../internal/convertNode'
 import component from './component'
-import Children from './types/Children'
+import VNode from './types/VNode'
 import Component from './types/Component'
 
 type BoundaryProps = {
   fallback: Function, // TODO
-  children?: Children
+  children?: VNode 
 }
 
 const Boundary: Component<BoundaryProps> = component({
@@ -25,14 +26,17 @@ const Boundary: Component<BoundaryProps> = component({
 setHiddenProp(Boundary, '__type', CustomDyoBoundary)
 
 function CustomDyoBoundary({
+  key,
   fallback,
   children
 }: any) { // TODO
   return createDyoElement(DyoBoundary as any, { // TODO
     fallback(cause: any) {
       return fallback(cause.message)
-    }
-  } as any, children) // TODO
+    },
+
+    key
+  } as any, convertNode(children)) // TODO
 }
 
 CustomDyoBoundary.displayName = 'Boundary'

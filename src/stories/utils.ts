@@ -1,9 +1,6 @@
-import { render } from 'dyo'
-import { VElement } from '../modules/core/main/index'
+import { render, VElement } from '../modules/core/main/index'
 
-let counter = 0
-
-export function demo(content: VElement<any>) {
+export function demo(content: VElement) {
   return () => {
     const elem = document.createElement('div')
 

@@ -1,7 +1,7 @@
-import { h, VElement } from '../../core/main/index'
+import { h, VElement, VNode } from '../../core/main/index'
 
-function f(tagName: string): (...args: any[]) => VElement<any> { // TODO
-  return h.bind(null, tagName)
+function f(tagName: string): (...args: VNode[]) => VElement { // TODO
+  return (h as any).bind(null, tagName)
 }
 
 export const

@@ -1,5 +1,5 @@
 import Props from '../types/Props'
 
-type VElement<T extends Props> = any // OpaqueType<'VElement'> // TODO
+type VElement<T extends Props = Props> = any // TODO !!!!!!!!
 
 export default VElement

@@ -1,12 +1,13 @@
-import { Fragment as DyoFragment } from 'dyo'
+import { h as createDyoElement, Fragment as DyoFragment } from 'dyo'
 import h from './h'
 import setHiddenProp from '../internal/setHiddenProp'
+import convertNode from '../internal/convertNode'
 import component from './component'
-import Children from './types/Children'
+import VNode from './types/VNode'
 import Component from './types/Component'
 
 type FragmentProps = {
-  children?: Children
+  children?: VNode 
 }
 
 const Fragment: Component<FragmentProps> = component({
@@ -19,6 +20,10 @@ const Fragment: Component<FragmentProps> = component({
   }
 })
 
-setHiddenProp(Fragment, '__type', DyoFragment)
+setHiddenProp(Fragment, '__type', ({ children, key }: any) => {
+  const props = key !== undefined ? { key } : null
+
+  return createDyoElement(DyoFragment, props, convertNode(children))
+})
 
 export default Fragment

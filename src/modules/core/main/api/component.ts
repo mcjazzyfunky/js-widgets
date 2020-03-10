@@ -7,6 +7,8 @@ import StatelessComponent from './types/StatelessComponent'
 import StatefulComponent from './types/StatefulComponent'
 import StatelessComponentConfig from './types/StatelessComponentConfig'
 import StatefulComponentConfig from './types/StatefulComponentConfig'
+import convertNode from '../internal/convertNode'
+import setHiddenProp from '../internal/setHiddenProp'
 
 function component<
   P extends Props = {}
@@ -40,10 +42,10 @@ function component<
   }
 
   if (config.render) {
-    funcComp = config.render.bind(null)
+    funcComp = (props: any) => convertNode(config.render(props))
   } else if (config.init) {
     funcComp = (props: P) => {
-      const data = useRef({}) as any // TODO
+      const data = useRef({ current: {} }).current as any // TODO
       
       if (props !== data.oldProps) {
         data.oldProps = props
@@ -59,7 +61,7 @@ function component<
       }
       
       data.run()
-      return data.render(data.currProps)
+      return convertNode(data.render(data.currProps))
     }
   }
   

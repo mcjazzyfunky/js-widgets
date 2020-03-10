@@ -1,53 +1,103 @@
-import { createElement } from 'dyo'
-import Component from './types/Component'
 import Props from './types/Props'
+import Component from './types/Component'
 import VElement from './types/VElement'
 import VNode from './types/VNode'
+import Key from './types/Key'
 
-function h<P extends Props>(
-  type: string | Component<P>,
-  props?: P | null,
+function h(
+  type: string,
+  props?: Omit<Props, 'key'> & { key?: Key | null } | null,
+  ...children: VNode[]
+): VElement<any>
+
+function h<P extends Props = Props>(
+  type: Component<P>,
+  props?: Omit<Props, 'key'> & { key?: Key | null } | null,
   ...children: VNode[]
 ): VElement<P>
 
-function h(/* arguments */) {
+function h(/* arguments */): VElement<any> {
   const
-    args = arguments,
-    type = args[0]
-  
-  let validate: null  | ((props: Props) => boolean | null | Error) = null
+    argCount = arguments.length,
+    type = arguments[0],
+    secondArg = arguments[1],
 
-  if (typeof type === 'function' && (type as any).__type !== undefined) {
-    args[0] = (type as any).__type
+    skippedProps = argCount > 1 && secondArg !== undefined && secondArg !== null
+        && (typeof secondArg !== 'object' || secondArg instanceof VirtualElement
+          || typeof secondArg[SYMBOL_ITERATOR] === 'function' || Array.isArray(secondArg)),
 
-    validate = type.meta.validate
-  }
+    originalProps = skippedProps ? null : (secondArg || null),
+    hasKey = !!originalProps && (originalProps.hasOwnProperty('key')),
+    hasChildren = argCount > 2 || argCount === 2 && skippedProps,
+    needsToCopyProps = hasChildren || hasKey
 
-  const ret = createElement.apply(null, args as any)
+  let props: any = null
 
-  if (process.env.NODE_ENV === 'development' as any && validate) {
-    let props = ret.props as Props
+  if (needsToCopyProps) {
+    props = {}
 
-    if ('key' in props) {
-      props = {...props}
+    for (const key in originalProps) {
+      if (originalProps.hasOwnProperty(key) && key !== 'key') {
+        if (key === 'children') {
+          throw new Error('[createElement] Props must not have key "children" - pass children as arguments instead')
+        }
 
-      delete props.key
-    }
-
-    const result = validate(props)
-
-    if (result === false || result instanceof Error) {
-      let errorMsg = `Property validation failed for component '${type.meta.name}'`
-
-      if (result !== false && result.message) {
-        errorMsg += ` => ${result.message}`
+        props[key] = originalProps[key]
       }
-      
-      throw new TypeError(errorMsg)
+    }
+  } else if (!originalProps && hasChildren) {
+    props = {}
+  } else {
+    props = originalProps
+  }
+
+  if (hasChildren) {
+    const firstChildIndex = skippedProps ? 1 : 2
+
+    if (argCount === firstChildIndex + 1) {
+      props.children = arguments[firstChildIndex]
+    } else {
+      const children: any[] = []
+
+      for (let i = skippedProps ? 1 : 2; i < argCount; ++i) {
+        children.push(arguments[i])
+      }
+
+      props.children = children
     }
   }
 
-  return ret
+  let key = null
+
+  if (hasKey) {
+    key = originalProps.key
+  }
+
+  return new VirtualElement(type, props, key)
 }
 
-export default h 
+export default h
+
+// --- locals -------------------------------------------------------
+
+const
+  SYMBOL_ITERATOR =
+    typeof Symbol === 'function' && Symbol.iterator
+      ? Symbol.iterator
+      : '@@iterator'
+
+const VirtualElement = class VirtualElement {
+  type: string | Component
+  props: Props | null
+  key: Key
+
+  constructor(
+    type: string | Component,
+    props: Props | null,
+    key: Key
+  ) {
+    this.type = type
+    this.props = props
+    this.key = key
+  }
+}

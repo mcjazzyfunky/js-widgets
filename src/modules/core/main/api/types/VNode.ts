@@ -1,6 +1,6 @@
 import VElement from './VElement'
 
 type VNode =
-  undefined | null | boolean | number | string /*| Iterable<VirtualNode> // TODO*/ | VElement<any>
+  undefined | null | boolean | number | string | VElement | Iterable<VNode>
 
 export default VNode

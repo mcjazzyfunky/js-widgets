@@ -11,7 +11,7 @@ export default function toChildArray(children: VNode): VNode[] {
     : Array.isArray(children)
     ? (children as any).flat()
     : typeof children === 'object'
-      && typeof children[SymbolIterator] === 'function'
-    ? toChildArray(Array.from(children))
+      && typeof (children as any)[SymbolIterator] === 'function'
+    ? toChildArray(Array.from(children as any) as any)
     : [children]
 }

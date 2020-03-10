@@ -3,6 +3,7 @@ import { createElement } from 'dyo'
 import { h, component, Component, VNode } from '../modules/core/main/index'
 import { useEffect, useProps, useState } from '../modules/hooks/main/index'
 import { forceUpdate } from '../modules/util/main/index'
+import { div } from '../modules/html/main/index'
 
 export default {
   title: 'Performance'
@@ -10,9 +11,7 @@ export default {
 
 // === Performance test 1 ============================================
 
-const
-  d = createElement,
-  div = h.bind(null, 'div')
+const d = createElement
 
 function runTests() {
   const
