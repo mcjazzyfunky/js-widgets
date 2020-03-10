@@ -65,7 +65,7 @@ render(<SayHello/>, document.getElementById('app'))
 #### Example 3 (TypeScript)
 
 ```tsx
-import { component, h, render, Component } from 'js-widgets'
+import { component, h, render } from 'js-widgets'
 import { useEffect, useProps, useValue } from 'js-widgets/hooks'
 
 type CounterProps = {
@@ -73,7 +73,7 @@ type CounterProps = {
   label?: string
 }
 
-const Counter: Component<CounterProps> = component({
+const Counter = component<CounterProps>({
   name: 'Counter',
   memoize: true,
 
