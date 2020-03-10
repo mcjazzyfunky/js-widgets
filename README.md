@@ -28,7 +28,7 @@ const SayHello = component({
 
 const content =
   div(
-    SayHello()
+    SayHello(),
     SayHello({ name: 'Jane Doe' }))
 
 render(content, document.getElementById('app'))
