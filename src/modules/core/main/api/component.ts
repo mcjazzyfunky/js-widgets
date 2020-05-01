@@ -32,12 +32,12 @@ function component<
 
 function component<
   P extends Props = {},
-  D extends Partial<P> = {}
+  D extends PickOptionalProps<P> = {}
 >(name: string, config: Omit<StatefulComponentConfig<P>, 'name' | 'init'> | { defaults: D }, init: (props: P & D, c: Ctrl<P & D>) => (props: P & D) => VNode): StatefulComponent<P>
 
 function component<
   P extends Props = {},
-  D extends Partial<P> = {}
+  D extends PickOptionalProps<P> = {}
 >(config: Omit<StatefulComponentConfig<P>, 'init'> | { defaults: D }, init: (props: P & D, c: Ctrl<P & D>) => (props: P & D) => VNode): StatefulComponent<P>
 
 function component<
@@ -50,7 +50,7 @@ function component<
 
 function component<
   P extends Props = {},
-  D extends Partial<P> = {}
+  D extends PickOptionalProps<P> = {}
 >(name: string, config: Omit<StatelessComponentConfig<P>, 'name' | 'render'> | { defaults: D }, render: (props: P & D) => VNode): StatelessComponent<P>
 
 function component<
@@ -63,7 +63,7 @@ function component<
 
 function component<
   P extends Props = {},
-  D extends Partial<P> = {}
+  D extends PickOptionalProps<P> = {}
 >(config: Omit<StatelessComponentConfig<P>, 'render'> | { defaults: Partial<P>}, render: (props: P & D) => VNode): StatelessComponent<P>
 
 function component<
@@ -208,6 +208,14 @@ function component<
 // --- types ---------------------------------------------------------
 
 type Action = () => void
+
+type WithoutNeverProps<T extends object> = Pick<T, {
+  [K in keyof T]: T[K] extends never ? never : K
+}[keyof T]>
+
+type PickOptionalProps<T extends object> = Partial<WithoutNeverProps<{
+  [K in keyof T]: T extends Record<K, T[K]> ? never : T[K]
+}>>
 
 // --- locals --------------------------------------------------------
 

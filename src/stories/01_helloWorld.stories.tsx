@@ -1,5 +1,5 @@
 import { demo } from './utils'
-import { component, h } from '../modules/core/main/index'
+import { component, h, Component } from '../modules/core/main/index'
 import * as Spec from 'js-spec/validators'
 
 type SayHelloProps = {
@@ -29,7 +29,7 @@ const SayHello2 = component<SayHelloProps>('SayHello2', props => {
   return <div>{props.salutation} {props.name}!</div>
 })
 
-const SayHello3 = component<SayHelloProps>('SayHello2', {
+const SayHello3: Component<SayHelloProps> = component('SayHello3', {
   defaults: {
     salutation: 'Wuzzup',
     name: 'Dude'
@@ -37,7 +37,6 @@ const SayHello3 = component<SayHelloProps>('SayHello2', {
 }, props => {
   return <div>{props.salutation} {props.name}!</div>
 })
-
 
 export default { title: 'HelloWorld' }
 
