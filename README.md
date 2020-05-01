@@ -12,9 +12,62 @@ Disclaimer: This is just an initial draft of README. A lot is missing ....
 
 ### Examples
 
-#### Example 1 (pure ECMAScript / no JSX)
+#### Example 1 (stateless / special API / pure ECMAScript)
 
-```javascript
+```jsx
+import { component, render } from 'js-widgets'
+import { div } from 'js-widgets/html'
+
+const SayHello = component({
+  name: 'SayHello',
+  memoize: true,
+
+  defaults: {
+    name: 'world'
+  }
+}, props => {
+  const message = `Hello, ${props.name}`
+  
+  return (
+    div({ className: 'hello-world' },
+      message
+    )
+  )
+})
+```
+
+#### Example 2 (stateful / special API / JSX)
+
+```jsx
+import { component, h, render } from 'js-widgets'
+import { useValue } from 'js-widgets'
+
+const Counter = component({
+  name: 'Counter',
+  memoize: true,
+
+  defaults: {
+    initialCount: 0,
+    label: 'Counter'
+  }
+}, (props, c) => {
+  const
+    [count, setCount] = useValue(c, props.initialCount),
+    onIncrement = () => setCount(it => it + 1)
+
+  return () => 
+    <div>
+      <label>{props.label}: </label>
+      <button onClick={onIncrement}>
+        {count.value}
+      </button>
+    </div>
+})
+```
+
+#### Example 3 (stateless / standard API / pure ECMAScript)
+
+```js
 import { component, render } from 'js-widgets'
 import { div } from 'js-widgets/html'
 
@@ -33,7 +86,7 @@ const content =
 
 render(content, document.getElementById('app'))
 ```
-#### Example 2 (ECMAScript + JSX)
+#### Example 3 (stateless / standard API / JSX)
 
 ```javascript
 import { component, h, render } from 'js-widgets'
@@ -62,7 +115,7 @@ const SayHello = component({
 render(<SayHello/>, document.getElementById('app'))
 ```
 
-#### Example 3 (TypeScript)
+#### Example 4 (stateful / special API / TypeScript )
 
 ```tsx
 import { component, h, render } from 'js-widgets'
@@ -75,43 +128,42 @@ type CounterProps = {
 
 const Counter = component<CounterProps>({
   name: 'Counter',
-  memoize: true,
+  memoize: true
 
-  init(c) {
-    const
-      props = useProps(c, {
-        initialValue: 0, // default values
-        label: 'Counter' // for props
-      }),
+  defaultProps: {
+    initialValue: 0,
+    label: 'Counter'
+  }
+}, (props, c) => {
+  const
+    [count, setCount] = useValue(c, props.initialCount),
+    onIncrement = () => setCount(it => it + 1),
+    onDecrement = () => setCount(it => it - 1)
 
-      [count, setCount] = useValue(c, props.initialCount),
-      onIncrement = () => setCount(it => it + 1),
-      onDecrement = () => setCount(it => it - 1)
+  useEffect(c, () => {
+    console.log( `Update - ${props.label}: ${count.value}`)
+  }, () => [count.value])
 
-    useEffect(c, () => {
-      console.log( `Update - ${props.label}: ${count.value}`)
-    }, () => [count.value])
-
-    return () =>
-      <div className="counter">
-        <label>{props.label}: </label> 
-        <button onClick={onDecrement}>
-          -1
-        </button>
-        <span>
-          {count.value}
-        </span>
-        <button onClick={onIncrement}>
-          +1
-        </button>
-      </div>
+  return () =>
+    <div className="counter">
+      <label>{props.label}: </label> 
+      <button onClick={onDecrement}>
+        -1
+      </button>
+      <span>
+        {count.value}
+      </span>
+      <button onClick={onIncrement}>
+        +1
+      </button>
+    </div>
   }
 })
 
 render(<Counter/>, document.getElementById('app'))
 ```
 
-### The author's preferred syntax (TypeScript)
+### Alternative syntax (TypeScript)
 
 #### Stateless component
 

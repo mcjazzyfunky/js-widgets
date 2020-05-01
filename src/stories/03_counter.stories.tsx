@@ -34,6 +34,27 @@ const SimpleCounter: Component<SimpleCounterProps> = component({
   }
 })
 
+const SimpleCounter2: Component<SimpleCounterProps> = component({
+  name: 'Counter',
+
+  defaults: {
+    initialCount: 100,
+    label: 'Counter'
+  }
+}, (props, c) => {
+  const
+    [count, setCount] = useValue(c, props.initialCount),
+    onIncrement = () => setCount(it => it + 1)
+
+  return () => 
+    <div>
+      <label>{props.label}: </label>
+      <button onClick={onIncrement}>
+        {count.value}
+      </button>
+    </div>
+})
+
 // === ComplexCounter ================================================
 
 type ComplexCounterProps = {
@@ -101,4 +122,5 @@ const ComplexCounterDemo = component({
 
 export const simpleCounter1 = demo(<SimpleCounter/>)
 export const simpleCounter2 = demo(<SimpleCounter label="Custom counter" initialCount={100}/>)
+export const simpleCounter3 = demo(<SimpleCounter2/>)
 export const complexCounter = demo(<ComplexCounterDemo/>)
