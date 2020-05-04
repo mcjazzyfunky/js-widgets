@@ -86,7 +86,7 @@ const content =
 
 render(content, document.getElementById('app'))
 ```
-#### Example 3 (stateless / standard API / JSX)
+#### Example 4 (stateless / standard API / JSX)
 
 ```javascript
 import { component, h, render } from 'js-widgets'
@@ -115,10 +115,10 @@ const SayHello = component({
 render(<SayHello/>, document.getElementById('app'))
 ```
 
-#### Example 4 (stateful / special API / TypeScript )
+#### Example 5 (stateful / special API / TypeScript )
 
 ```tsx
-import { component, h, render } from 'js-widgets'
+import { component, h, render, Component } from 'js-widgets'
 import { useEffect, useProps, useValue } from 'js-widgets/hooks'
 
 type CounterProps = {
@@ -126,7 +126,7 @@ type CounterProps = {
   label?: string
 }
 
-const Counter = component<CounterProps>({
+const Counter: Component<CounterProps> = component({
   name: 'Counter',
   memoize: true
 
