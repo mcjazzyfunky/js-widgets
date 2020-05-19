@@ -8,7 +8,6 @@ import StatelessComponent from './types/StatelessComponent'
 import StatefulComponent from './types/StatefulComponent'
 import StatelessComponentConfig from './types/StatelessComponentConfig'
 import StatefulComponentConfig from './types/StatefulComponentConfig'
-import VNode from './types/VNode'
 import convertNode from '../internal/convertNode'
 import setHiddenProp from '../internal/setHiddenProp'
 
@@ -20,114 +19,10 @@ function component<
   P extends Props = {}
 >(config: StatefulComponentConfig<P>): StatefulComponent<P>
 
-
-
-function component<
-  P extends Props = {}
->(name: string, init: (props: P, c: Ctrl<P>) => (props: P) => VNode): StatefulComponent<P>
-
-function component<
-  P extends Props = {}
->(name: string, config: Omit<StatefulComponentConfig<P>, 'name' | 'init'>, init: (props: P, c: Ctrl<P>) => (props: P) => VNode): StatefulComponent<P>
-
-function component<
-  P extends Props = {},
-  D extends PickOptionalProps<P> = {}
->(name: string, config: Omit<StatefulComponentConfig<P>, 'name' | 'init'> | { defaults: D }, init: (props: P & D, c: Ctrl<P & D>) => (props: P & D) => VNode): StatefulComponent<P>
-
-function component<
-  P extends Props = {},
-  D extends PickOptionalProps<P> = {}
->(config: Omit<StatefulComponentConfig<P>, 'init'> | { defaults: D }, init: (props: P & D, c: Ctrl<P & D>) => (props: P & D) => VNode): StatefulComponent<P>
-
-function component<
-  P extends Props = {}
->(config: Omit<StatefulComponentConfig<P>, 'init'>, init: (props: P, c: Ctrl<P>) => VNode): StatefulComponent<P>
-
-function component<
-  P extends Props = {}
->(name: string, render: (props: P) => VNode): StatelessComponent<P>
-
-function component<
-  P extends Props = {},
-  D extends PickOptionalProps<P> = {}
->(name: string, config: Omit<StatelessComponentConfig<P>, 'name' | 'render'> | { defaults: D }, render: (props: P & D) => VNode): StatelessComponent<P>
-
-function component<
-  P extends Props = {}
->(name: string, config: Omit<StatelessComponentConfig<P>, 'name' | 'render'>, render: (props: P) => VNode): StatelessComponent<P>
-
-function component<
-  P extends Props = {}
->(config: Omit<StatelessComponentConfig<P>, 'render'>, render: (props: P) => VNode): StatelessComponent<P>
-
-function component<
-  P extends Props = {},
-  D extends PickOptionalProps<P> = {}
->(config: Omit<StatelessComponentConfig<P>, 'render'> | { defaults: Partial<P>}, render: (props: P & D) => VNode): StatelessComponent<P>
-
 function component<
   P extends Props,
->(arg1: any, arg2?: any, arg3?: any): Component<P> {
-  if (arguments.length > 1) {
-    const
-      config = arg1 && typeof arg1 === 'object'
-        ? arg1
-        : arg2 && typeof arg2 === 'object'
-          ? arg2
-          : null,
-
-      defaults = config && config.defaults ? config.defaults : null,
-      newConfig = { ...config },
-    
-      main = typeof arg2 === 'function'
-        ? arg2
-        : typeof arg3 === 'function'
-          ? arg3
-          : null
-    
-    if (main) {
-      if (main.length > 1) {
-        newConfig.init = (c: any) => {
-          let currProps = { ...defaults, ...c.getProps() }
-          const props = { ...currProps }
-        
-          c.beforeUpdate(() => {
-            currProps = { ...defaults, ...c.getProps() }
-
-            for (const key in props) {
-              delete props[key]
-            }
-
-            Object.assign(props, currProps)
-          })
-
-          return main(props, { ...c, getProps: () => currProps })
-        }
-      } else {
-        if (!defaults) {
-          newConfig.render = main
-        } else {
-          newConfig.render = (props: P) => {
-            return main({...defaults, ...props}) // TODO - performance
-          }
-        }
-      }
-    }
-
-    if (typeof arg1 === 'string') {
-      newConfig.name = arg1
-    }
-
-    if (defaults) {
-      delete newConfig.defaults
-    }
-    
-    return component(newConfig)
-  }
-
+>(config: any): Component<P> {
   let
-    config = arg1,
     funcComp: any, // TODO
     ret: Component<P>
   
@@ -208,14 +103,6 @@ function component<
 // --- types ---------------------------------------------------------
 
 type Action = () => void
-
-type WithoutNeverProps<T extends object> = Pick<T, {
-  [K in keyof T]: T[K] extends never ? never : K
-}[keyof T]>
-
-type PickOptionalProps<T extends object> = Partial<WithoutNeverProps<{
-  [K in keyof T]: T extends Record<K, T[K]> ? never : T[K]
-}>>
 
 // --- locals --------------------------------------------------------
 

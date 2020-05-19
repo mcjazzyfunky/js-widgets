@@ -12,62 +12,9 @@ Disclaimer: This is just an initial draft of README. A lot is missing ....
 
 ### Examples
 
-#### Example 1 (stateless / special API / pure ECMAScript)
+#### Example 1 (pure ECMAScript / no JSX)
 
-```jsx
-import { component, render } from 'js-widgets'
-import { div } from 'js-widgets/html'
-
-const SayHello = component({
-  name: 'SayHello',
-  memoize: true,
-
-  defaults: {
-    name: 'world'
-  }
-}, props => {
-  const message = `Hello, ${props.name}`
-  
-  return (
-    div({ className: 'hello-world' },
-      message
-    )
-  )
-})
-```
-
-#### Example 2 (stateful / special API / JSX)
-
-```jsx
-import { component, h, render } from 'js-widgets'
-import { useValue } from 'js-widgets'
-
-const Counter = component({
-  name: 'Counter',
-  memoize: true,
-
-  defaults: {
-    initialCount: 0,
-    label: 'Counter'
-  }
-}, (props, c) => {
-  const
-    [count, setCount] = useValue(c, props.initialCount),
-    onIncrement = () => setCount(it => it + 1)
-
-  return () => 
-    <div>
-      <label>{props.label}: </label>
-      <button onClick={onIncrement}>
-        {count.value}
-      </button>
-    </div>
-})
-```
-
-#### Example 3 (stateless / standard API / pure ECMAScript)
-
-```js
+```javascript
 import { component, render } from 'js-widgets'
 import { div } from 'js-widgets/html'
 
@@ -81,12 +28,12 @@ const SayHello = component({
 
 const content =
   div(
-    SayHello(),
+    SayHello()
     SayHello({ name: 'Jane Doe' }))
 
 render(content, document.getElementById('app'))
 ```
-#### Example 4 (stateless / standard API / JSX)
+#### Example 2 (ECMAScript + JSX)
 
 ```javascript
 import { component, h, render } from 'js-widgets'
@@ -115,7 +62,7 @@ const SayHello = component({
 render(<SayHello/>, document.getElementById('app'))
 ```
 
-#### Example 5 (stateful / special API / TypeScript )
+#### Example 3 (TypeScript)
 
 ```tsx
 import { component, h, render, Component } from 'js-widgets'
@@ -128,42 +75,43 @@ type CounterProps = {
 
 const Counter: Component<CounterProps> = component({
   name: 'Counter',
-  memoize: true
+  memoize: true,
 
-  defaultProps: {
-    initialValue: 0,
-    label: 'Counter'
-  }
-}, (props, c) => {
-  const
-    [count, setCount] = useValue(c, props.initialCount),
-    onIncrement = () => setCount(it => it + 1),
-    onDecrement = () => setCount(it => it - 1)
+  init(c) {
+    const
+      props = useProps(c, {
+        initialValue: 0, // default values
+        label: 'Counter' // for props
+      }),
 
-  useEffect(c, () => {
-    console.log( `Update - ${props.label}: ${count.value}`)
-  }, () => [count.value])
+      [count, setCount] = useValue(c, props.initialCount),
+      onIncrement = () => setCount(it => it + 1),
+      onDecrement = () => setCount(it => it - 1)
 
-  return () =>
-    <div className="counter">
-      <label>{props.label}: </label> 
-      <button onClick={onDecrement}>
-        -1
-      </button>
-      <span>
-        {count.value}
-      </span>
-      <button onClick={onIncrement}>
-        +1
-      </button>
-    </div>
+    useEffect(c, () => {
+      console.log( `Update - ${props.label}: ${count.value}`)
+    }, () => [count.value])
+
+    return () =>
+      <div className="counter">
+        <label>{props.label}: </label> 
+        <button onClick={onDecrement}>
+          -1
+        </button>
+        <span>
+          {count.value}
+        </span>
+        <button onClick={onIncrement}>
+          +1
+        </button>
+      </div>
   }
 })
 
 render(<Counter/>, document.getElementById('app'))
 ```
 
-### Alternative syntax (TypeScript)
+### The author's preferred syntax
 
 #### Stateless component
 
@@ -389,9 +337,11 @@ What are the main difference to React's API?
 * `component(config)`
 * `context(config)`
 * `h(type, props?, ...children)`
-* `render(content or null, container)`
+* `typeOf(element)`
+* `propsOf(element)`
 * `Boundary(props?, ...children)`
 * `Fragment(props?, ...children)`
+* `render(content or null, container)`
 
 #### Module "_js-widgets/util_":
 * `asRef(func)`
