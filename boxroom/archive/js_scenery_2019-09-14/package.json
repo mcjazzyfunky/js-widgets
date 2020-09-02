@@ -27,7 +27,7 @@
     "babel-core": "^6.26.3",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-es2015": "^6.24.1",
-    "bestzip": "^2.1.4",
+    "bestzip": "^2.1.7",
     "chai": "^4.2.0",
     "cli-watch": "^1.0.7",
     "copyfiles": "^2.1.1",
